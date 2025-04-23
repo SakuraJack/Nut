@@ -1,5 +1,7 @@
 #include "ntpch.h"
 #include "Window.h"
+#include "Core.h"
+#include "Events/ApplicationEvent.h"
 
 namespace Nut
 {
@@ -58,6 +60,21 @@ void Nut::Window::Init(const WindowProps& props)
 	m_Context->Init();
 
 	glfwSetWindowUserPointer(m_Window, &m_Data);
+
+	glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
+		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		WindowCloseEvent event;
+		data.EventCallback(event);
+	});
+
+	glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
+		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		data.m_Width = width;
+		data.m_Height = height;
+
+		WindowResizeEvent event(width, height);
+		data.EventCallback(event);
+	});
 
 }
 

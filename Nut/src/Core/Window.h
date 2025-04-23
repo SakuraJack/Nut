@@ -3,6 +3,7 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "Renderer/Context.h"
+#include "Events/Event.h"
 
 namespace Nut
 {
@@ -23,6 +24,8 @@ namespace Nut
 	class Window
 	{
 	public:
+		using EventCallbackFn = std::function<void(Event&)>;
+
 		Window(const WindowProps& props = WindowProps());
 		~Window();
 
@@ -30,6 +33,8 @@ namespace Nut
 
 		inline unsigned int GetWidth() const { return m_Data.m_Width; }
 		inline unsigned int GetHeight() const { return m_Data.m_Height; }
+
+		void SetEventCallback(const EventCallbackFn& callback) { m_Data.EventCallback = callback; }
 
 		void SetVSync(bool enabled);
 		inline bool IsVSync() const { return m_Data.m_VSync; }
@@ -49,6 +54,7 @@ namespace Nut
 			std::string m_Title;
 			unsigned int m_Width, m_Height;
 			bool m_VSync;
+			EventCallbackFn EventCallback;
 		};
 		WindowData m_Data;
 	};
