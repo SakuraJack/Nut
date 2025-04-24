@@ -1,0 +1,15 @@
+[18:57:08] [info] Nut Log: [Renderer]初始化渲染器
+[18:57:08] [info] Nut Log: [Renderer]渲染接口: AMD Radeon 780M Graphics
+[18:57:08] [info] Nut Log: [Renderer]版本: 4.6.0 Compatibility Profile Context 23.20.60.05.240328
+[18:57:08] [info] Nut Log: [Renderer]厂商: ATI Technologies Inc.
+[18:57:08] [info] Nut Log: [Renderer]最大采样数: 8
+[18:57:08] [info] Nut Log: [Renderer]最大纹理单元: 32
+[18:57:08] [info] Nut Log: [Renderer]启用OpenGL调试... 调试模式:同步
+[18:57:08] [info] Nut Log: [Renderer]启用混合... 混合函数:源Alpha, 1-源Alpha
+[18:57:08] [info] Nut Log: [Renderer]启用深度测试... 深度函数:小于丢弃
+[18:57:08] [info] Nut Log: [Renderer]启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换
+[18:57:08] [info] Nut Log: [Renderer]启用剔除面... 剔除面:背面, 正面朝向:逆时针
+[18:57:08] [info] Nut Log: [Renderer]启用多重采样... 启用无缝立方体贴图
+[18:57:08] [info] Nut Log: [Renderer]调整视口大小: 1280, 720
+[18:57:09] [info] Nut Log: [Window]窗口失去焦点
+[18:58:13] [info] Nut Log: [Window]窗口获得焦点

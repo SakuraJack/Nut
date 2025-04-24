@@ -1,12 +1,11 @@
 #pragma once
-
 #include "ntpch.h"
 
 namespace Nut {
 	enum class EventType
 	{
 		None = 0,
-		WindowClose, WindowResize, WindowMoved,
+		WindowClosed, WindowResized, WindowMoved, WindowFocus, WindowLostFocus,
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
 	};

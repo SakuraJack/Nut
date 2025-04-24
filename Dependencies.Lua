@@ -33,10 +33,6 @@ Dependencies = {
     stb_image = {
         IncludeDir = "%{wks.location}/Nut/vendor/stb_image",
     },
-
-    spdlog = {
-        IncludeDir = "%{wks.location}/Nut/vendor/spdlog/include",
-    },
 }
 
 function LinkDependency(table, is_debug, target)

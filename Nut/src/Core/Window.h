@@ -1,5 +1,4 @@
 #pragma once
-
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "Renderer/Context.h"
@@ -41,20 +40,22 @@ namespace Nut
 
 		static Window* Create(const WindowProps& props = WindowProps());
 
+		inline GLFWwindow* GetNativeWindow() const { return m_Window; } //返回窗口指针
+
 	private:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
 
 	private:
 		GLFWwindow* m_Window;
-		GraphicsContext* m_Context;
+		std::unique_ptr<GraphicsContext> m_Context;
 
 		struct WindowData
 		{
-			std::string m_Title;
-			unsigned int m_Width, m_Height;
-			bool m_VSync;
-			EventCallbackFn EventCallback;
+			std::string m_Title; //窗口标题
+			unsigned int m_Width, m_Height, m_XPos, m_YPos; //窗口大小 窗口位置
+			bool m_VSync;	//窗口是否开启垂直同步
+			EventCallbackFn EventCallback; //事件回调函数
 		};
 		WindowData m_Data;
 	};

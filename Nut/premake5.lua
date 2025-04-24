@@ -14,7 +14,7 @@ project "Nut"
         "src/**.cpp",
     }
 
-    includedirs { "src/" }
+    includedirs { "src/", "vendor/", }
     
     defines { "GLM_FORCE_DEPTH_ZERO_TO_ONE" }
     
