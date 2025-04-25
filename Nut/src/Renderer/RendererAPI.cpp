@@ -19,7 +19,8 @@ void Nut::RendererAPI::Init()
 	glGetIntegerv(GL_MAX_SAMPLES, &spec.MaxSampleCount);
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &spec.MaxTextureUnit);
 
-	NUT_INFO_TAG("Renderer", "渲染接口: {0}", spec.RendererName);
+	NUT_INFO_TAG("Renderer", "设备名称: {0}", spec.RendererName);
+	NUT_INFO_TAG("Renderer", "渲染接口: OpenGL");
 	NUT_INFO_TAG("Renderer", "版本: {0}", spec.RendererVersion);
 	NUT_INFO_TAG("Renderer", "厂商: {0}", spec.RendererVendor);
 	NUT_INFO_TAG("Renderer", "最大采样数: {0}", spec.MaxSampleCount);

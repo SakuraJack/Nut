@@ -3,6 +3,7 @@
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/KeyEvent.h"
+#include "LayerStack.h"
 
 namespace Nut {
 	class Application
@@ -20,10 +21,10 @@ namespace Nut {
 
 		bool OnWindowClosed(WindowCloseEvent& e);
 		bool OnWindowResized(WindowResizeEvent& e);
-		bool OnKeyPressed(KeyPressedEvent& e);
 	private:
 		static Application* s_Instance;
 		std::unique_ptr<Window> m_Window;
+		LayerStack m_LayerStack;
 
 	private:
 		bool m_Running = true;

@@ -1,0 +1,11 @@
+# Directories
+.vs/
+bin/
+scriptsBuildSolution/_pycache_/
+
+# Files
+*.user
+*.bat
+*.sln
+*.filters
+*.vcxproj

@@ -27,8 +27,11 @@ void Nut::Application::Run()
 	{
 		if (!m_Minimized) {
 			Renderer::BeginFrame();
-			m_Window->OnUpdate();
+			for (Layer* layer : m_LayerStack) {
+				layer->OnUpdate();
+			}
 			Renderer::EndFrame();
+			m_Window->OnUpdate();
 		}
 		else {
 			m_Window->OnUpdate();
@@ -41,7 +44,12 @@ void Nut::Application::OnEvent(Event& e)
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowCloseEvent>(NUT_BIND_EVENT_FN(Application::OnWindowClosed));
 	dispatcher.Dispatch<WindowResizeEvent>(NUT_BIND_EVENT_FN(Application::OnWindowResized));
-	dispatcher.Dispatch<KeyPressedEvent>(NUT_BIND_EVENT_FN(Application::OnKeyPressed));
+	for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
+		(*--it)->OnEvent(e);
+		if (e.m_Handled) {
+			break;
+		}
+	}
 }
 
 void Nut::Application::Close()
@@ -63,19 +71,6 @@ bool Nut::Application::OnWindowResized(WindowResizeEvent& e)
 	}
 	m_Minimized = false;
 	Renderer::Resize(e.GetWidth(), e.GetHeight());
-	return true;
-}
-
-bool Nut::Application::OnKeyPressed(KeyPressedEvent& e)
-{
-	if (e.GetKeyCode() == GLFW_KEY_S) {
-		Renderer::SetClearColor(glm::vec4(1, 0, 0, 1));
-	}
-	else if (e.GetKeyCode() == GLFW_KEY_D) {
-		Renderer::SetClearColor(glm::vec4(0, 1, 0, 1));
-	}
-	else if (e.GetKeyCode() == GLFW_KEY_M) {
-	}
 	return true;
 }
 
