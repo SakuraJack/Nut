@@ -1,16 +1,18 @@
 #include "ntpch.h"
 #include "VertexBuffer.h"
+#include "Core/Log.h"
 #include "glad/glad.h"
 
-Nut::VertexBuffer::VertexBuffer(void* data, unsigned int size, VertxBufferUsage usage)
+Nut::VertexBuffer::VertexBuffer(void* data, unsigned int size, unsigned int count, VertxBufferUsage usage)
+	: m_Size(size), m_Count(count)
 {
 	m_Usage = usage;
 	glCreateBuffers(1, &m_BufferID);
 	glNamedBufferData(m_BufferID, size, data, GL_STATIC_DRAW);
 }
 
-Nut::VertexBuffer::VertexBuffer(unsigned int size, VertxBufferUsage usage)
-	: m_Size(size), m_Usage(usage)
+Nut::VertexBuffer::VertexBuffer(unsigned int size, unsigned int count, VertxBufferUsage usage)
+	: m_Size(size), m_Usage(usage), m_Count(count)
 {
 	glCreateBuffers(1, &m_BufferID);
 	glNamedBufferData(m_BufferID, size, nullptr, GL_DYNAMIC_DRAW);

@@ -6,6 +6,7 @@
 namespace Nut {
 	class VertexArray
 	{
+	public:
 		VertexArray();
 		VertexArray(const std::shared_ptr<VertexBuffer>& vertexBuffer, const std::shared_ptr<IndexBuffer>& indexBuffer);
 		~VertexArray();

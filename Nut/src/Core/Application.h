@@ -5,6 +5,10 @@
 #include "Events/KeyEvent.h"
 #include "LayerStack.h"
 
+#include "Renderer/VertexArray.h"
+#include "Renderer/VertexBuffer.h"
+#include "Renderer/IndexBuffer.h"
+
 namespace Nut {
 	class Application
 	{
@@ -29,6 +33,14 @@ namespace Nut {
 	private:
 		bool m_Running = true;
 		bool m_Minimized = false;
+	
+		// ²âÊÔº¯Êý
+	private:
+		void TestFunction();
+		std::shared_ptr<Nut::VertexArray> m_VertexArray;
+		std::shared_ptr<Nut::VertexBuffer> m_VertexBuffer;
+		std::shared_ptr<Nut::IndexBuffer> m_IndexBuffer;
+		unsigned int shaderProgram;
 	};
 
 	Application* CreateApplication();

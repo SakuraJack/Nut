@@ -4,8 +4,8 @@ namespace Nut {
 	class IndexBuffer
 	{
 	public:
-		IndexBuffer(unsigned int size);
-		IndexBuffer(void* data, unsigned int size);
+		IndexBuffer(void* data, unsigned int size, unsigned int count);
+		IndexBuffer(unsigned int size, unsigned int count);
 		~IndexBuffer();
 
 		void SetData(void* data, unsigned int size, unsigned int offset = 0);
@@ -17,8 +17,8 @@ namespace Nut {
 		inline unsigned int GetBufferID() const { return m_BufferID; } //  获取索引缓冲ID
 		
 	private:
-		unsigned int m_BufferID;
-		unsigned int m_Size;
-		unsigned int m_Count;
+		unsigned int m_BufferID;	//  索引缓冲ID
+		unsigned int m_Size;		//  索引缓冲大小
+		unsigned int m_Count;		//  索引个数
 	};
 }

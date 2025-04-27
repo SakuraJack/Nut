@@ -1,6 +1,7 @@
 #include "ntpch.h"
 #include "RendererAPI.h"
 #include "Core/Log.h"
+#include "Tool/DebugTools.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -26,9 +27,10 @@ void Nut::RendererAPI::Init()
 	NUT_INFO_TAG("Renderer", "最大采样数: {0}", spec.MaxSampleCount);
 	NUT_INFO_TAG("Renderer", "最大纹理单元: {0}", spec.MaxTextureUnit);
 
-	glEnable(GL_DEBUG_OUTPUT);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	OpenGLDebugTools::EnableOpenGLDebugMessage();
 	NUT_INFO_TAG("Renderer", "启用OpenGL调试... 调试模式:同步");
+
+	glClearColor(s_RendererAPIStatus.s_ClearColor.r, s_RendererAPIStatus.s_ClearColor.g, s_RendererAPIStatus.s_ClearColor.b, s_RendererAPIStatus.s_ClearColor.a);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

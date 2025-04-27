@@ -1,16 +1,48 @@
-[18:47:47] [info] Nut Log: [Renderer]初始化渲染器
-[18:47:47] [info] Nut Log: [Renderer]设备名称: AMD Radeon 780M Graphics
-[18:47:47] [info] Nut Log: [Renderer]渲染接口: OpenGL
-[18:47:47] [info] Nut Log: [Renderer]版本: 4.6.0 Compatibility Profile Context 23.20.60.05.240328
-[18:47:47] [info] Nut Log: [Renderer]厂商: ATI Technologies Inc.
-[18:47:47] [info] Nut Log: [Renderer]最大采样数: 8
-[18:47:47] [info] Nut Log: [Renderer]最大纹理单元: 32
-[18:47:47] [info] Nut Log: [Renderer]启用OpenGL调试... 调试模式:同步
-[18:47:47] [info] Nut Log: [Renderer]启用混合... 混合函数:源Alpha, 1-源Alpha
-[18:47:47] [info] Nut Log: [Renderer]启用深度测试... 深度函数:小于丢弃
-[18:47:47] [info] Nut Log: [Renderer]启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换
-[18:47:47] [info] Nut Log: [Renderer]启用剔除面... 剔除面:背面, 正面朝向:逆时针
-[18:47:47] [info] Nut Log: [Renderer]启用多重采样... 启用无缝立方体贴图
-[18:47:47] [info] Nut Log: [Renderer]调整视口大小: 1280, 720
-[18:47:48] [info] Nut Log: [Window]窗口失去焦点
-[18:47:54] [info] Nut Log: [Window]窗口获得焦点
+[18:38:46] [info] Nut Log: [Renderer]初始化渲染器
+[18:38:46] [info] Nut Log: [Renderer]设备名称: AMD Radeon 780M Graphics
+[18:38:46] [info] Nut Log: [Renderer]渲染接口: OpenGL
+[18:38:46] [info] Nut Log: [Renderer]版本: 4.6.0 Compatibility Profile Context 23.20.60.05.240328
+[18:38:46] [info] Nut Log: [Renderer]厂商: ATI Technologies Inc.
+[18:38:46] [info] Nut Log: [Renderer]最大采样数: 8
+[18:38:46] [info] Nut Log: [Renderer]最大纹理单元: 32
+[18:38:46] [info] Nut Log: [Renderer]启用OpenGL调试... 调试模式:同步
+[18:38:46] [info] Nut Log: [Renderer]启用混合... 混合函数:源Alpha, 1-源Alpha
+[18:38:46] [info] Nut Log: [Renderer]启用深度测试... 深度函数:小于丢弃
+[18:38:46] [info] Nut Log: [Renderer]启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换
+[18:38:46] [info] Nut Log: [Renderer]启用剔除面... 剔除面:背面, 正面朝向:逆时针
+[18:38:46] [info] Nut Log: [Renderer]启用多重采样... 启用无缝立方体贴图
+[18:38:46] [info] Nut Log: [Renderer]调整视口大小: 1280, 720
+[18:38:48] [info] Nut Log: [Window]窗口移动到 95, 126
+[18:38:48] [info] Nut Log: [Window]窗口移动到 121, 143
+[18:38:48] [info] Nut Log: [Window]窗口移动到 162, 163
+[18:38:48] [info] Nut Log: [Window]窗口移动到 195, 173
+[18:38:48] [info] Nut Log: [Window]窗口移动到 235, 188
+[18:38:48] [info] Nut Log: [Window]窗口移动到 278, 199
+[18:38:48] [info] Nut Log: [Window]窗口移动到 316, 210
+[18:38:48] [info] Nut Log: [Window]窗口移动到 353, 218
+[18:38:48] [info] Nut Log: [Window]窗口移动到 386, 225
+[18:38:48] [info] Nut Log: [Window]窗口移动到 429, 237
+[18:38:48] [info] Nut Log: [Window]窗口移动到 463, 250
+[18:38:48] [info] Nut Log: [Window]窗口移动到 490, 257
+[18:38:48] [info] Nut Log: [Window]窗口移动到 515, 264
+[18:38:48] [info] Nut Log: [Window]窗口移动到 537, 270
+[18:38:48] [info] Nut Log: [Window]窗口移动到 559, 279
+[18:38:48] [info] Nut Log: [Window]窗口移动到 581, 290
+[18:38:48] [info] Nut Log: [Window]窗口移动到 603, 297
+[18:38:48] [info] Nut Log: [Window]窗口移动到 625, 305
+[18:38:48] [info] Nut Log: [Window]窗口移动到 647, 312
+[18:38:48] [info] Nut Log: [Window]窗口移动到 666, 316
+[18:38:48] [info] Nut Log: [Window]窗口移动到 685, 320
+[18:38:48] [info] Nut Log: [Window]窗口移动到 702, 327
+[18:38:48] [info] Nut Log: [Window]窗口移动到 715, 329
+[18:38:48] [info] Nut Log: [Window]窗口移动到 717, 330
+[18:38:48] [info] Nut Log: [Window]窗口移动到 719, 331
+[18:38:48] [info] Nut Log: [Window]窗口移动到 720, 332
+[18:38:48] [info] Nut Log: [Window]窗口移动到 724, 334
+[18:38:48] [info] Nut Log: [Window]窗口移动到 730, 334
+[18:38:48] [info] Nut Log: [Window]窗口移动到 736, 335
+[18:38:48] [info] Nut Log: [Window]窗口移动到 741, 338
+[18:38:48] [info] Nut Log: [Window]窗口移动到 743, 338
+[18:38:48] [info] Nut Log: [Window]窗口移动到 748, 340
+[18:38:48] [info] Nut Log: [Window]窗口移动到 750, 341
+[18:38:49] [info] Nut Log: [Window]窗口关闭
