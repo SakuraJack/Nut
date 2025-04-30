@@ -100,7 +100,7 @@ void Nut::RendererAPI::Resize(uint32_t width, uint32_t height)
 		return;
 	s_RendererAPIStatus.s_Viewport.z = width;
 	s_RendererAPIStatus.s_Viewport.w = height;
-	SetViewport(0, 0, width, height);
+	glViewport(0, 0, width, height);
 	NUT_INFO_TAG("Renderer", "调整视口大小: {0}, {1}", width, height);
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "Shader.h"
 
 namespace Nut {
 	struct Vertex

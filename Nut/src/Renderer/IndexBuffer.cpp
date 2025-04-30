@@ -37,3 +37,13 @@ void Nut::IndexBuffer::Unbind() const
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
+
+std::shared_ptr<Nut::IndexBuffer> Nut::IndexBuffer::Create(void* data, unsigned int size, unsigned int count)
+{
+	return std::make_shared<IndexBuffer>(data, size, count);
+}
+
+std::shared_ptr<Nut::IndexBuffer> Nut::IndexBuffer::Create(unsigned int size, unsigned int count)
+{
+	return std::make_shared<IndexBuffer>(size, count);
+}

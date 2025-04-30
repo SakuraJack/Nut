@@ -134,6 +134,10 @@ namespace Nut {
 		unsigned int GetBufferID() const { return m_BufferID; } //  获取缓冲区ID
 		unsigned int GetCount() const { return m_Count; } //  获取缓冲区元素个数
 
+	public:
+		static std::shared_ptr<VertexBuffer> Create(void* data, unsigned int size, unsigned int count, VertxBufferUsage usage = VertxBufferUsage::StaticDraw); //  创建顶点缓冲
+		static std::shared_ptr<VertexBuffer> Create(unsigned int size, unsigned int count, VertxBufferUsage usage = VertxBufferUsage::DynamicDraw); //  创建顶点缓冲
+
 	private:
 		unsigned int m_BufferID; //  缓冲区ID
 		unsigned int m_Size;	//  缓冲区大小

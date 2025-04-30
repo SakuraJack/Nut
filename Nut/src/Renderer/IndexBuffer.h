@@ -15,6 +15,10 @@ namespace Nut {
 		inline unsigned int GetCount() const { return m_Count; } //  获取索引个数
 		inline unsigned int GetSize() const { return m_Size; } //  获取索引缓冲大小
 		inline unsigned int GetBufferID() const { return m_BufferID; } //  获取索引缓冲ID
+
+	public:
+		static std::shared_ptr<IndexBuffer> Create(void* data, unsigned int size, unsigned int count); //  创建索引缓冲
+		static std::shared_ptr<IndexBuffer> Create(unsigned int size, unsigned int count); //  创建索引缓冲
 		
 	private:
 		unsigned int m_BufferID;	//  索引缓冲ID

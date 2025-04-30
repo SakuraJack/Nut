@@ -92,4 +92,14 @@ void Nut::VertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexB
 	m_IndexBuffer = indexBuffer;
 }
 
+std::shared_ptr<Nut::VertexArray> Nut::VertexArray::Create()
+{
+	return std::make_shared<VertexArray>();
+}
+
+std::shared_ptr<Nut::VertexArray> Nut::VertexArray::Create(const std::shared_ptr<VertexBuffer>& vertexBuffer, const std::shared_ptr<IndexBuffer>& indexBuffer)
+{
+	return std::make_shared<VertexArray>(vertexBuffer, indexBuffer);
+}
+
 

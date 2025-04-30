@@ -42,3 +42,13 @@ void Nut::VertexBuffer::SetLayout(const VertexBufferLayout& layout)
 {
 	m_Layout = layout;
 }
+
+std::shared_ptr<Nut::VertexBuffer> Nut::VertexBuffer::Create(void* data, unsigned int size, unsigned int count, VertxBufferUsage usage /*= VertxBufferUsage::StaticDraw*/)
+{
+	return std::make_shared<VertexBuffer>(data, size, count, usage);
+}
+
+std::shared_ptr<Nut::VertexBuffer> Nut::VertexBuffer::Create(unsigned int size, unsigned int count, VertxBufferUsage usage /*= VertxBufferUsage::DynamicDraw*/)
+{
+		return std::make_shared<VertexBuffer>(size, count, usage);
+}
