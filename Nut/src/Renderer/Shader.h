@@ -2,12 +2,9 @@
 
 #include "glm/glm.hpp"
 #include "glad/glad.h"
+#include "Utils/ShaderUtils.h"
 
 namespace Nut {
-	enum class ShaderUniformType
-	{
-		None = 0, Bool, Int, Float, Vec2, Vec3, Vec4, Mat3, Mat4,
-	};
 
 	class ShaderUniform
 	{
@@ -40,13 +37,21 @@ namespace Nut {
 
 	};
 
-	class Shader
+	struct ShaderResourceDeclaration {
+		std::string Name;	//  名称
+		unsigned int Binding;	//  绑定点
+		unsigned int Size;	//  大小
+		unsigned int Offset;	//  偏移量
+	};
+
+	class Shader : public std::enable_shared_from_this<Shader>	//  允许共享指针
 	{
 	public:
 		Shader(const std::string name = "DefaultShader");
 		Shader(const std::string& name, const std::string& shaderSourcePath);	//  构造函数
 
 		void Reload(const std::string& shaderSourcePath);	//  加载着色器
+		void ForceReload(const std::string& shaderSourcePath);	//  强制重新加载着色器
 
 		void Bind();		//  绑定着色器
 		void Unbind();		//  解绑着色器
@@ -72,6 +77,10 @@ namespace Nut {
 
 		static std::shared_ptr<Shader> Create(const std::string name = "DefaultShader");
 		static std::shared_ptr<Shader> Create(const std::string& name, const std::string& shaderSourcePath);
+
+		std::vector<std::string> GetUniforms() const { return m_Uniforms; }	//  获取Uniform变量列表
+		std::string GetName() const { return m_Name; }	//  获取着色器名称
+		unsigned int GetShaderID() const { return m_ShaderID; }	//  获取着色器ID
 	private:
 		void UploadUniformInt(const std::string& name, int value);
 		void UploadUniformFloat(const std::string& name, float value);
@@ -86,11 +95,15 @@ namespace Nut {
 
 		std::string m_Name;	//  着色器名称
 		unsigned int m_ShaderID;	//  着色器ID
+		std::string m_AssetPath;	//  资源路径
 
 		static std::unordered_map<std::string, ShaderUniformBuffer> s_UniformBuffers;	//  Uniform缓冲区列表
 		static std::unordered_map<std::string, ShaderStorageBuffer> s_StorageBuffers;	//  Storage缓冲区列表
-		std::unordered_map<std::string, GLuint> m_UniformLocations;	//  Uniform变量位置列表
+		std::vector<std::string> m_Uniforms; //  Uniform变量列表
 		// TODO: 之后从这里移除
 		std::unordered_map<GLenum, std::string> m_ShaderSource;	//  着色器源代码
+		std::unordered_map<GLenum, std::vector<uint32_t>> m_SPIRVData; // 着色器的SPIRV数据
+
+		friend class ShaderCompiler;	//  友元类
 	};
 }

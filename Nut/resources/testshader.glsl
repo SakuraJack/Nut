@@ -3,11 +3,10 @@
 
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aColor;
-uniform float aTime;
-uniform float aDissolveCoefficient;
-
-out vec3 ClipLine;
-out vec3 vPos;
+layout(location = 2) uniform float aTime;
+layout(location = 3) uniform float aDissolveCoefficient;
+layout(location = 4) out vec3 ClipLine;
+layout(location = 5) out vec3 vPos;
 
 void main()
 {
@@ -26,20 +25,23 @@ const vec4 color1 = vec4(0.38, 0.12, 0.93, 1.0);
 const vec4 color2 = vec4(1.00, 0.90, 0.30, 1.0);
 const vec4 color3 = vec4(1.00, 0.30, 0.30, 1.0);
 
-in vec3 ClipLine;
-in vec3 vPos;
+layout(location = 4) in vec3 ClipLine;
+layout(location = 5) in vec3 vPos;
 
 float noise(vec2 st);
+layout(location = 0) uniform float aNoiseCoefficient;
+
+layout(location = 0) out vec4 FragColor;
 
 void main()
 {
-	float noiseValue = noise(vPos.xy * 5.0);
+	float noiseValue = noise(vPos.xy * aNoiseCoefficient);
 	float dist = dot(vPos.xy, ClipLine.xy) + ClipLine.z - noiseValue;
 	float alpha = step(0.0, dist);
 	vec4 color23 = mix(color2, color3, (1.0 - step(0.2, dist)) * dist * 5.0);
 	vec4 res = mix(color23, color1, step(0.2, dist));
 	res.a = alpha;
-	gl_FragColor = res;
+	FragColor = res;
 }
 
 vec2 random2(vec2 st) {

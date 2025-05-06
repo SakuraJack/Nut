@@ -9,48 +9,25 @@ namespace Nut {
 }
 
 Nut::Shader::Shader(const std::string name /*= "DefaultShader"*/)
-	: m_Name(name)
+	: m_Name(name), m_AssetPath("Resources/Shaders/" + name + ".glsl")
 {
-	Reload("DefaultShader");
+	//Reload("DefaultShader");
 }
 
 Nut::Shader::Shader(const std::string& name, const std::string& shaderSourcePath)
-	: m_Name(name)
+	: m_Name(name), m_AssetPath(shaderSourcePath)
 {
-	Reload(shaderSourcePath);
+	//Reload(shaderSourcePath);
 }
 
 void Nut::Shader::Reload(const std::string& shaderSourcePath)
 {
-	m_ShaderSource = ShaderCompiler::CompileShader(shaderSourcePath);	//  ±àÒë×ÅÉ«Æ÷
-	m_ShaderID = glCreateProgram();
-	std::vector<GLuint> shaderIDs;
-	for (auto& [stage, source] : m_ShaderSource)
-	{
-		GLuint shaderID = glCreateShader(stage);
-		const char* sourceCStr = source.c_str();
-		glShaderSource(shaderID, 1, &sourceCStr, nullptr);
-		glCompileShader(shaderID);
+	ShaderCompiler::Compile(shared_from_this());
+}
 
-		GLint success;
-		glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
-		if (!success)
-		{
-			GLchar infoLog[512];
-			glGetShaderInfoLog(shaderID, sizeof(infoLog), nullptr, infoLog);
-			NUT_ERROR_TAG("Shader", "Error compiling shader: {0}", infoLog);
-			return;
-		}
-
-		glAttachShader(m_ShaderID, shaderID);
-		shaderIDs.push_back(shaderID);
-	}
-	glLinkProgram(m_ShaderID);
-	for (auto& shaderID : shaderIDs)
-	{
-		glDetachShader(m_ShaderID, shaderID);
-		glDeleteShader(shaderID);
-	}
+void Nut::Shader::ForceReload(const std::string& shaderSourcePath)
+{
+	ShaderCompiler::Compile(shared_from_this(), true);
 }
 
 void Nut::Shader::Bind()

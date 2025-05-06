@@ -1,8 +1,39 @@
 function firstToUpper(str)
     return (str:gsub("^%l", string.upper))
 end
+Vulkan_SDK = os.getenv("Vulkan_SDK")
 
 Dependencies = {
+    Vulkan = {
+        LibName = "vulkan-1",
+        IncludeDir = "%{Vulkan_SDK}/Include/",
+        LibDir = "%{Vulkan_SDK}/Lib/",
+    },
+
+    ShaderC = {
+        LibName = "shaderc_combined",
+        DebugLibName = "shaderc_combinedd",
+        Configurations = "Debug,Release",
+    },
+
+    SPIRVCrossCore = {
+        LibName = "spirv-cross-core",
+        DebugLibName = "spirv-cross-cored",
+        Configurations = "Debug,Release",
+    },
+
+    SPIRVCrossGLSL = {
+        LibName = "spirv-cross-glsl",
+        DebugLibName = "spirv-cross-glsld",
+        Configurations = "Debug,Release",
+    },
+
+    SPIRVTools = {
+        LibName = "SPIRV-Tools",
+        DebugLibName = "SPIRV-Toolsd",
+        Configurations = "Debug,Release",
+    },
+    
     Assimp = {
         IncludeDir = "%{wks.location}/Nut/vendor/Assimp/include",
         LibName = "assimp-vc143-mt",

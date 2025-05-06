@@ -1,38 +1,9 @@
 #pragma once
 
 #include "glad/glad.h"
+#include <Renderer/Shader.h>
 
 namespace Nut {
-	namespace ShaderUtils {
-
-		inline static GLenum StageToGLShaderStage(const std::string_view stage)
-		{
-			if (stage == "Vertex")						return GL_VERTEX_SHADER;
-			else if (stage == "Fragment")				return GL_FRAGMENT_SHADER;
-			else if (stage == "Geometry")				return GL_GEOMETRY_SHADER;
-			else if (stage == "Compute")				return GL_COMPUTE_SHADER;
-			else if (stage == "TessControl")			return GL_TESS_CONTROL_SHADER;
-			else if (stage == "TessEvaluation")			return GL_TESS_EVALUATION_SHADER;
-			else
-				NUT_WARN("Unknown shader stage: {0}", stage);
-		}
-
-		inline static std::string GLShaderStageToString(GLenum stage)
-		{
-			switch (stage)
-			{
-			case GL_VERTEX_SHADER:				return "Vertex";
-			case GL_FRAGMENT_SHADER:			return "Fragment";
-			case GL_GEOMETRY_SHADER:			return "Geometry";
-			case GL_COMPUTE_SHADER:			return "Compute";
-			case GL_TESS_CONTROL_SHADER:		return "TessControl";
-			case GL_TESS_EVALUATION_SHADER:	return "TessEvaluation";
-			default:
-				NUT_WARN("Unknown shader stage: {0}", stage);
-				return "Unknown";
-			}
-		}
-	}
 
 	class ShaderCompiler
 	{
@@ -41,14 +12,19 @@ namespace Nut {
 		ShaderCompiler(const std::string& shaderSourcePath);
 		~ShaderCompiler();
 
-		static std::unordered_map<GLenum, std::string> CompileShader(const std::string& shaderSourcePath);	//  编译着色器
-		// TODO: 以后删除 
+		static bool Compile(std::shared_ptr<Shader> shader, bool forceCompile = false);
 
 	private:
-		void PreprocessShader(const std::string& shaderSourcePath);	//  预处理着色器
-
+		void CompileOrGetBinaries(std::unordered_map<GLenum, std::vector<uint32_t>>& shaderBinaries, bool forceCompile = false);	//  编译或获取二进制文件
+		void PreprocessShader();	//  预处理着色器
+		void TryGetCachedBinaries(const std::filesystem::path& cachePath, const std::string& extension, std::vector<uint32_t>& outputBinaries);
+		void Reflect(std::vector<uint32_t>& data, std::shared_ptr<Shader> shader, std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers);
 	private:
 		std::filesystem::path m_ShaderSourcePath;
 		std::unordered_map<GLenum, std::string> m_ShaderSource;	//  着色器源代码
+		std::unordered_map<GLenum, std::vector<uint32_t>> m_ShaderBinaries;	//  着色器二进制文件
+		bool m_UseOptimization = false;	//  是否使用优化
+
+		friend class Shader;
 	};
 }

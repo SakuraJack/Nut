@@ -4,6 +4,7 @@
 #include "Log.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Mesh.h"
+#include "iostream"
 
 float GetTimeInSeconds() {
 	using namespace std::chrono;
@@ -13,6 +14,7 @@ float GetTimeInSeconds() {
 	return elapsedTime.count(); // ·µ»ØÃëÊý
 }
 float dissolveCoefficient = 1.0f;
+float noiseCoefficient = 5.0f;
 
 namespace Nut {
 	Application* Application::s_Instance = nullptr;
@@ -43,6 +45,7 @@ void Nut::Application::TestFunction()
 	m_IndexBuffer = Nut::IndexBuffer::Create(indices.data(), indices.size() * sizeof(Nut::Index), indices.size() * 3);
 	m_VertexArray = Nut::VertexArray::Create(m_VertexBuffer, m_IndexBuffer);
 	m_Shader = Nut::Shader::Create("testShader", "D:\\dev\\Nut\\Nut\\resources\\testshader.glsl");
+	m_Shader->Reload("D:\\dev\\Nut\\Nut\\resources\\testshader.glsl");
 }
 
 Nut::Application::Application()
@@ -53,6 +56,7 @@ Nut::Application::Application()
 	Renderer::Init();
 	Renderer::Resize(m_Window->GetWidth(), m_Window->GetHeight());
 	TestFunction();
+	m_Shader->Bind();
 }
 
 Nut::Application::~Application()
@@ -68,9 +72,17 @@ void Nut::Application::Run()
 			for (Layer* layer : m_LayerStack) {
 				layer->OnUpdate();
 			}
-			m_Shader->Bind();
-			m_Shader->SetUniform("aTime", GetTimeInSeconds());
+			/*m_Shader->SetUniform("aTime", GetTimeInSeconds());
 			m_Shader->SetUniform("aDissolveCoefficient", dissolveCoefficient);
+			m_Shader->SetUniform("aNoiseCoefficient", noiseCoefficient);*/
+			glUniform1f(2, GetTimeInSeconds());
+			float t, d, n;
+			glGetUniformfv(m_Shader->GetShaderID(), 2, &t);
+			glUniform1f(3, dissolveCoefficient);
+			glGetUniformfv(m_Shader->GetShaderID(), 3, &d);
+			glUniform1f(0, noiseCoefficient);
+			glGetUniformfv(m_Shader->GetShaderID(), 0, &n);
+			std::cout << t << " " << d << " " << n << std::endl;
 			m_VertexArray->Bind();
 			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
 			Renderer::EndFrame();
@@ -125,6 +137,12 @@ bool Nut::Application::OnKeyPressed(KeyPressedEvent& e)
 	}
 	else if (e.GetKeyCode() == NUT_KEY_DOWN) {
 		dissolveCoefficient -= 0.1f;
+	}
+	else if (e.GetKeyCode() == NUT_KEY_LEFT) {
+		noiseCoefficient -= 1.0f;
+	}
+	else if (e.GetKeyCode() == NUT_KEY_RIGHT) {
+		noiseCoefficient += 1.0f;
 	}
 	else if (e.GetKeyCode() == NUT_KEY_ESCAPE) {
 		m_Running = false;
