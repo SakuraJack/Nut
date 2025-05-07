@@ -72,17 +72,9 @@ void Nut::Application::Run()
 			for (Layer* layer : m_LayerStack) {
 				layer->OnUpdate();
 			}
-			/*m_Shader->SetUniform("aTime", GetTimeInSeconds());
-			m_Shader->SetUniform("aDissolveCoefficient", dissolveCoefficient);
-			m_Shader->SetUniform("aNoiseCoefficient", noiseCoefficient);*/
 			glUniform1f(2, GetTimeInSeconds());
-			float t, d, n;
-			glGetUniformfv(m_Shader->GetShaderID(), 2, &t);
 			glUniform1f(3, dissolveCoefficient);
-			glGetUniformfv(m_Shader->GetShaderID(), 3, &d);
 			glUniform1f(0, noiseCoefficient);
-			glGetUniformfv(m_Shader->GetShaderID(), 0, &n);
-			std::cout << t << " " << d << " " << n << std::endl;
 			m_VertexArray->Bind();
 			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
 			Renderer::EndFrame();
