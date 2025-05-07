@@ -45,7 +45,6 @@ void Nut::Application::TestFunction()
 	m_IndexBuffer = Nut::IndexBuffer::Create(indices.data(), indices.size() * sizeof(Nut::Index), indices.size() * 3);
 	m_VertexArray = Nut::VertexArray::Create(m_VertexBuffer, m_IndexBuffer);
 	m_Shader = Nut::Shader::Create("testShader", "D:\\dev\\Nut\\Nut\\resources\\testshader.glsl");
-	m_Shader->Reload("D:\\dev\\Nut\\Nut\\resources\\testshader.glsl");
 }
 
 Nut::Application::Application()
@@ -57,6 +56,8 @@ Nut::Application::Application()
 	Renderer::Resize(m_Window->GetWidth(), m_Window->GetHeight());
 	TestFunction();
 	m_Shader->Bind();
+	glUniform1f(m_Shader->GetUniformsLocation("aDissolveCoefficient"), dissolveCoefficient);
+	glUniform1f(m_Shader->GetUniformsLocation("aNoiseCoefficient"), noiseCoefficient);
 }
 
 Nut::Application::~Application()
@@ -72,10 +73,8 @@ void Nut::Application::Run()
 			for (Layer* layer : m_LayerStack) {
 				layer->OnUpdate();
 			}
-			glUniform1f(2, GetTimeInSeconds());
-			glUniform1f(3, dissolveCoefficient);
-			glUniform1f(0, noiseCoefficient);
 			m_VertexArray->Bind();
+			m_Shader->SetUniform("aTime", GetTimeInSeconds());
 			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
 			Renderer::EndFrame();
 			m_Window->OnUpdate();

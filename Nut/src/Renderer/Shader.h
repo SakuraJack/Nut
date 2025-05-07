@@ -78,7 +78,7 @@ namespace Nut {
 		static std::shared_ptr<Shader> Create(const std::string name = "DefaultShader");
 		static std::shared_ptr<Shader> Create(const std::string& name, const std::string& shaderSourcePath);
 
-		std::vector<std::string> GetUniforms() const { return m_Uniforms; }	//  获取Uniform变量列表
+		uint32_t GetUniformsLocation(const std::string name);	//  获取Uniform变量位置
 		std::string GetName() const { return m_Name; }	//  获取着色器名称
 		unsigned int GetShaderID() const { return m_ShaderID; }	//  获取着色器ID
 	private:
@@ -99,7 +99,7 @@ namespace Nut {
 
 		static std::unordered_map<std::string, ShaderUniformBuffer> s_UniformBuffers;	//  Uniform缓冲区列表
 		static std::unordered_map<std::string, ShaderStorageBuffer> s_StorageBuffers;	//  Storage缓冲区列表
-		std::vector<std::string> m_Uniforms; //  Uniform变量列表
+		std::unordered_map<std::string, uint32_t> m_UniformsLocations; //  Uniform变量列表
 		// TODO: 之后从这里移除
 		std::unordered_map<GLenum, std::string> m_ShaderSource;	//  着色器源代码
 		std::unordered_map<GLenum, std::vector<uint32_t>> m_SPIRVData; // 着色器的SPIRV数据

@@ -3,10 +3,11 @@
 
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aColor;
-layout(location = 2) uniform float aTime;
-layout(location = 3) uniform float aDissolveCoefficient;
-layout(location = 4) out vec3 ClipLine;
-layout(location = 5) out vec3 vPos;
+layout(location = 2) out vec3 ClipLine;
+layout(location = 3) out vec3 vPos;
+
+layout(location = 0) uniform float aTime;
+layout(location = 1) uniform float aDissolveCoefficient;
 
 void main()
 {
@@ -25,13 +26,13 @@ const vec4 color1 = vec4(0.38, 0.12, 0.93, 1.0);
 const vec4 color2 = vec4(1.00, 0.90, 0.30, 1.0);
 const vec4 color3 = vec4(1.00, 0.30, 0.30, 1.0);
 
-layout(location = 4) in vec3 ClipLine;
-layout(location = 5) in vec3 vPos;
+layout(location = 2) in vec3 ClipLine;
+layout(location = 3) in vec3 vPos;
+layout(location = 0) out vec4 FragColor;
+
+layout(location = 2) uniform float aNoiseCoefficient;
 
 float noise(vec2 st);
-layout(location = 0) uniform float aNoiseCoefficient;
-
-layout(location = 0) out vec4 FragColor;
 
 void main()
 {

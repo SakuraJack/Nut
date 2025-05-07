@@ -66,7 +66,46 @@ bool Nut::ShaderCompiler::Compile(std::shared_ptr<Shader> shader, bool forceComp
 	shader->m_SPIRVData = compiler->m_ShaderBinaries;	//  设置SPIRV数据
 
 	for (auto& [stage, source] : compiler->m_ShaderBinaries) {
-		compiler->Reflect(source, shader, Shader::s_UniformBuffers);		//  反射Uniform缓冲区
+		compiler->Reflect(source, shader, Shader::s_UniformBuffers, ShaderUtils::GLShaderStageToString(stage));		//  反射Uniform缓冲区
+	}
+}
+
+bool Nut::ShaderCompiler::Compile(uint32_t& shaderProgram)
+{
+	PreprocessShader();
+	CompileOrGetBinaries(m_ShaderBinaries, true);	//  编译或获取二进制文件
+
+	if (shaderProgram)
+		glDeleteProgram(shaderProgram);	//  删除旧的着色器程序
+
+	shaderProgram = glCreateProgram();
+	std::vector<GLuint> shaderIDs;
+
+	for (auto& [stage, source] : m_ShaderBinaries) {
+		GLuint shaderID = glCreateShader(stage);
+		glShaderBinary(1, &shaderID, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size() * sizeof(uint32_t));	//  加载二进制文件
+		glSpecializeShader(shaderID, "main", 0, nullptr, nullptr);	//  专用着色器
+		glAttachShader(shaderProgram, shaderID);	//  附加着色器
+		shaderIDs.push_back(shaderID);	//  添加着色器ID
+	}
+
+	glLinkProgram(shaderProgram);	//  链接着色器程序
+	GLuint linked = 0;
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, (int*)&linked);	//  获取链接状态
+	if (!linked) {
+		GLint logLength = 0;
+		glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength);	//  获取日志长度
+		std::vector<GLchar> log(logLength);
+		glGetProgramInfoLog(shaderProgram, logLength, nullptr, log.data());	//  获取日志
+		NUT_ERROR_TAG("Shader", "Shader linking failed: {0}", log.data());	//  输出错误日志
+		glDeleteProgram(shaderProgram);	//  删除着色器程序
+		for (auto id : shaderIDs)
+			glDeleteShader(id);	//  删除着色器
+		return false;
+	}
+
+	for (auto& [stage, source] : m_ShaderBinaries) {
+		Reflect(source, shaderProgram, m_Uniforms, Shader::s_UniformBuffers, ShaderUtils::GLShaderStageToString(stage));		//  反射Uniform缓冲区
 	}
 }
 
@@ -136,12 +175,13 @@ void Nut::ShaderCompiler::TryGetCachedBinaries(const std::filesystem::path& cach
 	fclose(f);
 }
 
-void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::shared_ptr<Shader> shader, std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers)
+void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::shared_ptr<Shader> shader, 
+	std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, std::string stage)
 {
 	spirv_cross::Compiler compiler(data);
 	spirv_cross::ShaderResources resources = compiler.get_shader_resources();
 
-	NUT_TRACE_TAG("Shader", "Shader reflect - {0}", m_ShaderSourcePath);
+	NUT_TRACE_TAG("Shader", "Shader Name - {0}, Shader Stage - {1}", m_ShaderSourcePath.filename(), stage);
 	NUT_TRACE_TAG("Shader", "Uniform Buffers: {0}", resources.uniform_buffers.size());
 	NUT_TRACE_TAG("Shader", "Storage Buffers: {0}", resources.storage_buffers.size());
 	NUT_TRACE_TAG("Shader", "Sampled Images: {0}", resources.sampled_images.size());
@@ -200,9 +240,81 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::shared_ptr<S
 
 	for (const auto& uniform : resources.gl_plain_uniforms) {
 		std::string name = compiler.get_name(uniform.id);	//  获取Uniform名称
-		shader->m_Uniforms.push_back(name);	//  添加Uniform名称
+		uint32_t location = compiler.get_decoration(uniform.id, spv::DecorationLocation); //  获取Uniform位置
+		shader->m_UniformsLocations.insert({ name, location });	//  插入Uniform位置
 	}
 
+}
+
+void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, uint32_t shaderID, 
+	std::unordered_map<std::string, uint32_t>& uniforms, 
+	std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, std::string stage)
+{
+	spirv_cross::Compiler compiler(data);
+	spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+
+	NUT_TRACE_TAG("Shader", "Shader Name - {0}, Shader Stage - {1}", m_ShaderSourcePath.filename(), stage);
+	NUT_TRACE_TAG("Shader", "Uniform Buffers: {0}", resources.uniform_buffers.size());
+	NUT_TRACE_TAG("Shader", "Storage Buffers: {0}", resources.storage_buffers.size());
+	NUT_TRACE_TAG("Shader", "Sampled Images: {0}", resources.sampled_images.size());
+	NUT_TRACE_TAG("Shader", "Plain Uniforms: {0}", resources.gl_plain_uniforms.size());
+
+	uint32_t bufferIndex = 0;
+	for (const auto& ubo : resources.uniform_buffers) {
+		auto& bufferType = compiler.get_type(ubo.base_type_id);		//  获取Uniform缓冲区类型
+		int memberCount = bufferType.member_types.size(); //  获取成员数量
+		uint32_t bindingPoint = compiler.get_decoration(ubo.id, spv::DecorationBinding);	//  获取绑定点
+		uint32_t bufferSize = compiler.get_declared_struct_size(bufferType);	//  获取缓冲区大小
+		std::string bufferName = ubo.name;
+
+		if (shaderUniformBuffers.find(bufferName) == shaderUniformBuffers.end()) {
+			ShaderUniformBuffer& buffer = shaderUniformBuffers[bufferName];
+			buffer.Name = bufferName;
+			buffer.Binding = bindingPoint;
+			buffer.Size = bufferSize;
+			buffer.Uniforms.reserve(memberCount);
+			for (int i = 0; i < memberCount; ++i) {
+				auto type = compiler.get_type(bufferType.member_types[i]);
+				const auto& memberName = compiler.get_member_name(bufferType.self, i);
+				auto size = compiler.get_declared_struct_member_size(bufferType, i);
+				auto offset = compiler.type_struct_member_offset(bufferType, i);
+
+				ShaderUniform uniform(memberName, ShaderUtils::SPIRTypeToShaderUniformType(type), size, offset);	//  创建Uniform变量
+				buffer.Uniforms.insert({ memberName, uniform });	//  插入Uniform变量
+			}
+
+			glCreateBuffers(1, &buffer.BufferID);	//  创建Uniform缓冲区
+			glNamedBufferData(buffer.BufferID, bufferSize, nullptr, GL_DYNAMIC_DRAW);	//  分配缓冲区内存
+			// glBindBufferBase(GL_UNIFORM_BUFFER, buffer.Binding, buffer.BufferID);	//  绑定Uniform缓冲区
+		}
+		else {
+			ShaderUniformBuffer& buffer = shaderUniformBuffers[bufferName];
+			if (bufferSize > buffer.Size) {
+				buffer.Size = bufferSize;
+				glDeleteBuffers(1, &buffer.BufferID);	//  删除旧的Uniform缓冲区
+				glCreateBuffers(1, &buffer.BufferID);	//  创建Uniform缓冲区
+				glNamedBufferData(buffer.BufferID, bufferSize, nullptr, GL_DYNAMIC_DRAW);	//  分配缓冲区内存
+			}
+		}
+		// TODO: 采样器
+		//int sampler = 0; // 采样器数量
+		//for (const auto& resource : resources.sampled_images) {
+		//	auto& type = compiler.get_type(resource.base_type_id);	//  获取采样器类型
+		//	auto bindingPoint = compiler.get_decoration(resource.id, spv::DecorationBinding);	//  获取绑定点
+		//	const auto& name = compiler.get_name(resource.id);	//  获取名称
+		//	uint32_t dimension = type.image.dim;
+
+		//	GLuint location = glGetUniformLocation(shaderID, name.c_str());	//  获取Uniform位置
+		//	shaderResources[name] = { name, bindingPoint, 1 };	//  创建Shader资源声明
+		//	glUniform1i(location, sampler);	//  设置Uniform值
+		//}
+	}
+
+	for (const auto& uniform : resources.gl_plain_uniforms) {
+		std::string name = compiler.get_name(uniform.id);	//  获取Uniform名称
+		uint32_t location = compiler.get_decoration(uniform.id, spv::DecorationLocation); //  获取Uniform位置
+		uniforms.insert({ name, location });	//  插入Uniform位置
+	}
 }
 
 void Nut::ShaderCompiler::CompileOrGetBinaries(std::unordered_map<GLenum, std::vector<uint32_t>>& shaderBinaries, bool forceCompile /*= false*/)

@@ -63,6 +63,7 @@ void Nut::Window::Init(const WindowProps& props)
 	m_Context = std::make_unique<GraphicsContext>(m_Window);
 	m_Context->Init();
 
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 	glfwSetWindowUserPointer(m_Window, &m_Data);
 
 	glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {

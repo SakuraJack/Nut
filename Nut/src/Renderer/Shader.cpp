@@ -11,13 +11,29 @@ namespace Nut {
 Nut::Shader::Shader(const std::string name /*= "DefaultShader"*/)
 	: m_Name(name), m_AssetPath("Resources/Shaders/" + name + ".glsl")
 {
-	//Reload("DefaultShader");
+	ShaderCompiler compiler(m_AssetPath);
+	if (!compiler.Compile(m_ShaderID)) {
+		NUT_ERROR_TAG("Shader", "Failed to compile shader: {0}", name);
+	}
+	else {
+		m_ShaderSource = std::move(compiler.m_ShaderSource);
+		m_SPIRVData = std::move(compiler.m_ShaderBinaries);
+		m_UniformsLocations = std::move(compiler.m_Uniforms);
+	}
 }
 
 Nut::Shader::Shader(const std::string& name, const std::string& shaderSourcePath)
 	: m_Name(name), m_AssetPath(shaderSourcePath)
 {
-	//Reload(shaderSourcePath);
+	ShaderCompiler compiler(m_AssetPath);
+	if (!compiler.Compile(m_ShaderID)) {
+		NUT_ERROR_TAG("Shader", "Failed to compile shader: {0}", name);
+	}
+	else {
+		m_ShaderSource = std::move(compiler.m_ShaderSource);
+		m_SPIRVData = std::move(compiler.m_ShaderBinaries);
+		m_UniformsLocations = std::move(compiler.m_Uniforms);
+	}
 }
 
 void Nut::Shader::Reload(const std::string& shaderSourcePath)
@@ -118,6 +134,18 @@ void Nut::Shader::ClearUniformBuffers()
 std::shared_ptr<Nut::Shader> Nut::Shader::Create(const std::string name /*= "DefaultShader"*/)
 {
 	return std::make_shared<Nut::Shader>(name);
+}
+
+uint32_t Nut::Shader::GetUniformsLocation(const std::string name)
+{
+	if (m_UniformsLocations.find(name) == m_UniformsLocations.end())
+	{
+		NUT_ERROR_TAG("Shader", "Uniform not found: {0}", name);
+		return -1;
+	}
+	else {
+		return m_UniformsLocations[name];
+	}
 }
 
 std::shared_ptr<Nut::Shader> Nut::Shader::Create(const std::string& name, const std::string& shaderSourcePath)
