@@ -30,6 +30,7 @@ void Nut::Log::Init()
 
 	s_EnabledTags["Window"] = { true, Level::Trace };
 	s_EnabledTags["Renderer"] = { true, Level::Trace };
+	s_EnabledTags["OpenGL"] = { true, Level::Warn };
 }
 
 void Nut::Log::ShutDown()
