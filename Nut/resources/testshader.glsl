@@ -2,13 +2,22 @@
 #version 460 core
 
 layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aColor;
-layout(location = 2) out vec3 ClipLine;
-layout(location = 3) out vec3 vPos;
 
-layout(location = 0) uniform float aTime;
-layout(location = 1) uniform float aDissolveCoefficient;
+layout(location = 1) out vec3 ClipLine;
+layout(location = 2) out vec3 vPos;
 
+layout(std140, binding = 0) uniform testUBO
+{
+	float aTime;
+	float aDissolveCoefficient;
+};
+
+layout(std140, binding = 1) uniform MatrixBuffer
+{
+	mat4 projection;
+	mat4 view;
+	mat4 model;
+};
 void main()
 {
 	vec2 N = normalize(vec2(-1.0, 1.0));
@@ -16,7 +25,7 @@ void main()
 	ClipLine = vec3(N, Clipdistance);
 	vPos = aPos;
 	
-	gl_Position = vec4(aPos, 1.0);
+	gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
 
 # type Fragment
@@ -26,11 +35,12 @@ const vec4 color1 = vec4(0.38, 0.12, 0.93, 1.0);
 const vec4 color2 = vec4(1.00, 0.90, 0.30, 1.0);
 const vec4 color3 = vec4(1.00, 0.30, 0.30, 1.0);
 
-layout(location = 2) in vec3 ClipLine;
-layout(location = 3) in vec3 vPos;
+layout(location = 1) in vec3 ClipLine;
+layout(location = 2) in vec3 vPos;
+
 layout(location = 0) out vec4 FragColor;
 
-layout(location = 2) uniform float aNoiseCoefficient;
+layout(location = 0) uniform float aNoiseCoefficient;
 
 float noise(vec2 st);
 

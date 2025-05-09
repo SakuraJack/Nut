@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "Window.h"
 #include "Log.h"
+#include "Input.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
@@ -104,24 +105,13 @@ void Nut::Window::Init(const WindowProps& props)
 	});
 
 	glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
-		std::string mouseButton = "Unknown";
-		switch (button) {
-			case GLFW_MOUSE_BUTTON_LEFT: mouseButton = "左键"; break;
-			case GLFW_MOUSE_BUTTON_RIGHT: mouseButton = "右键"; break;
-			case GLFW_MOUSE_BUTTON_MIDDLE: mouseButton = "中键"; break;
-		}
-		std::string actionStr = "Unknown";
-		switch (action) {
-			case GLFW_PRESS: actionStr = "按下"; break;
-			case GLFW_RELEASE: actionStr = "释放"; break;
-		}
-
-		NUT_INFO_TAG("Window", "鼠标 {0} {1}", mouseButton, actionStr);
 		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		if (action == GLFW_PRESS) {
+			Input::UpdateButtonState((MouseButton)button, KeyState::Pressed);
 			MousePressedEvent event(button);
 			data.EventCallback(event);
 		} else if (action == GLFW_RELEASE) {
+			Input::UpdateButtonState((MouseButton)button, KeyState::Released);
 			MouseReleasedEvent event(button);
 			data.EventCallback(event);
 		}
@@ -142,33 +132,18 @@ void Nut::Window::Init(const WindowProps& props)
 	});
 
 	glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-		std::string keyStr = "Unknown";
-		switch (key) {
-			case GLFW_KEY_SPACE: keyStr = "空格"; break;
-			case GLFW_KEY_ENTER: keyStr = "回车"; break;
-			case GLFW_KEY_ESCAPE: keyStr = "ESC"; break;
-			case GLFW_KEY_TAB: keyStr = "Tab"; break;
-			case GLFW_KEY_BACKSPACE: keyStr = "Backspace"; break;
-			case GLFW_KEY_CAPS_LOCK: keyStr = "Caps Lock"; break;
-			default: keyStr = (char)key; break;
-		}
-		std::string actionStr = "Unknown";
-		switch (action) {
-			case GLFW_PRESS: actionStr = "按下"; break;
-			case GLFW_RELEASE: actionStr = "释放"; break;
-			case GLFW_REPEAT: actionStr = "重复"; break;
-		}
-
-		NUT_INFO_TAG("Window", "键盘 {0} {1}", keyStr, actionStr);
 		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		if (action == GLFW_PRESS) {
+			Input::UpdateKeyState((KeyCode)key, KeyState::Pressed);
 			KeyPressedEvent event(key, 0);
 			data.EventCallback(event);
 		} else if (action == GLFW_RELEASE) {
+			Input::UpdateKeyState((KeyCode)key, KeyState::Released);
 			KeyReleasedEvent event(key);
 			data.EventCallback(event);
 		}
 		else if (action == GLFW_REPEAT) {
+			Input::UpdateKeyState((KeyCode)key, KeyState::Held);
 			KeyPressedEvent event(key, 1);
 			data.EventCallback(event);
 		}

@@ -117,9 +117,37 @@ Nut::ShaderUniformBuffer& Nut::Shader::GetUniformBuffer(const std::string& unifo
 	return it->second;
 }
 
-void Nut::Shader::SetUniformBuffer(const std::string& uniformBufferName, const void* data, unsigned int size, unsigned int offset /*= 0*/)
+void Nut::Shader::SetUniformBuffer(const std::string& uniformBufferName, const void* data, unsigned int size)
 {
-	glNamedBufferSubData(s_UniformBuffers[uniformBufferName].BufferID, offset, size, data);
+	ShaderUniformBuffer* buffer = nullptr;
+	for (auto& [name, uniformBuffer] : s_UniformBuffers) {
+		if (name == uniformBufferName) {
+			buffer = &uniformBuffer;
+			break;
+		}
+	}
+	if (!buffer) return;
+	glNamedBufferSubData(buffer->BufferID, 0, size, data);
+}
+
+void Nut::Shader::SetUniformBufferUniform(const std::string& uniformBufferName, const std::string& uniformName, const void* data)
+{
+	ShaderUniformBuffer* buffer = nullptr;
+	ShaderUniform* uniform = nullptr;
+	for (auto& [bufferName, uniformBuffer] : s_UniformBuffers) {
+		if (bufferName == uniformBufferName) {
+			buffer = &uniformBuffer;
+			for (auto& [name, uniformData] : uniformBuffer.Uniforms) {
+				if (name == uniformName) {
+					uniform = &uniformData;
+					break;
+				}
+			}
+		}
+	}
+	if (!buffer || !uniform) return;
+
+	glNamedBufferSubData(buffer->BufferID, uniform->GetOffset(), uniform->GetSize(), data);
 }
 
 void Nut::Shader::ClearUniformBuffers()

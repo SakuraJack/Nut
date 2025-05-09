@@ -68,7 +68,8 @@ namespace Nut {
 		void SetUniform(const std::string& name, const glm::mat4 value);
 
 		static ShaderUniformBuffer& GetUniformBuffer(const std::string& uniformBufferName);	//  获取Uniform缓冲区
-		static void SetUniformBuffer(const std::string& uniformBufferName, const void* data, unsigned int size, unsigned int offset = 0);	//  设置Uniform缓冲区
+		static void SetUniformBuffer(const std::string& uniformBufferName, const void* data, unsigned int size);		//  设置Uniform缓冲区
+		static void SetUniformBufferUniform(const std::string& uniformBufferName, const std::string& uniformName, const void* data);	//  设置Uniform缓冲区
 		static void ClearUniformBuffers();	//  清除Uniform缓冲区
 
 		// TODO: 支持StorageBuffer
@@ -94,7 +95,7 @@ namespace Nut {
 		void UploadUniformMat4(const std::string& name, const glm::mat4& value);
 
 		std::string m_Name;	//  着色器名称
-		unsigned int m_ShaderID;	//  着色器ID
+		unsigned int m_ShaderID = 0;	//  着色器ID
 		std::string m_AssetPath;	//  资源路径
 
 		static std::unordered_map<std::string, ShaderUniformBuffer> s_UniformBuffers;	//  Uniform缓冲区列表

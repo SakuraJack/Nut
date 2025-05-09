@@ -285,7 +285,7 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, uint32_t shaderID
 
 			glCreateBuffers(1, &buffer.BufferID);	//  创建Uniform缓冲区
 			glNamedBufferData(buffer.BufferID, bufferSize, nullptr, GL_DYNAMIC_DRAW);	//  分配缓冲区内存
-			// glBindBufferBase(GL_UNIFORM_BUFFER, buffer.Binding, buffer.BufferID);	//  绑定Uniform缓冲区
+			glBindBufferBase(GL_UNIFORM_BUFFER, buffer.Binding, buffer.BufferID);	//  绑定Uniform缓冲区
 		}
 		else {
 			ShaderUniformBuffer& buffer = shaderUniformBuffers[bufferName];
