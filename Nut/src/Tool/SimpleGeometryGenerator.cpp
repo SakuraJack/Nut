@@ -1,66 +1,100 @@
 #include "ntpch.h"
 #include "SimpleGeometryGenerator.h"
 
+#include <glm/ext/scalar_constants.hpp>
+
 std::shared_ptr<Nut::Mesh> Nut::GeometryGenerator::CreateCube(const glm::vec3& pos /*= glm::vec3(0.f)*/, float sideLength /*= 1.0f*/)
 {
-	std::vector<glm::vec3> vertices = {
-		glm::vec3(-0.5f, -0.5f, -0.5f),
-		glm::vec3(-0.5f,  0.5f, -0.5f),
-		glm::vec3( 0.5f, -0.5f, -0.5f),
-		glm::vec3( 0.5f,  0.5f, -0.5f),
-		glm::vec3(-0.5f, -0.5f,  0.5f),
-		glm::vec3(-0.5f,  0.5f,  0.5f),
-		glm::vec3( 0.5f, -0.5f,  0.5f),
-		glm::vec3( 0.5f,  0.5f,  0.5f)
-	};
-
-	std::vector<glm::vec2> uvs = {
-		glm::vec2(0.0f, 0.0f),
-		glm::vec2(0.0f, 1.0f),
-		glm::vec2(1.0f, 0.0f),
-		glm::vec2(1.0f, 1.0f),
-		glm::vec2(0.0f, 0.0f),
-		glm::vec2(0.0f, 1.0f),
-		glm::vec2(1.0f, 0.0f),
-		glm::vec2(1.0f, 1.0f)
+	std::vector<Vertex> vertices = {
+		Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.f, 0.f, -1.f), glm::vec2(0.f, 0.f), glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f)),
+		Vertex(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.f, 0.f, -1.f), glm::vec2(0.f, 1.f), glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f)),
+		Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec3(0.f, 0.f, -1.f), glm::vec2(1.f, 0.f), glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f)),
+		Vertex(glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec3(0.f, 0.f, -1.f), glm::vec2(1.f, 1.f), glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f)),
+		Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.f, 0.f, 1.f), glm::vec2(0.f, 0.f), glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f)),
+		Vertex(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(0.f, 0.f, 1.f), glm::vec2(0.f, 1.f), glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f)),
+		Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec3(0.f, 0.f, 1.f), glm::vec2(1.f, 0.f), glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f)),
+		Vertex(glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec3(0.f, 0.f, 1.f), glm::vec2(1.f, 1.f), glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f)),
 	};
 
 	std::vector<SubMesh> submeshes = {
 		SubMesh{0, 0, 8, 12, glm::mat4(1.0f), glm::mat4(1.0f)}
 	};
 
-	std::vector<GLuint> indices = {
+	std::vector<Index> indices = {
 		// Front face
-		0, 2, 3,
-		0, 3, 1,
-		
+		Index(0, 1, 2),
+		Index(1, 3, 2),
+
 		// Back face
-		4, 5, 6,
-		4, 6, 7,
+		Index(4, 6, 5),
+		Index(6, 7, 5),
 
 		// Left face
-		4, 7, 3,
-		4, 3, 0,
+		Index(0, 4, 1),
+		Index(1, 4, 5),
 
 		// Right face
-		5, 6, 2,
-		5, 2, 1,
+		Index(2, 3, 6),
+		Index(3, 7, 6),
 
 		// Top face
-		7, 6, 2,
-		7, 2, 3,
+		Index(1, 5, 3),
+		Index(3, 5, 7),
 
 		// Bottom face
-		4, 5, 1,
-		4, 1, 0
+		Index(0, 2, 4),
+		Index(2, 6, 4),
 	};
 
 	for (auto& vertex : vertices) {
-		vertex *= sideLength;
-		vertex += pos;
+		vertex.Position *= sideLength;
+		vertex.Position += pos;
 	}
 
+	return std::make_shared<Mesh>(vertices, indices, submeshes);
+}
 
+std::shared_ptr<Nut::Mesh> Nut::GeometryGenerator::CreateSphere(const glm::vec3& pos /*= glm::vec3(0.f)*/, float radius /*= 1.0f*/, int sliceCount /*= 20*/, int stackCount /*= 20*/)
+{
+	std::vector<Vertex> vertices;
+	std::vector<SubMesh> submeshes;
+	std::vector<Index> indices;
+
+	// Generate vertices
+	for (int i = 0; i <= stackCount; ++i) {
+		float phi = glm::pi<float>() * i / stackCount;
+		for (int j = 0; j <= sliceCount; ++j) {
+			float theta = 2.0f * glm::pi<float>() * j / sliceCount;
+
+			glm::vec3 position(
+				radius * sinf(phi) * cosf(theta),
+				radius * cosf(phi),
+				radius * sinf(phi) * sinf(theta)
+			);
+
+			glm::vec3 normal = glm::normalize(position);
+			glm::vec2 texCoord(static_cast<float>(j) / sliceCount, static_cast<float>(i) / stackCount);
+
+			vertices.push_back(Vertex(position, normal, texCoord, glm::vec3(1.f), glm::vec3(0.f)));
+		}
+	}
+
+	// Generate indices
+	for (int i = 0; i < stackCount; ++i) {
+		for (int j = 0; j < sliceCount; ++j) {
+			int first = i * (sliceCount + 1) + j;
+			int second = first + sliceCount + 1;
+
+			indices.push_back(Index(first, second, first + 1));
+			indices.push_back(Index(second, second + 1, first + 1));
+		}
+	}
+
+	submeshes.push_back(SubMesh{ 0, 0, static_cast<unsigned int>(vertices.size()), static_cast<unsigned int>(indices.size()), glm::mat4(1.0f), glm::mat4(1.0f) });
+
+	for (auto& vertex : vertices) {
+		vertex.Position += pos;
+	}
 
 	return std::make_shared<Mesh>(vertices, indices, submeshes);
 }

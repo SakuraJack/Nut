@@ -1,11 +1,13 @@
 #include "ntpch.h"
+#include "Core/Core.h"
 #include "RuntimeLayer.h"
 #include "Renderer/Mesh.h"
 
 #include <GLFW/glfw3.h>
 
-float dissolveCoefficient = 1.0f;
-float noiseCoefficient = 5.0f;
+float dissolveEdge = 0.15f;
+float dissolvePercent = 1.0f;
+float noiseDensity = 2.f;
 
 Nut::RuntimeLayer::RuntimeLayer()
 	: Layer("RuntimeLayer"), m_EditorCamera(45.f, 1280.f, 720.f, 0.1f, 100.f)
@@ -31,8 +33,9 @@ void Nut::RuntimeLayer::OnAttach()
 	m_Shader = Nut::Shader::Create("testShader", "D:\\dev\\Nut\\Nut\\resources\\testshader.glsl");
 	m_VertexArray->Bind();
 	m_Shader->Bind();
-	m_Shader->SetUniform("aNoiseCoefficient", noiseCoefficient);
-	Shader::SetUniformBufferUniform("testUBO", "aDissolveCoefficient", &dissolveCoefficient);
+	Shader::SetUniformBufferUniform("DissolveBuffer", "u_DissolveEdgeWidth", &dissolveEdge);
+	Shader::SetUniformBufferUniform("DissolveBuffer", "u_DissolvePercent", &dissolvePercent);
+	Shader::SetUniformBufferUniform("DissolveBuffer", "u_NoiseDensity", &noiseDensity);
 	glm::mat4 modelMatrix = glm::mat4(1.f);
 	Shader::SetUniformBufferUniform("MatrixBuffer", "model", &modelMatrix);
 	Shader::SetUniformBufferUniform("MatrixBuffer", "view", &m_EditorCamera.GetViewMatrix());
@@ -48,8 +51,8 @@ void Nut::RuntimeLayer::OnUpdate(Timestep ts)
 {
 	m_EditorCamera.OnUpdate(ts);
 	m_VertexArray->Bind();
-	float curTime = glfwGetTime();
-	Shader::SetUniformBufferUniform("testUBO", "aTime", &curTime);
+	dissolvePercent = glm::cos(glfwGetTime() * 0.8);
+	Shader::SetUniformBufferUniform("DissolveBuffer", "u_DissolvePercent", &dissolvePercent);
 	Shader::SetUniformBufferUniform("MatrixBuffer", "view", &m_EditorCamera.GetViewMatrix());
 	Shader::SetUniformBufferUniform("MatrixBuffer", "projection", &m_EditorCamera.GetProjectionMatrix());
 	glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
@@ -57,5 +60,6 @@ void Nut::RuntimeLayer::OnUpdate(Timestep ts)
 
 void Nut::RuntimeLayer::OnEvent(Event& e)
 {
+	EventDispatcher dispatcher(e);
 	m_EditorCamera.OnEvent(e);
 }

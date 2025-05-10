@@ -1,46 +1,25 @@
-[18:44:09] [info] Nut Log: [Renderer]初始化渲染器
-[18:44:09] [info] Nut Log: [Renderer]设备名称: NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2
-[18:44:09] [info] Nut Log: [Renderer]渲染接口: OpenGL
-[18:44:09] [info] Nut Log: [Renderer]版本: 4.6.0 NVIDIA 572.61
-[18:44:09] [info] Nut Log: [Renderer]厂商: NVIDIA Corporation
-[18:44:09] [info] Nut Log: [Renderer]最大采样数: 32
-[18:44:09] [info] Nut Log: [Renderer]最大纹理单元: 32
-[18:44:09] [info] Nut Log: [Renderer]启用OpenGL调试... 调试模式:同步
-[18:44:09] [info] Nut Log: [Renderer]启用混合... 混合函数:源Alpha, 1-源Alpha
-[18:44:09] [info] Nut Log: [Renderer]启用深度测试... 深度函数:小于丢弃
-[18:44:09] [info] Nut Log: [Renderer]启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换
-[18:44:09] [info] Nut Log: [Renderer]启用剔除面... 剔除面:背面, 正面朝向:逆时针
-[18:44:09] [info] Nut Log: [Renderer]启用多重采样... 启用无缝立方体贴图
-[18:44:09] [info] Nut Log: [Renderer]调整视口大小: 1280, 720
-[18:44:10] [trace] Nut Log: [Shader]Shader Name - "testshader.glsl", Shader Stage - Vertex
-[18:44:10] [trace] Nut Log: [Shader]Uniform Buffers: 2
-[18:44:10] [trace] Nut Log: [Shader]Storage Buffers: 0
-[18:44:10] [trace] Nut Log: [Shader]Sampled Images: 0
-[18:44:10] [trace] Nut Log: [Shader]Plain Uniforms: 0
-[18:44:10] [trace] Nut Log: [Shader]Shader Name - "testshader.glsl", Shader Stage - Fragment
-[18:44:10] [trace] Nut Log: [Shader]Uniform Buffers: 0
-[18:44:10] [trace] Nut Log: [Shader]Storage Buffers: 0
-[18:44:10] [trace] Nut Log: [Shader]Sampled Images: 0
-[18:44:10] [trace] Nut Log: [Shader]Plain Uniforms: 1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:12] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:13] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:13] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:13] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:13] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 1
-[18:44:13] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
-[18:44:13] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
-[18:44:13] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
-[18:44:13] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
-[18:44:16] [info] Nut Log: [Window]窗口关闭
+[17:10:21] [info] Nut Log: [Renderer]初始化渲染器
+[17:10:21] [info] Nut Log: [Renderer]设备名称: NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2
+[17:10:21] [info] Nut Log: [Renderer]渲染接口: OpenGL
+[17:10:21] [info] Nut Log: [Renderer]版本: 4.6.0 NVIDIA 572.61
+[17:10:21] [info] Nut Log: [Renderer]厂商: NVIDIA Corporation
+[17:10:21] [info] Nut Log: [Renderer]最大采样数: 32
+[17:10:21] [info] Nut Log: [Renderer]最大纹理单元: 32
+[17:10:21] [info] Nut Log: [Renderer]启用OpenGL调试... 调试模式:同步
+[17:10:21] [info] Nut Log: [Renderer]启用混合... 混合函数:源Alpha, 1-源Alpha
+[17:10:21] [info] Nut Log: [Renderer]启用深度测试... 深度函数:小于丢弃
+[17:10:21] [info] Nut Log: [Renderer]启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换
+[17:10:21] [info] Nut Log: [Renderer]启用剔除面... 剔除面:背面, 正面朝向:逆时针
+[17:10:21] [info] Nut Log: [Renderer]启用多重采样... 启用无缝立方体贴图
+[17:10:21] [info] Nut Log: [Renderer]调整视口大小: 1280, 720
+[17:10:23] [trace] Nut Log: [Shader]Shader Name - "testshader.glsl", Shader Stage - Vertex
+[17:10:23] [trace] Nut Log: [Shader]Uniform Buffers: 2
+[17:10:23] [trace] Nut Log: [Shader]Storage Buffers: 0
+[17:10:23] [trace] Nut Log: [Shader]Sampled Images: 0
+[17:10:23] [trace] Nut Log: [Shader]Plain Uniforms: 0
+[17:10:23] [trace] Nut Log: [Shader]Shader Name - "testshader.glsl", Shader Stage - Fragment
+[17:10:23] [trace] Nut Log: [Shader]Uniform Buffers: 1
+[17:10:23] [trace] Nut Log: [Shader]Storage Buffers: 0
+[17:10:23] [trace] Nut Log: [Shader]Sampled Images: 0
+[17:10:23] [trace] Nut Log: [Shader]Plain Uniforms: 0
+[17:10:33] [info] Nut Log: [Window]窗口关闭
