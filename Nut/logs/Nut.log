@@ -1,25 +1,72 @@
-[17:10:21] [info] Nut Log: [Renderer]初始化渲染器
-[17:10:21] [info] Nut Log: [Renderer]设备名称: NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2
-[17:10:21] [info] Nut Log: [Renderer]渲染接口: OpenGL
-[17:10:21] [info] Nut Log: [Renderer]版本: 4.6.0 NVIDIA 572.61
-[17:10:21] [info] Nut Log: [Renderer]厂商: NVIDIA Corporation
-[17:10:21] [info] Nut Log: [Renderer]最大采样数: 32
-[17:10:21] [info] Nut Log: [Renderer]最大纹理单元: 32
-[17:10:21] [info] Nut Log: [Renderer]启用OpenGL调试... 调试模式:同步
-[17:10:21] [info] Nut Log: [Renderer]启用混合... 混合函数:源Alpha, 1-源Alpha
-[17:10:21] [info] Nut Log: [Renderer]启用深度测试... 深度函数:小于丢弃
-[17:10:21] [info] Nut Log: [Renderer]启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换
-[17:10:21] [info] Nut Log: [Renderer]启用剔除面... 剔除面:背面, 正面朝向:逆时针
-[17:10:21] [info] Nut Log: [Renderer]启用多重采样... 启用无缝立方体贴图
-[17:10:21] [info] Nut Log: [Renderer]调整视口大小: 1280, 720
-[17:10:23] [trace] Nut Log: [Shader]Shader Name - "testshader.glsl", Shader Stage - Vertex
-[17:10:23] [trace] Nut Log: [Shader]Uniform Buffers: 2
-[17:10:23] [trace] Nut Log: [Shader]Storage Buffers: 0
-[17:10:23] [trace] Nut Log: [Shader]Sampled Images: 0
-[17:10:23] [trace] Nut Log: [Shader]Plain Uniforms: 0
-[17:10:23] [trace] Nut Log: [Shader]Shader Name - "testshader.glsl", Shader Stage - Fragment
-[17:10:23] [trace] Nut Log: [Shader]Uniform Buffers: 1
-[17:10:23] [trace] Nut Log: [Shader]Storage Buffers: 0
-[17:10:23] [trace] Nut Log: [Shader]Sampled Images: 0
-[17:10:23] [trace] Nut Log: [Shader]Plain Uniforms: 0
-[17:10:33] [info] Nut Log: [Window]窗口关闭
+[13:46:04] [info] Nut Log: [Renderer]初始化渲染器
+[13:46:04] [info] Nut Log: [Renderer]设备名称: NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2
+[13:46:04] [info] Nut Log: [Renderer]渲染接口: OpenGL
+[13:46:04] [info] Nut Log: [Renderer]版本: 4.6.0 NVIDIA 572.61
+[13:46:04] [info] Nut Log: [Renderer]厂商: NVIDIA Corporation
+[13:46:04] [info] Nut Log: [Renderer]最大采样数: 32
+[13:46:04] [info] Nut Log: [Renderer]最大纹理单元: 32
+[13:46:04] [info] Nut Log: [Renderer]启用OpenGL调试... 调试模式:同步
+[13:46:04] [info] Nut Log: [Renderer]启用混合... 混合函数:源Alpha, 1-源Alpha
+[13:46:04] [info] Nut Log: [Renderer]启用深度测试... 深度函数:小于丢弃
+[13:46:04] [info] Nut Log: [Renderer]启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换
+[13:46:04] [info] Nut Log: [Renderer]启用剔除面... 剔除面:背面, 正面朝向:逆时针
+[13:46:04] [info] Nut Log: [Renderer]启用多重采样... 启用无缝立方体贴图
+[13:46:04] [info] Nut Log: [Renderer]调整视口大小: 1280, 720
+[13:46:06] [trace] Nut Log: [Shader]Shader Name - "testshader.glsl", Shader Stage - Vertex
+[13:46:06] [trace] Nut Log: [Shader]Uniform Buffers: 2
+[13:46:06] [trace] Nut Log: [Shader]Storage Buffers: 0
+[13:46:06] [trace] Nut Log: [Shader]Sampled Images: 5
+[13:46:06] [trace] Nut Log: [Shader]Plain Uniforms: 0
+[13:46:06] [trace] Nut Log: [Shader]Shader Name - "testshader.glsl", Shader Stage - Fragment
+[13:46:06] [trace] Nut Log: [Shader]Uniform Buffers: 1
+[13:46:06] [trace] Nut Log: [Shader]Storage Buffers: 0
+[13:46:06] [trace] Nut Log: [Shader]Sampled Images: 0
+[13:46:06] [trace] Nut Log: [Shader]Plain Uniforms: 0
+[13:46:08] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
+[13:46:08] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
+[13:46:09] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
+[13:46:09] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
+[13:46:09] [info] Nut Log: [Window]滚轮水平移动 0, 垂直移动 -1
+[13:46:12] [info] Nut Log: [Window]窗口移动到 70, 109
+[13:46:12] [info] Nut Log: [Window]窗口移动到 78, 112
+[13:46:12] [info] Nut Log: [Window]窗口移动到 97, 125
+[13:46:12] [info] Nut Log: [Window]窗口移动到 115, 136
+[13:46:12] [info] Nut Log: [Window]窗口移动到 146, 157
+[13:46:12] [info] Nut Log: [Window]窗口移动到 180, 172
+[13:46:12] [info] Nut Log: [Window]窗口移动到 195, 180
+[13:46:12] [info] Nut Log: [Window]窗口移动到 227, 196
+[13:46:12] [info] Nut Log: [Window]窗口移动到 250, 203
+[13:46:12] [info] Nut Log: [Window]窗口移动到 256, 204
+[13:46:12] [info] Nut Log: [Window]窗口移动到 287, 212
+[13:46:12] [info] Nut Log: [Window]窗口移动到 329, 227
+[13:46:12] [info] Nut Log: [Window]窗口移动到 345, 232
+[13:46:12] [info] Nut Log: [Window]窗口移动到 362, 237
+[13:46:12] [info] Nut Log: [Window]窗口移动到 459, 264
+[13:46:12] [info] Nut Log: [Window]窗口移动到 486, 270
+[13:46:12] [info] Nut Log: [Window]窗口移动到 509, 277
+[13:46:12] [info] Nut Log: [Window]窗口移动到 543, 286
+[13:46:12] [info] Nut Log: [Window]窗口移动到 576, 294
+[13:46:12] [info] Nut Log: [Window]窗口移动到 587, 296
+[13:46:12] [info] Nut Log: [Window]窗口移动到 607, 303
+[13:46:12] [info] Nut Log: [Window]窗口移动到 628, 309
+[13:46:12] [info] Nut Log: [Window]窗口移动到 634, 312
+[13:46:12] [info] Nut Log: [Window]窗口移动到 641, 315
+[13:46:12] [info] Nut Log: [Window]窗口移动到 645, 320
+[13:46:12] [info] Nut Log: [Window]窗口移动到 648, 320
+[13:46:12] [info] Nut Log: [Window]窗口移动到 650, 321
+[13:46:12] [info] Nut Log: [Window]窗口移动到 651, 322
+[13:46:12] [info] Nut Log: [Window]窗口移动到 653, 323
+[13:46:12] [info] Nut Log: [Window]窗口移动到 655, 323
+[13:46:12] [info] Nut Log: [Window]窗口移动到 658, 325
+[13:46:12] [info] Nut Log: [Window]窗口移动到 666, 328
+[13:46:12] [info] Nut Log: [Window]窗口移动到 689, 336
+[13:46:12] [info] Nut Log: [Window]窗口移动到 712, 341
+[13:46:12] [info] Nut Log: [Window]窗口移动到 721, 343
+[13:46:12] [info] Nut Log: [Window]窗口移动到 731, 345
+[13:46:13] [info] Nut Log: [Window]窗口移动到 735, 346
+[13:46:13] [info] Nut Log: [Window]窗口移动到 737, 349
+[13:47:50] [info] Nut Log: [Window]窗口失去焦点
+[13:47:57] [info] Nut Log: [Window]窗口获得焦点
+[13:52:04] [info] Nut Log: [Window]窗口失去焦点
+[13:52:10] [info] Nut Log: [Window]窗口获得焦点
+[13:54:58] [info] Nut Log: [Window]窗口关闭

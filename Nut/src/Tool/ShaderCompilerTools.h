@@ -23,13 +23,16 @@ namespace Nut {
 			std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, std::string stage);
 		void Reflect(std::vector<uint32_t>& data, uint32_t shaderID,
 			std::unordered_map<std::string, uint32_t>& uniforms,
-			std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, std::string stage);
+			std::unordered_map<std::string, ShaderResourceDeclaration>& shaderResources, 
+			std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, 
+			std::string stage);
 	private:
 		bool m_UseOptimization = false;	//  是否使用优化
 		std::filesystem::path m_ShaderSourcePath;
 		std::unordered_map<GLenum, std::string> m_ShaderSource;	//  着色器源代码
 		std::unordered_map<GLenum, std::vector<uint32_t>> m_ShaderBinaries;	//  着色器二进制文件
 		std::unordered_map<std::string, uint32_t> m_Uniforms;	//  反射的Uniform变量列表
+		std::unordered_map<std::string, ShaderResourceDeclaration> m_Resources;	//  反射的资源列表
 
 		friend class Shader;
 	};

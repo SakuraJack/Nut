@@ -105,7 +105,8 @@ bool Nut::ShaderCompiler::Compile(uint32_t& shaderProgram)
 	}
 
 	for (auto& [stage, source] : m_ShaderBinaries) {
-		Reflect(source, shaderProgram, m_Uniforms, Shader::s_UniformBuffers, ShaderUtils::GLShaderStageToString(stage));		//  反射Uniform缓冲区
+		Reflect(source, shaderProgram, m_Uniforms, m_Resources,
+			Shader::s_UniformBuffers, ShaderUtils::GLShaderStageToString(stage));		//  反射Uniform缓冲区
 	}
 }
 
@@ -224,18 +225,15 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::shared_ptr<S
 				glNamedBufferData(buffer.BufferID, bufferSize, nullptr, GL_DYNAMIC_DRAW);	//  分配缓冲区内存
 			}
 		}
-		// TODO: 采样器
-		//int sampler = 0; // 采样器数量
-		//for (const auto& resource : resources.sampled_images) {
-		//	auto& type = compiler.get_type(resource.base_type_id);	//  获取采样器类型
-		//	auto bindingPoint = compiler.get_decoration(resource.id, spv::DecorationBinding);	//  获取绑定点
-		//	const auto& name = compiler.get_name(resource.id);	//  获取名称
-		//	uint32_t dimension = type.image.dim;
+	}
 
-		//	GLuint location = glGetUniformLocation(shaderID, name.c_str());	//  获取Uniform位置
-		//	shaderResources[name] = { name, bindingPoint, 1 };	//  创建Shader资源声明
-		//	glUniform1i(location, sampler);	//  设置Uniform值
-		//}
+	int sampler = resources.sampled_images.size(); // 采样器数量
+	for (const auto& resource : resources.sampled_images) {
+		auto& type = compiler.get_type(resource.base_type_id);	//  获取采样器类型
+		auto bindingPoint = compiler.get_decoration(resource.id, spv::DecorationBinding);	//  获取绑定点
+		const auto& name = compiler.get_name(resource.id);	//  获取名称
+		uint32_t dimension = type.image.dim;
+
 	}
 
 	for (const auto& uniform : resources.gl_plain_uniforms) {
@@ -248,7 +246,9 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::shared_ptr<S
 
 void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, uint32_t shaderID, 
 	std::unordered_map<std::string, uint32_t>& uniforms, 
-	std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, std::string stage)
+	std::unordered_map<std::string, ShaderResourceDeclaration>& shaderResources, 
+	std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, 
+	std::string stage)
 {
 	spirv_cross::Compiler compiler(data);
 	spirv_cross::ShaderResources resources = compiler.get_shader_resources();
@@ -296,18 +296,19 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, uint32_t shaderID
 				glNamedBufferData(buffer.BufferID, bufferSize, nullptr, GL_DYNAMIC_DRAW);	//  分配缓冲区内存
 			}
 		}
-		// TODO: 采样器
-		//int sampler = 0; // 采样器数量
-		//for (const auto& resource : resources.sampled_images) {
-		//	auto& type = compiler.get_type(resource.base_type_id);	//  获取采样器类型
-		//	auto bindingPoint = compiler.get_decoration(resource.id, spv::DecorationBinding);	//  获取绑定点
-		//	const auto& name = compiler.get_name(resource.id);	//  获取名称
-		//	uint32_t dimension = type.image.dim;
+	}
 
-		//	GLuint location = glGetUniformLocation(shaderID, name.c_str());	//  获取Uniform位置
-		//	shaderResources[name] = { name, bindingPoint, 1 };	//  创建Shader资源声明
-		//	glUniform1i(location, sampler);	//  设置Uniform值
-		//}
+	int sampler = resources.sampled_images.size(); // 采样器数量
+	for (const auto& resource : resources.sampled_images) {
+		auto& type = compiler.get_type(resource.base_type_id);
+		auto location = compiler.get_decoration(resource.id, spv::DecorationLocation);
+		const auto& name = compiler.get_name(resource.id);
+		uint32_t dimension = type.image.dim + 1;
+		ShaderResourceDeclaration resourceDeclaration;
+		resourceDeclaration.Name = name;
+		resourceDeclaration.Location = location;
+		resourceDeclaration.Dimensions = dimension;
+		shaderResources.insert({ name, resourceDeclaration });	//  插入资源声明
 	}
 
 	for (const auto& uniform : resources.gl_plain_uniforms) {

@@ -6,6 +6,13 @@ layout(location = 0) in vec3 aPos;
 layout(location = 1) out vec4 ClipLine;
 layout(location = 2) out vec4 vPos;
 
+// Texture units
+layout(location = 3) uniform sampler2D noiseTexture1;
+layout(location = 4) uniform sampler2D noiseTexture2;
+layout(location = 5) uniform sampler3D noiseTexture3;
+layout(location = 6) uniform sampler3D noiseTexture4;
+layout(location = 7) uniform samplerCube noiseTexture5;
+
 layout(std140, binding = 0) uniform MatrixBuffer
 {
 	mat4 projection;

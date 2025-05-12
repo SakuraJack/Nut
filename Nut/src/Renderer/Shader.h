@@ -39,9 +39,9 @@ namespace Nut {
 
 	struct ShaderResourceDeclaration {
 		std::string Name;	//  名称
-		unsigned int Binding;	//  绑定点
-		unsigned int Size;	//  大小
-		unsigned int Offset;	//  偏移量
+		unsigned int Location;	//  位置
+		// TODO: Dimension改枚举
+		unsigned int Dimensions;	//  维度
 	};
 
 	class Shader : public std::enable_shared_from_this<Shader>	//  允许共享指针
@@ -101,6 +101,7 @@ namespace Nut {
 		static std::unordered_map<std::string, ShaderUniformBuffer> s_UniformBuffers;	//  Uniform缓冲区列表
 		static std::unordered_map<std::string, ShaderStorageBuffer> s_StorageBuffers;	//  Storage缓冲区列表
 		std::unordered_map<std::string, uint32_t> m_UniformsLocations; //  Uniform变量列表
+		std::unordered_map<std::string, ShaderResourceDeclaration> m_ResourceDeclarations; //  资源声明列表
 		// TODO: 之后从这里移除
 		std::unordered_map<GLenum, std::string> m_ShaderSource;	//  着色器源代码
 		std::unordered_map<GLenum, std::vector<uint32_t>> m_SPIRVData; // 着色器的SPIRV数据

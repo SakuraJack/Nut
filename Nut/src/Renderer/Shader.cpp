@@ -19,6 +19,7 @@ Nut::Shader::Shader(const std::string name /*= "DefaultShader"*/)
 		m_ShaderSource = std::move(compiler.m_ShaderSource);
 		m_SPIRVData = std::move(compiler.m_ShaderBinaries);
 		m_UniformsLocations = std::move(compiler.m_Uniforms);
+		m_ResourceDeclarations = std::move(compiler.m_Resources);
 	}
 }
 
@@ -33,6 +34,7 @@ Nut::Shader::Shader(const std::string& name, const std::string& shaderSourcePath
 		m_ShaderSource = std::move(compiler.m_ShaderSource);
 		m_SPIRVData = std::move(compiler.m_ShaderBinaries);
 		m_UniformsLocations = std::move(compiler.m_Uniforms);
+		m_ResourceDeclarations = std::move(compiler.m_Resources);
 	}
 }
 
