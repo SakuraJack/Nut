@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "Core/Buffer.h"
 
 namespace Nut {
 
@@ -87,12 +88,40 @@ namespace Nut {
 
 		virtual float GetAspectRatio() const = 0;
 
-		virtual ImageSpecification& GetSpecification() const = 0;
-		virtual const ImageFormat& GetFormat() const = 0;
+		virtual const ImageSpecification& GetSpecification() = 0;
+		virtual const ImageFormat& GetFormat() = 0;
 	};
 
 	class Image2D : public Image
 	{
+	public:
+		Image2D(const ImageSpecification& spec, Buffer buffer);
+		Image2D(const ImageSpecification& spec, const void* data = nullptr);
+		virtual ~Image2D() override;
 
+		static std::shared_ptr<Image2D> Create(const ImageSpecification& spec, Buffer buffer);
+		static std::shared_ptr<Image2D> Create(const ImageSpecification& spec, const void* data = nullptr);
+		void Resize(const glm::uvec2& size);
+		void Resize(const uint32_t width, const uint32_t height) override;
+
+		void Invalidate() override;
+		void Release() override;
+
+		inline uint32_t GetWidth() const override { return m_Specification.Width; }
+		inline uint32_t GetHeight() const override { return m_Specification.Height; }
+		inline glm::uvec2 GetSize() const override { return { m_Specification.Width, m_Specification.Height }; }
+
+		float GetAspectRatio() const override { return m_Specification.Width / m_Specification.Height; }
+
+		const ImageSpecification& GetSpecification() override { return m_Specification; }
+		const ImageFormat& GetFormat() override { return m_Specification.Format; }
+
+		Buffer GetBuffer() const { return m_ImageData; }
+		Buffer& GetBuffer() { return m_ImageData; }
+
+	private:
+	private:
+		Buffer m_ImageData;
+		ImageSpecification m_Specification;
 	};
 }
