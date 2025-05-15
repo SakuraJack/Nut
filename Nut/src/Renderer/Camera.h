@@ -14,7 +14,7 @@ namespace Nut {
 	public:
 		Camera() = default;
 		Camera(const glm::mat4& projection);
-		Camera(const float fov, const float width, const float height, const float nearP, const float farP);
+		Camera(const float degreeFov, const float width, const float height, const float nearP, const float farP);
 		virtual ~Camera() = default;
 
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }	//  获取投影矩阵

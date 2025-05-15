@@ -6,6 +6,8 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+#include "Asset/TextureManager.h"
+
 namespace Nut {
 	RendererAPIStatus RendererAPI::s_RendererAPIStatus;
 }
@@ -27,6 +29,8 @@ void Nut::RendererAPI::Init()
 	NUT_INFO_TAG("Renderer", "最大采样数: {0}", spec.MaxSampleCount);
 	NUT_INFO_TAG("Renderer", "最大纹理单元: {0}", spec.MaxTextureUnit);
 
+	TextureManager::Init(spec.MaxTextureUnit - 1);
+
 	OpenGLDebugTools::EnableOpenGLDebugMessage();
 	NUT_INFO_TAG("Renderer", "启用OpenGL调试... 调试模式:同步");
 
@@ -38,7 +42,7 @@ void Nut::RendererAPI::Init()
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS); 
-	NUT_INFO_TAG("Renderer", "启用深度测试... 深度函数:小于丢弃");
+	NUT_INFO_TAG("Renderer", "启用深度测试... 深度函数:小于等于");
 
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_ALWAYS, 0xFF, 0xFF);

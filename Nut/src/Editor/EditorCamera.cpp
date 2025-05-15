@@ -7,7 +7,7 @@
 #include "glm/gtx/quaternion.hpp"
 
 Nut::EditorCamera::EditorCamera(const float degreeFOV, const float width, const float height, const float nearP, const float farP)
-	: Camera(glm::perspectiveFov(degreeFOV, width, height, nearP, farP)), m_FocusPoint(0.0f), m_FOV(degreeFOV), m_AspectRatio(width / height), m_NearPlane(nearP), m_FarPlane(farP)
+	: Camera(degreeFOV, width, height, nearP, farP), m_FocusPoint(0.0f), m_FOV(degreeFOV), m_AspectRatio(width / height), m_NearPlane(nearP), m_FarPlane(farP)
 {
 	Init();
 }
@@ -46,7 +46,7 @@ void Nut::EditorCamera::OnUpdate(Timestep ts)
 
 	if (Input::IsMouseButtonHeld(MouseButton::RightButton) && !Input::IsKeyHeld(KeyCode::LeftAlt)) {
 		m_CameraMode = CameraMode::FLYCAM; // 设置摄像机模式
-		// TODO: 
+		// TODO: 禁用鼠标
 		// DisableMouse();
 		const float yawSign = GetUpDirection().y < 0.0f ? -1.0f : 1.0f;
 		const float speed = GetCameraSpeed();

@@ -7,7 +7,6 @@ namespace Nut {
 
 	class ShaderCompiler
 	{
-		// TODO: Ö®ºóÌí¼Óshaderc 
 	public:
 		ShaderCompiler(const std::string& shaderSourcePath);
 		~ShaderCompiler();

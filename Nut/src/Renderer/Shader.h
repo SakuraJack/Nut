@@ -80,6 +80,8 @@ namespace Nut {
 		static std::shared_ptr<Shader> Create(const std::string& name, const std::string& shaderSourcePath);
 
 		uint32_t GetUniformsLocation(const std::string name);	//  获取Uniform变量位置
+		std::unordered_map<std::string, uint32_t> GetUniforms() const { return m_UniformsLocations; }
+		std::unordered_map<std::string, ShaderResourceDeclaration> GetResourceDeclarations() const { return m_ResourceDeclarations; }
 		std::string GetName() const { return m_Name; }	//  获取着色器名称
 		unsigned int GetShaderID() const { return m_ShaderID; }	//  获取着色器ID
 	private:

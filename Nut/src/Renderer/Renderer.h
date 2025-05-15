@@ -15,6 +15,8 @@ namespace Nut {
 		static void SetClearColor(const glm::vec4& color);
 		static void Clear();
 
+		static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0);
+
 		static void SetScissor(glm::vec4 scissor, bool enabled = false);
 	public:
 		static RendererAPIStatus GetStatus() { return RendererAPI::GetRendererAPIStatus(); }

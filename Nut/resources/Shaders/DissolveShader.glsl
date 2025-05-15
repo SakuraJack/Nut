@@ -13,14 +13,14 @@ layout(location = 5) uniform sampler3D noiseTexture3;
 layout(location = 6) uniform sampler3D noiseTexture4;
 layout(location = 7) uniform samplerCube noiseTexture5;
 
-layout(std140, binding = 0) uniform MatrixBuffer
+layout(std140, binding = 0) uniform u_MatrixBuffer
 {
 	mat4 projection;
 	mat4 view;
 	mat4 model;
 };
 
-layout(std140, binding = 1) uniform DissolveBuffer
+layout(std140, binding = 1) uniform u_DissolveBuffer
 {
 	float u_DissolveEdgeWidth;
 	float u_DissolvePercent;

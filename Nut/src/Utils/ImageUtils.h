@@ -59,11 +59,11 @@ namespace Nut {
 			case ImageFormat::RG8:		return GL_RG8;
 			case ImageFormat::RG16F:	return GL_RG16F;
 			case ImageFormat::RG32F:	return GL_RG32F;
-			case ImageFormat::RGB:		return GL_RGB;
-			case ImageFormat::RGBA:		return GL_RGBA;
+			case ImageFormat::RGB:		return GL_RGB8;
+			case ImageFormat::RGBA:		return GL_RGBA8;
 			case ImageFormat::RGBA16F:	return GL_RGBA16F;
 			case ImageFormat::RGBA32F:	return GL_RGBA32F;
-			case ImageFormat::SRGB:		return GL_SRGB;
+			case ImageFormat::SRGB:		return GL_SRGB8;
 			case ImageFormat::DEPTH32FSTENCIL8UINT: return GL_DEPTH32F_STENCIL8;
 			case ImageFormat::DEPTH32F:		return GL_DEPTH_COMPONENT32F;
 			case ImageFormat::DEPTH24STENCIL8: return GL_DEPTH24_STENCIL8;

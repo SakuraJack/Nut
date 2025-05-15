@@ -8,7 +8,7 @@ Nut::Buffer Nut::TextureImporter::ToBufferFromFile(const std::filesystem::path& 
 {
 	Buffer imageBuffer;
 	std::string pathString = path.string();
-	stbi_set_flip_vertically_on_load(1);
+	stbi_set_flip_vertically_on_load(0);
 
 	int width, height, channels;
 	if (stbi_is_hdr(pathString.c_str()))
@@ -35,7 +35,7 @@ Nut::Buffer Nut::TextureImporter::ToBufferFromFile(const std::filesystem::path& 
 Nut::Buffer Nut::TextureImporter::ToBufferFromMemory(Buffer buffer, ImageFormat& outFormat, uint32_t& outWidth, uint32_t& outHeight)
 {
 	Buffer imageBuffer;
-	stbi_set_flip_vertically_on_load(1);
+	stbi_set_flip_vertically_on_load(0);
 
 	int width, height, channels;
 	if (stbi_is_hdr_from_memory((const stbi_uc*)buffer.Data, (int)buffer.Size)) {

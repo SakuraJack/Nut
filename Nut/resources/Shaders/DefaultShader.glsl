@@ -3,7 +3,7 @@
 
 layout(location = 0) in vec3 aPos;
 
-layout(std140, binding = 0) uniform MatrixBuffer
+layout(std140, binding = 0) uniform u_MatrixBuffer
 {
 	mat4 projection;
 	mat4 view;

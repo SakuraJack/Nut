@@ -7,8 +7,8 @@ Nut::Camera::Camera(const glm::mat4& projection)
 
 }
 
-Nut::Camera::Camera(const float fov, const float width, const float height, const float nearP, const float farP)
-	: m_ProjectionMatrix(glm::perspectiveFov(fov, width, height, nearP, farP))
+Nut::Camera::Camera(const float degreeFov, const float width, const float height, const float nearP, const float farP)
+	: m_ProjectionMatrix(glm::perspectiveFov(glm::radians(degreeFov), width, height, nearP, farP))
 {
 
 }
