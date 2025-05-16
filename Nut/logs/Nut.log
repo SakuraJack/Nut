@@ -1,22 +1,25 @@
-[14:28:27] [info] Nut Log: [Renderer]初始化渲染器
-[14:28:27] [info] Nut Log: [Renderer]设备名称: NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2
-[14:28:27] [info] Nut Log: [Renderer]渲染接口: OpenGL
-[14:28:27] [info] Nut Log: [Renderer]版本: 4.6.0 NVIDIA 572.61
-[14:28:27] [info] Nut Log: [Renderer]厂商: NVIDIA Corporation
-[14:28:27] [info] Nut Log: [Renderer]最大采样数: 32
-[14:28:27] [info] Nut Log: [Renderer]最大纹理单元: 32
-[14:28:27] [info] Nut Log: [Renderer]启用OpenGL调试... 调试模式:同步
-[14:28:27] [info] Nut Log: [Renderer]启用深度测试... 深度函数:小于等于
-[14:28:27] [info] Nut Log: [Renderer]启用多重采样... 启用无缝立方体贴图
-[14:28:27] [info] Nut Log: [Renderer]调整视口大小: 1280, 720
-[14:28:29] [trace] Nut Log: [Shader]Shader Name - "SkyBoxShader.glsl", Shader Stage - Vertex
-[14:28:29] [trace] Nut Log: [Shader]Uniform Buffers: 1
-[14:28:29] [trace] Nut Log: [Shader]Storage Buffers: 0
-[14:28:29] [trace] Nut Log: [Shader]Sampled Images: 0
-[14:28:29] [trace] Nut Log: [Shader]Plain Uniforms: 0
-[14:28:29] [trace] Nut Log: [Shader]Shader Name - "SkyBoxShader.glsl", Shader Stage - Fragment
-[14:28:29] [trace] Nut Log: [Shader]Uniform Buffers: 0
-[14:28:29] [trace] Nut Log: [Shader]Storage Buffers: 0
-[14:28:29] [trace] Nut Log: [Shader]Sampled Images: 1
-[14:28:29] [trace] Nut Log: [Shader]Plain Uniforms: 1
-[14:28:36] [info] Nut Log: [Window]窗口关闭
+[17:21:11] [info] Nut Log: [Renderer]初始化渲染器
+[17:21:11] [info] Nut Log: [Renderer]设备名称: NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2
+[17:21:11] [info] Nut Log: [Renderer]渲染接口: OpenGL
+[17:21:11] [info] Nut Log: [Renderer]版本: 4.6.0 NVIDIA 572.61
+[17:21:11] [info] Nut Log: [Renderer]厂商: NVIDIA Corporation
+[17:21:11] [info] Nut Log: [Renderer]最大采样数: 32
+[17:21:11] [info] Nut Log: [Renderer]最大纹理单元: 32
+[17:21:11] [info] Nut Log: [Renderer]启用OpenGL调试... 调试模式:同步
+[17:21:11] [info] Nut Log: [Renderer]启用混合... 混合函数:源Alpha, 1-源Alpha
+[17:21:11] [info] Nut Log: [Renderer]启用深度测试... 深度函数:小于等于
+[17:21:11] [info] Nut Log: [Renderer]启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换
+[17:21:11] [info] Nut Log: [Renderer]启用剔除面... 剔除面:背面, 正面朝向:逆时针
+[17:21:11] [info] Nut Log: [Renderer]启用多重采样... 启用无缝立方体贴图
+[17:21:11] [info] Nut Log: [Renderer]调整视口大小: 1280, 720
+[17:21:13] [trace] Nut Log: [Shader]Shader Name - "SkyBoxShader.glsl", Shader Stage - Vertex
+[17:21:13] [trace] Nut Log: [Shader]Uniform Buffers: 1
+[17:21:13] [trace] Nut Log: [Shader]Storage Buffers: 0
+[17:21:13] [trace] Nut Log: [Shader]Sampled Images: 0
+[17:21:13] [trace] Nut Log: [Shader]Plain Uniforms: 0
+[17:21:13] [trace] Nut Log: [Shader]Shader Name - "SkyBoxShader.glsl", Shader Stage - Fragment
+[17:21:13] [trace] Nut Log: [Shader]Uniform Buffers: 0
+[17:21:13] [trace] Nut Log: [Shader]Storage Buffers: 0
+[17:21:13] [trace] Nut Log: [Shader]Sampled Images: 1
+[17:21:13] [trace] Nut Log: [Shader]Plain Uniforms: 1
+[17:21:18] [info] Nut Log: [Window]窗口关闭

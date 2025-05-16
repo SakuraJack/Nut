@@ -1,8 +1,51 @@
 #include "ntpch.h"
 #include "Renderer.h"
+#include "Core/Memory.h"
+
+namespace Nut {
+	constexpr static uint32_t s_RenderCommandQueueCount = 2;
+	static RenderCommandQueue* s_CommandQueue[s_RenderCommandQueueCount];
+	static std::atomic<uint32_t> s_RenderCommandQueueSubmissionIndex = 0;
+}
+
+void Nut::Renderer::WaitAndRender(RenderThread* renderThread)
+{
+	{
+		renderThread->WaitAndSet(RenderThread::State::Kick, RenderThread::State::Busy);
+	}
+
+	s_CommandQueue[GetRenderQueueIndex()]->Execute();
+
+	renderThread->Set(RenderThread::State::Idle);
+}
+
+void Nut::Renderer::RenderThreadFunc(RenderThread* renderThread)
+{
+	while (renderThread->IsRunning())
+	{
+		WaitAndRender(renderThread);
+	}
+}
+
+void Nut::Renderer::SwapQueues()
+{
+	s_RenderCommandQueueSubmissionIndex = (s_RenderCommandQueueSubmissionIndex + 1) % s_RenderCommandQueueCount;
+}
+
+uint32_t Nut::Renderer::GetRenderQueueIndex()
+{
+	return (s_RenderCommandQueueSubmissionIndex + 1) % s_RenderCommandQueueCount;
+}
+
+Nut::RenderCommandQueue& Nut::Renderer::GetRenderCommandQueue()
+{
+	return *s_CommandQueue[s_RenderCommandQueueSubmissionIndex];
+}
 
 void Nut::Renderer::Init()
 {
+	s_CommandQueue[0] = nnew RenderCommandQueue();
+	s_CommandQueue[1] = nnew RenderCommandQueue();
 	RendererAPI::Init();
 }
 

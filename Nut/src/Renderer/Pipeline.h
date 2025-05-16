@@ -15,5 +15,5 @@ namespace Nut {
 
 	class DeferredRenderPipeline : public Pipeline
 	{
-	}
+	};
 }

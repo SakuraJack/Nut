@@ -1,7 +1,7 @@
 #include "ntpch.h"
 #include "Texture.h"
 #include "Core/Log.h"
-#include "ResourceLoad/TextureImporter.h"
+#include "Asset/TextureImporter.h"
 
 #include "glad/glad.h"
 #include "Utils/ImageUtils.h"

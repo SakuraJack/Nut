@@ -16,6 +16,7 @@ workspace "Nut"
         "_CRT_SECURE_NO_WARNINGS",
         "_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING",
     }
+    outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
     filter "action:vs*"
         linkoptions { "/ignore:4099" } -- 不显示no PDB的warning
@@ -36,8 +37,6 @@ workspace "Nut"
 
     filter "system:windows"
         buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" }
-
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 group "Dependencies"
     include "Nut/vendor/GLFW"
