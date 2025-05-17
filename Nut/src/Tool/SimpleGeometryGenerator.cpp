@@ -51,7 +51,7 @@ std::shared_ptr<Nut::Mesh> Nut::GeometryGenerator::CreateCube(const glm::vec3& p
 		vertex.Position += pos;
 	}
 
-	return std::make_shared<Mesh>(vertices, indices, submeshes);
+	// return std::make_shared<Mesh>(vertices, indices, submeshes);
 }
 
 std::shared_ptr<Nut::Mesh> Nut::GeometryGenerator::CreateSphere(const glm::vec3& pos /*= glm::vec3(0.f)*/, float radius /*= 1.0f*/, int sliceCount /*= 20*/, int stackCount /*= 20*/)
@@ -96,5 +96,5 @@ std::shared_ptr<Nut::Mesh> Nut::GeometryGenerator::CreateSphere(const glm::vec3&
 		vertex.Position += pos;
 	}
 
-	return std::make_shared<Mesh>(vertices, indices, submeshes);
+	// return std::make_shared<Mesh>(vertices, indices, submeshes);
 }

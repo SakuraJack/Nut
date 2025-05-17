@@ -1,6 +1,5 @@
 #include "ntpch.h"
 #include "Material.h"
-
 #include "Asset/TextureManager.h"
 
 Nut::Material::Material()
@@ -18,11 +17,16 @@ Nut::Material::Material(const std::shared_ptr<Shader>& shader, const std::string
 
 void Nut::Material::Invalidate()
 {
-	m_ShaderUniformLocations.clear();
-	m_ShaderResourceDeclarations.clear();
-
-	m_ShaderUniformLocations = m_Shader->GetUniforms();
-	m_ShaderResourceDeclarations = m_Shader->GetResourceDeclarations();
+	m_Textures.clear();
+	int index = 0;
+	for (auto& [name, resource] : m_Shader->GetResourceDeclarations())
+	{
+		// TODO: 从资源管理器中获取纹理
+		// m_Textures.insert({ name, AssetManager::GetAsset(name) });
+		m_Textures.insert({ name, TextureManager::GetTexture(name) });
+		m_TextureSlots.insert({ name, index });
+		index++;
+	}
 }
 
 void Nut::Material::Bind()
@@ -48,11 +52,7 @@ std::shared_ptr<Nut::Material> Nut::Material::Create(const std::shared_ptr<Shade
 std::shared_ptr<Nut::Material> Nut::Material::Copy(const std::shared_ptr<Material>& material, const std::string& name /*= ""*/)
 {
 	if (material == nullptr) return nullptr;
-
 	auto newMaterial = std::make_shared<Material>(material->m_Shader, name);
-	newMaterial->m_ShaderUniformLocations = material->m_ShaderUniformLocations;
-	newMaterial->m_ShaderResourceDeclarations = material->m_ShaderResourceDeclarations;
-
 	return newMaterial;
 }
 
@@ -108,29 +108,10 @@ void Nut::Material::Set(const std::string& name, const glm::mat4& value)
 
 void Nut::Material::Set(const std::string& name, const std::shared_ptr<Texture2D>& texture)
 {
-	if (m_ShaderResourceDeclarations.find(name) == m_ShaderResourceDeclarations.end()) return;
-	if (texture->GetTextureID() && texture->GetTextureSlot() != -1) {
-		Set(name, (int)texture->GetTextureSlot());
-		// TODO: 优化纹理单元的分配
-	}
-	else if (texture->GetTextureSlot() == -1) {
-		// TODO: 优化纹理单元的分配
-		TextureManager::ActiveTextureUnit(texture);
-		Set(name, (int)texture->GetTextureSlot());
-	}
 }
 
 void Nut::Material::Set(const std::string& name, const std::shared_ptr<TextureCube>& texture)
 {
-	if (m_ShaderResourceDeclarations.find(name) == m_ShaderResourceDeclarations.end()) return;
-	if (texture->GetTextureID() && texture->GetTextureSlot() != -1) {
-		Set(name, (int)texture->GetTextureSlot());
-	}
-	else if (texture->GetTextureSlot() == -1) {
-		// TODO: 优化纹理单元的分配
-		TextureManager::ActiveTextureUnit(texture);
-		Set(name, (int)texture->GetTextureSlot());
-	}
 }
 
 void Nut::Material::Set(const std::string& name, const std::shared_ptr<Image2D>& image)

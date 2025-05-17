@@ -41,12 +41,9 @@ namespace Nut {
 
 	private:
 		std::shared_ptr<Shader> m_Shader;	//  着色器
-		// TODO: 将着色器可修改参数暴露给用户
-		std::unordered_map<std::string, uint32_t> m_ShaderUniformLocations;
-		std::unordered_map<std::string, ShaderResourceDeclaration> m_ShaderResourceDeclarations;
-		static std::unordered_map<std::string, ShaderUniformBuffer> s_UniformBuffers;
-		static std::unordered_map<std::string, ShaderStorageBuffer> s_StorageBuffers;
 		std::string m_Name;
+		std::unordered_map<std::string, std::shared_ptr<Texture>> m_Textures;	//  纹理列表
+		std::unordered_map<std::string, uint32_t> m_TextureSlots;	//  纹理槽列表
 	};
 
 }

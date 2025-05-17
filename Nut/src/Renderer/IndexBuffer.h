@@ -1,28 +1,30 @@
 #pragma once
 
+#include "Core/Core.h"
+#include "Core/Buffer.h"
+
 namespace Nut {
 	class IndexBuffer
 	{
 	public:
-		IndexBuffer(void* data, unsigned int size, unsigned int count);
-		IndexBuffer(unsigned int size, unsigned int count);
+		IndexBuffer(void* data, uint64_t size);
+		IndexBuffer(uint64_t size);
 		~IndexBuffer();
 
-		void SetData(void* data, unsigned int size, unsigned int offset = 0);
+		void SetData(void* data, uint64_t size, uint64_t offset = 0);
 		void Bind() const;
 		void Unbind() const;
 
-		inline unsigned int GetCount() const { return m_Count; } //  获取索引个数
-		inline unsigned int GetSize() const { return m_Size; } //  获取索引缓冲大小
-		inline unsigned int GetBufferID() const { return m_BufferID; } //  获取索引缓冲ID
+		inline uint64_t GetSize() const { return m_Size; } //  获取索引缓冲大小
+		inline uint64_t GetBufferID() const { return m_BufferID; } //  获取索引缓冲ID
 
 	public:
-		static std::shared_ptr<IndexBuffer> Create(void* data, unsigned int size, unsigned int count); //  创建索引缓冲
-		static std::shared_ptr<IndexBuffer> Create(unsigned int size, unsigned int count); //  创建索引缓冲
+		static std::shared_ptr<IndexBuffer> Create(void* data, uint64_t size); //  创建索引缓冲
+		static std::shared_ptr<IndexBuffer> Create(uint64_t size); //  创建索引缓冲
 		
 	private:
-		unsigned int m_BufferID;	//  索引缓冲ID
-		unsigned int m_Size;		//  索引缓冲大小
-		unsigned int m_Count;		//  索引个数
+		RenderID m_BufferID = 0;	//  索引缓冲ID
+		uint64_t m_Size = 0;		//  索引缓冲大小
+		Buffer m_LocalData;
 	};
 }

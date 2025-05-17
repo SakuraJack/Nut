@@ -1,43 +1,35 @@
 #include "ntpch.h"
 #include "TextureManager.h"
 
-void Nut::TextureManager::Init(uint32_t count)
+void Nut::TextureManager::LoadTextures(const std::string& path)
 {
-	s_ActiveTextureUnits.assign(count, nullptr);
-}
-
-bool Nut::TextureManager::TextureActivated(const std::shared_ptr<Texture>& texture)
-{
-	if (texture == nullptr) return false;
-	for (const auto& tex : s_ActiveTextureUnits)
-	{
-		if (tex == texture) return true;
-	}
-	return false;
-}
-
-void Nut::TextureManager::ActiveTextureUnit(const std::shared_ptr<Texture>& texture)
-{
-	if (TextureActivated(texture)) return;
-	uint32_t unit = GetLeastUnusedTextureUnit();
-	if (unit >= s_ActiveTextureUnits.size()) {
-		NUT_ERROR("TextureManager: No available texture unit!");
-		return;
-	}
-	else {
-		s_ActiveTextureUnits[unit] = texture;
-		texture->Bind(unit);
-	}
-}
-
-uint32_t Nut::TextureManager::GetLeastUnusedTextureUnit()
-{
-	for (uint32_t i = 0; i < s_ActiveTextureUnits.size(); i++)
-	{
-		if (s_ActiveTextureUnits[i] == nullptr)
-		{
-			return i;
+	if (std::filesystem::exists(path)) {
+		for (const auto& entry : std::filesystem::directory_iterator(path)) {
+			TextureSpecification spec;
+			if (entry.is_regular_file()) {
+				std::shared_ptr<Texture2D> tex = Texture2D::Create(spec, entry.path());
+				auto name = entry.path().filename().string();
+				m_Textures.insert({ name, tex });
+			}
+			else {
+				std::shared_ptr<TextureCube> tex = TextureCube::Create(spec, entry.path());
+				auto name = entry.path().filename().string();
+				m_Textures.insert({ name, tex });
+			}
 		}
 	}
-	return s_ActiveTextureUnits.size();
+	else {
+		NUT_ERROR("纹理路径不存在: {0}", path);
+		return;
+	}
+}
+
+std::shared_ptr<Nut::Texture> Nut::TextureManager::GetTexture(const std::string& name)
+{
+	auto it = m_Textures.find(name);
+	if (it != m_Textures.end())
+	{
+		return it->second;
+	}
+	return nullptr;
 }
