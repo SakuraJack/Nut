@@ -37,6 +37,15 @@ Nut::Application::Application(const ApplicationSpecification& specification)
 
 Nut::Application::~Application()
 {
+	if (m_RenderThread.GetThreadingPolicy() == ThreadingPolicy::MultiThreaded) {
+		m_RenderThread.Terminate();
+	}
+
+	for(Layer* layer : m_LayerStack) {
+		layer->OnDetach();
+		delete layer;
+	}
+	Renderer::Shutdown();
 }
 
 void Nut::Application::Run()
