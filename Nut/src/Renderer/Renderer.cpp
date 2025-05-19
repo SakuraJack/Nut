@@ -1,11 +1,17 @@
 #include "ntpch.h"
 #include "Renderer.h"
+#include "Context.h"
 #include "Core/Memory.h"
+#include "Core/Application.h"
 
 namespace Nut {
 	constexpr static uint32_t s_RenderCommandQueueCount = 2;
 	static RenderCommandQueue* s_CommandQueue[s_RenderCommandQueueCount];
 	static std::atomic<uint32_t> s_RenderCommandQueueSubmissionIndex = 0;
+
+	static std::shared_ptr<GraphicsContext> GetContext() {
+		return Application::Get().GetWindow()->GetRenderContext();
+	}
 }
 
 void Nut::Renderer::WaitAndRender(RenderThread* renderThread)
@@ -21,6 +27,7 @@ void Nut::Renderer::WaitAndRender(RenderThread* renderThread)
 
 void Nut::Renderer::RenderThreadFunc(RenderThread* renderThread)
 {
+	GetContext()->SwitchContext();
 	while (renderThread->IsRunning())
 	{
 		WaitAndRender(renderThread);
@@ -30,6 +37,11 @@ void Nut::Renderer::RenderThreadFunc(RenderThread* renderThread)
 void Nut::Renderer::SwapQueues()
 {
 	s_RenderCommandQueueSubmissionIndex = (s_RenderCommandQueueSubmissionIndex + 1) % s_RenderCommandQueueCount;
+}
+
+void Nut::Renderer::WaitAndRender()
+{
+	s_CommandQueue[0]->Execute();
 }
 
 uint32_t Nut::Renderer::GetRenderQueueIndex()

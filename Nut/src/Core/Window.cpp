@@ -27,9 +27,13 @@ Nut::Window::~Window()
 	Shutdown();
 }
 
-void Nut::Window::OnUpdate()
+void Nut::Window::ProcessEvents()
 {
 	glfwPollEvents();
+}
+
+void Nut::Window::SwapBuffers()
+{
 	m_Context->SwapBuffers();
 }
 
@@ -61,7 +65,7 @@ void Nut::Window::Init(const WindowProps& props)
 	}
 
 	m_Window = glfwCreateWindow(props.m_Width, props.m_Height, props.m_Title.c_str(), nullptr, nullptr);
-	m_Context = std::make_unique<GraphicsContext>(m_Window);
+	m_Context = std::make_shared<GraphicsContext>(m_Window);
 	m_Context->Init();
 
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);

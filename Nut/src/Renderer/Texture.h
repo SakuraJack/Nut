@@ -62,7 +62,7 @@ namespace Nut {
 		glm::uvec2 GetSize() const override { return { m_Specification.Width, m_Specification.Height }; }
 		uint32_t GetMipLevel() const override { return m_Specification.MipLevels; }
 		TextureType GetType() const override { return m_Specification.Type; }
-		uint32_t GetTextureID() const { return m_TextureID; }
+		RenderID GetTextureID() const { return m_TextureID; }
 		uint32_t GetTextureSlot() const { return m_TextureSlot; }
 
 		static std::shared_ptr<Texture2D> Create(const TextureSpecification& spec);
@@ -73,7 +73,7 @@ namespace Nut {
 		TextureSpecification m_Specification;
 		Buffer m_ImageData;
 		std::filesystem::path m_FilePath;
-		uint32_t m_TextureID;
+		RenderID m_TextureID;
 		uint32_t m_TextureSlot = -1;
 	};
 
@@ -99,7 +99,7 @@ namespace Nut {
 		glm::uvec2 GetSize() const override { return { m_Specification.Width, m_Specification.Height }; }
 		uint32_t GetMipLevel() const override { return m_Specification.MipLevels; }
 		TextureType GetType() const override { return m_Specification.Type; }
-		uint32_t GetTextureID() const { return m_TextureID; }
+		RenderID GetTextureID() const { return m_TextureID; }
 		uint32_t GetTextureSlot() const { return m_TextureSlot; }
 
 		static std::shared_ptr<TextureCube> Create(const TextureSpecification& spec);
@@ -110,7 +110,7 @@ namespace Nut {
 		TextureSpecification m_Specification;
 		std::vector<Buffer> m_ImageDatas;  // ÃæÊý¾Ý Ë³Ðò: +X, -X, +Y, -Y, +Z, -Z
 		std::filesystem::path m_FilePath;
-		uint32_t m_TextureID;
+		RenderID m_TextureID;
 		uint32_t m_TextureSlot = -1;
 	};
 }

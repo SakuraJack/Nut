@@ -40,6 +40,7 @@ namespace Nut {
 
 		void Pump();
 
+		ThreadingPolicy GetThreadingPolicy() const { return m_ThreadingPolicy; }
 	private:
 		RenderThreadData* m_Data;
 		ThreadingPolicy m_ThreadingPolicy;

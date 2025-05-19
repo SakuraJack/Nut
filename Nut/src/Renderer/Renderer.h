@@ -25,6 +25,7 @@ namespace Nut {
 		static void WaitAndRender(RenderThread* renderThread);
 		static void RenderThreadFunc(RenderThread* renderThread);
 		static void SwapQueues();
+		static void WaitAndRender();
 		static uint32_t GetRenderQueueIndex();
 	private:
 		static RenderCommandQueue& GetRenderCommandQueue();

@@ -27,12 +27,9 @@ namespace Nut {
 		void OnEvent(Event& e) override;
 
 	private:
-		std::shared_ptr<Nut::VertexArray> m_VertexArray;
-		std::shared_ptr<Nut::VertexBuffer> m_VertexBuffer;
-		std::shared_ptr<Nut::IndexBuffer> m_IndexBuffer;
-		std::shared_ptr<Nut::Shader> m_Shader;
-		std::shared_ptr<Nut::Material> m_Material;
-		std::shared_ptr<Nut::TextureCube> m_TextureCube;
+		// ≤‚ ‘
+		std::shared_ptr<MeshSource> m_MeshSource;
+		std::shared_ptr<StaticMesh> m_Mesh;
 		EditorCamera m_EditorCamera;
 	};
 }

@@ -11,20 +11,14 @@ namespace Nut {
 		ShaderCompiler(const std::string& shaderSourcePath);
 		~ShaderCompiler();
 
-		bool Compile(uint32_t& shaderProgram);
-		static bool Compile(std::shared_ptr<Shader> shader, bool forceCompile = false);
+		bool Compile();
 
 	private:
-		void CompileOrGetBinaries(std::unordered_map<GLenum, std::vector<uint32_t>>& shaderBinaries, bool forceCompile = false);	//  编译或获取二进制文件
+		bool CompileOrGetBinaries(std::unordered_map<GLenum, std::vector<uint32_t>>& shaderBinaries, bool forceCompile = false);	//  编译或获取二进制文件
 		void PreprocessShader();	//  预处理着色器
 		void TryGetCachedBinaries(const std::filesystem::path& cachePath, const std::string& extension, std::vector<uint32_t>& outputBinaries);
-		void Reflect(std::vector<uint32_t>& data, std::shared_ptr<Shader> shader, 
-			std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, std::string stage);
-		void Reflect(std::vector<uint32_t>& data, uint32_t shaderID,
-			std::unordered_map<std::string, uint32_t>& uniforms,
-			std::unordered_map<std::string, ShaderResourceDeclaration>& shaderResources, 
-			std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, 
-			std::string stage);
+		void Reflect(std::vector<uint32_t>& data, std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, std::string stage);
+
 	private:
 		bool m_UseOptimization = false;	//  是否使用优化
 		std::filesystem::path m_ShaderSourcePath;
