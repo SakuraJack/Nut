@@ -3,7 +3,7 @@
 
 #include <glm/ext/scalar_constants.hpp>
 
-std::shared_ptr<Nut::Mesh> Nut::GeometryGenerator::CreateCube(const glm::vec3& pos /*= glm::vec3(0.f)*/, float sideLength /*= 1.0f*/)
+std::shared_ptr<Nut::MeshSource> Nut::GeometryGenerator::CreateCube(const glm::vec3& pos /*= glm::vec3(0.f)*/, float sideLength /*= 1.0f*/)
 {
 	std::vector<Vertex> vertices = {
 		Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.f, 0.f, -1.f), glm::vec2(0.f, 0.f), glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f)),
@@ -51,10 +51,13 @@ std::shared_ptr<Nut::Mesh> Nut::GeometryGenerator::CreateCube(const glm::vec3& p
 		vertex.Position += pos;
 	}
 
-	// return std::make_shared<Mesh>(vertices, indices, submeshes);
+	std::shared_ptr<MeshSource> meshSource = std::make_shared<MeshSource>(vertices, indices, submeshes);
+	meshSource->m_Materials.push_back(Material::Create(Shader::Create()));
+
+	return meshSource;
 }
 
-std::shared_ptr<Nut::Mesh> Nut::GeometryGenerator::CreateSphere(const glm::vec3& pos /*= glm::vec3(0.f)*/, float radius /*= 1.0f*/, int sliceCount /*= 20*/, int stackCount /*= 20*/)
+std::shared_ptr<Nut::MeshSource> Nut::GeometryGenerator::CreateSphere(const glm::vec3& pos /*= glm::vec3(0.f)*/, float radius /*= 1.0f*/, int sliceCount /*= 20*/, int stackCount /*= 20*/)
 {
 	std::vector<Vertex> vertices;
 	std::vector<SubMesh> submeshes;
@@ -96,5 +99,5 @@ std::shared_ptr<Nut::Mesh> Nut::GeometryGenerator::CreateSphere(const glm::vec3&
 		vertex.Position += pos;
 	}
 
-	// return std::make_shared<Mesh>(vertices, indices, submeshes);
+	return std::make_shared<MeshSource>(vertices, indices, submeshes);
 }

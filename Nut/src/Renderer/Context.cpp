@@ -19,6 +19,16 @@ namespace Nut {
 	void GraphicsContext::SwapBuffers()
 	{
 		glfwSwapBuffers((GLFWwindow*)m_WindowHandle);
-		glfwPollEvents();
 	}
+
+	void GraphicsContext::SwitchContext()
+	{
+		glfwMakeContextCurrent(m_WindowHandle);
+	}
+
+	void GraphicsContext::ReleaseContext()
+	{
+		glfwMakeContextCurrent(nullptr);
+	}
+
 }

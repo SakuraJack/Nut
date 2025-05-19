@@ -22,8 +22,9 @@ Nut::Shader::Shader(const std::string name /*= "DefaultShader"*/)
 
 Nut::Shader::~Shader()
 {
-	Renderer::Submit([this]() {
-		glDeleteProgram(m_ShaderID);
+	RenderID shaderID = m_ShaderID;
+	Renderer::Submit([shaderID]() {
+		glDeleteProgram(shaderID);
 		});
 	/*for (auto& [name, buffer] : s_UniformBuffers)
 	{
@@ -224,11 +225,13 @@ void Nut::Shader::SetUniformBufferUniform(const std::string& uniformBufferName, 
 
 void Nut::Shader::ClearUniformBuffers()
 {
-	for (auto& [name, buffer] : s_UniformBuffers)
-	{
-		glDeleteBuffers(1, &buffer.BufferID);
-	}
-	s_UniformBuffers.clear();
+	Renderer::Submit([]() {
+		for (auto& [name, buffer] : s_UniformBuffers)
+		{
+			glDeleteBuffers(1, &buffer.BufferID);
+		}
+		s_UniformBuffers.clear();
+		});
 }
 
 std::shared_ptr<Nut::Shader> Nut::Shader::Create(const std::string name /*= "DefaultShader"*/)

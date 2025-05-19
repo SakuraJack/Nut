@@ -1,5 +1,6 @@
 #include "ntpch.h"
 #include "Material.h"
+#include "Renderer.h"
 #include "Asset/TextureManager.h"
 
 Nut::Material::Material()
@@ -108,10 +109,24 @@ void Nut::Material::Set(const std::string& name, const glm::mat4& value)
 
 void Nut::Material::Set(const std::string& name, const std::shared_ptr<Texture2D>& texture)
 {
+	if (m_TextureSlots.find(name) != m_TextureSlots.end())
+	{
+		m_Textures[name] = texture;
+		uint32_t slot = m_TextureSlots[name];
+		m_Textures[name]->Bind(slot);
+		m_Shader->SetUniform(name, (int)slot);
+	}
 }
 
 void Nut::Material::Set(const std::string& name, const std::shared_ptr<TextureCube>& texture)
 {
+	if (m_TextureSlots.find(name) != m_TextureSlots.end())
+	{
+		m_Textures[name] = texture;
+		uint32_t slot = m_TextureSlots[name];
+		m_Textures[name]->Bind(slot);
+		m_Shader->SetUniform(name, (int)slot);
+	}
 }
 
 void Nut::Material::Set(const std::string& name, const std::shared_ptr<Image2D>& image)

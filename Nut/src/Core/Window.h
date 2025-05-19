@@ -28,7 +28,8 @@ namespace Nut
 		Window(const WindowProps& props = WindowProps());
 		~Window();
 
-		void OnUpdate();
+		void ProcessEvents();
+		void SwapBuffers();
 
 		inline uint32_t GetWidth() const { return m_Data.m_Width; }
 		inline uint32_t GetHeight() const { return m_Data.m_Height; }
@@ -41,6 +42,7 @@ namespace Nut
 		static Window* Create(const WindowProps& props = WindowProps());
 
 		inline GLFWwindow* GetNativeWindow() const { return m_Window; } //返回窗口指针
+		inline std::shared_ptr<GraphicsContext> GetRenderContext() const { return m_Context; } //返回上下文指针
 
 	private:
 		virtual void Init(const WindowProps& props);
@@ -48,7 +50,7 @@ namespace Nut
 
 	private:
 		GLFWwindow* m_Window;
-		std::unique_ptr<GraphicsContext> m_Context;
+		std::shared_ptr<GraphicsContext> m_Context;
 
 		struct WindowData
 		{

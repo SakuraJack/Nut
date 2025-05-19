@@ -8,7 +8,7 @@
 Nut::IndexBuffer::IndexBuffer(void* data, uint64_t size)
 	: m_Size(size)
 {
-	m_LocalData.Copy(data, size);
+	m_LocalData = Buffer::Copy(data, size);
 	Renderer::Submit([this]() {
 		glCreateBuffers(1, &m_BufferID);
 		glNamedBufferData(m_BufferID, m_LocalData.Size, m_LocalData.Data, GL_STATIC_DRAW);

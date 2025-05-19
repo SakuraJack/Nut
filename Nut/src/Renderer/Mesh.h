@@ -39,8 +39,8 @@ namespace Nut {
 		unsigned int m_VertexCount;
 		unsigned int m_IndexCount;
 
-		glm::mat4 m_LocalTransform; // 局部变换矩阵
-		glm::mat4 m_GlobalTransform; // 全局变换矩阵
+		glm::mat4 m_LocalTransform = glm::mat4(1.f); // 局部变换矩阵
+		glm::mat4 m_GlobalTransform = glm::mat4(1.f); // 全局变换矩阵
 	};
 
 	class MeshSource : public Asset
@@ -66,7 +66,7 @@ namespace Nut {
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
 
 		static AssetType GetStaticType() { return AssetType::MeshSource; }
-		virtual AssetType GetType() const override { return GetStaticType(); }
+		AssetType GetType() const override { return GetStaticType(); }
 
 	private:
 		std::vector<SubMesh> m_Submeshes;
@@ -81,6 +81,8 @@ namespace Nut {
 		std::vector<std::shared_ptr<Material>> m_Materials;
 
 		std::string m_FilePath;
+
+		friend class GeometryGenerator;
 	};
 
 	class Mesh : public Asset // 动态网格
@@ -102,7 +104,7 @@ namespace Nut {
 		std::vector<std::shared_ptr<Material>> GetMaterials() const { return meshMaterials; }
 
 		static AssetType GetStaticType() { return AssetType::Mesh; }
-		virtual AssetType GetType() const override { return GetStaticType(); }
+		AssetType GetType() const override { return GetStaticType(); }
 
 	private:
 		std::vector<uint32_t> m_Submeshes;
@@ -129,7 +131,7 @@ namespace Nut {
 		std::vector<std::shared_ptr<Material>> GetMaterials() const { return meshMaterials; }
 
 		static AssetType GetStaticType() { return AssetType::StaticMesh; }
-		virtual AssetType GetType() const override { return GetStaticType(); }
+		AssetType GetType() const override { return GetStaticType(); }
 
 	private:
 		std::vector<uint32_t> m_Submeshes;

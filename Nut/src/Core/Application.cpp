@@ -16,12 +16,21 @@ namespace Nut {
 	Application* Application::s_Instance = nullptr;
 }
 
-Nut::Application::Application()
+Nut::Application::Application(const ApplicationSpecification& specification)
+	: m_Specification(specification), m_RenderThread(specification.RenderThreadingPolicy)
 {
 	s_Instance = this;
-	m_Window = std::unique_ptr<Window>(Window::Create());
+	WindowProps props;
+	props.m_Title = m_Specification.Name;
+	props.m_Width = m_Specification.WindowWidth;
+	props.m_Height = m_Specification.WindowHeight;
+	m_Window = std::unique_ptr<Window>(Window::Create(props));
 	m_Window->SetEventCallback(NUT_BIND_EVENT_FN(Application::OnEvent));
 	Renderer::Init();
+	if (m_Specification.RenderThreadingPolicy == ThreadingPolicy::MultiThreaded) {
+		m_Window->GetRenderContext()->ReleaseContext();
+		m_RenderThread.Run();
+	}
 	Renderer::Resize(m_Window->GetWidth(), m_Window->GetHeight());
 	m_LayerStack.PushLayer(new RuntimeLayer());
 }
@@ -34,15 +43,28 @@ void Nut::Application::Run()
 {
 	while (m_Running)
 	{
+		m_RenderThread.BlockUntilRenderComplete();
+
 		ProcessEvents();
 
+		if (m_RenderThread.GetThreadingPolicy() == ThreadingPolicy::MultiThreaded) {
+			m_RenderThread.NextFrame();
+			m_RenderThread.Kick();
+		}
+		else {
+			Renderer::WaitAndRender();
+		}
+
 		if (!m_Minimized) {
+
 			Renderer::BeginFrame();
 			for (Layer* layer : m_LayerStack) {
 				layer->OnUpdate(m_Timestep);
 			}
 			Renderer::EndFrame();
-			m_Window->OnUpdate();
+			Renderer::Submit([&]() {
+				m_Window->SwapBuffers();
+				});
 		}
 
 		Input::ClearReleasedKeys();
@@ -99,9 +121,13 @@ void Nut::Application::ProcessEvents()
 {
 	Input::TransitionPressedKeys();
 	Input::TransitionPressedButtons();
+
+	m_Window->ProcessEvents();
 }
 
 Nut::Application* Nut::CreateApplication()
 {
-	return new Application();
+	ApplicationSpecification specification;
+	specification.RenderThreadingPolicy = ThreadingPolicy::MultiThreaded;
+	return new Application(specification);
 }

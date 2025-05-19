@@ -24,6 +24,22 @@ Nut::MeshSource::MeshSource(const std::vector<Vertex>& vertices, const std::vect
 	m_VertexArray = VertexArray::Create(m_VertexBuffer, m_IndexBuffer);
 }
 
+Nut::MeshSource::MeshSource(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const std::vector<SubMesh>& submeshes)
+	: m_Vertices(vertices), m_Indices(indices), m_Submeshes(submeshes)
+{
+	Handle = {};
+
+	m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), (uint64_t)(m_Vertices.size() * sizeof(Vertex)));
+	m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), (uint64_t)(m_Indices.size() * sizeof(Index)));
+	m_VertexBuffer->SetLayout({
+		{"a_Position", DataType::Float3},
+		{"a_Normal", DataType::Float3},
+		{"a_TexCoord", DataType::Float2},
+		{"a_Tangent", DataType::Float3},
+		{"a_Bitangent", DataType::Float3} });
+	m_VertexArray = VertexArray::Create(m_VertexBuffer, m_IndexBuffer);
+}
+
 Nut::MeshSource::~MeshSource()
 {
 
@@ -32,15 +48,6 @@ Nut::MeshSource::~MeshSource()
 void Nut::MeshSource::DumpVertex()
 {
 
-}
-
-Nut::MeshSource::MeshSource(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const std::vector<SubMesh>& submeshes)
-	: m_Vertices(vertices), m_Indices(indices), m_Submeshes(submeshes)
-{
-	Handle = {};
-
-	m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), (uint64_t)(m_Vertices.size() * sizeof(Vertex)));
-	m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), (uint64_t)(m_Indices.size() * sizeof(Index)));
 }
 
 Nut::Mesh::Mesh(std::shared_ptr<MeshSource> meshSource)

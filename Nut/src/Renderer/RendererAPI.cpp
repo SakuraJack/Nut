@@ -16,55 +16,53 @@ namespace Nut {
 void Nut::RendererAPI::Init()
 {
 	NUT_INFO_TAG("Renderer", "初始化渲染器");
-	Renderer::Submit([]() {
-		auto spec = RendererAPISpecification();
-		spec.RendererName = (const char*)glGetString(GL_RENDERER);
-		spec.RendererVersion = (const char*)glGetString(GL_VERSION);
-		spec.RendererVendor = (const char*)glGetString(GL_VENDOR);
-		glGetIntegerv(GL_MAX_SAMPLES, &spec.MaxSampleCount);
-		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &spec.MaxTextureUnit);
+	auto spec = RendererAPISpecification();
+	spec.RendererName = (const char*)glGetString(GL_RENDERER);
+	spec.RendererVersion = (const char*)glGetString(GL_VERSION);
+	spec.RendererVendor = (const char*)glGetString(GL_VENDOR);
+	glGetIntegerv(GL_MAX_SAMPLES, &spec.MaxSampleCount);
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &spec.MaxTextureUnit);
 
-		NUT_INFO_TAG("Renderer", "设备名称: {0}", spec.RendererName);
-		NUT_INFO_TAG("Renderer", "渲染接口: OpenGL");
-		NUT_INFO_TAG("Renderer", "版本: {0}", spec.RendererVersion);
-		NUT_INFO_TAG("Renderer", "厂商: {0}", spec.RendererVendor);
-		NUT_INFO_TAG("Renderer", "最大采样数: {0}", spec.MaxSampleCount);
-		NUT_INFO_TAG("Renderer", "最大纹理单元: {0}", spec.MaxTextureUnit);
+	NUT_INFO_TAG("Renderer", "设备名称: {0}", spec.RendererName);
+	NUT_INFO_TAG("Renderer", "渲染接口: OpenGL");
+	NUT_INFO_TAG("Renderer", "版本: {0}", spec.RendererVersion);
+	NUT_INFO_TAG("Renderer", "厂商: {0}", spec.RendererVendor);
+	NUT_INFO_TAG("Renderer", "最大采样数: {0}", spec.MaxSampleCount);
+	NUT_INFO_TAG("Renderer", "最大纹理单元: {0}", spec.MaxTextureUnit);
 
-		OpenGLDebugTools::EnableOpenGLDebugMessage();
-		NUT_INFO_TAG("Renderer", "启用OpenGL调试... 调试模式:同步");
+	OpenGLDebugTools::EnableOpenGLDebugMessage();
+	NUT_INFO_TAG("Renderer", "启用OpenGL调试... 调试模式:同步");
 
-		glClearColor(s_RendererAPIStatus.s_ClearColor.r, s_RendererAPIStatus.s_ClearColor.g, s_RendererAPIStatus.s_ClearColor.b, s_RendererAPIStatus.s_ClearColor.a);
+	glClearColor(s_RendererAPIStatus.s_ClearColor.r, s_RendererAPIStatus.s_ClearColor.g, s_RendererAPIStatus.s_ClearColor.b, s_RendererAPIStatus.s_ClearColor.a);
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		NUT_INFO_TAG("Renderer", "启用混合... 混合函数:源Alpha, 1-源Alpha");
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	NUT_INFO_TAG("Renderer", "启用混合... 混合函数:源Alpha, 1-源Alpha");
 
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-		NUT_INFO_TAG("Renderer", "启用深度测试... 深度函数:小于等于");
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	NUT_INFO_TAG("Renderer", "启用深度测试... 深度函数:小于等于");
 
-		glEnable(GL_STENCIL_TEST);
-		glStencilFunc(GL_ALWAYS, 0xFF, 0xFF);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-		NUT_INFO_TAG("Renderer", "启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换");
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_ALWAYS, 0xFF, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	NUT_INFO_TAG("Renderer", "启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换");
 
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glFrontFace(GL_CCW);
-		NUT_INFO_TAG("Renderer", "启用剔除面... 剔除面:背面, 正面朝向:逆时针");
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+	NUT_INFO_TAG("Renderer", "启用剔除面... 剔除面:背面, 正面朝向:逆时针");
 
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-		NUT_INFO_TAG("Renderer", "启用多重采样... 启用无缝立方体贴图");
+	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+	NUT_INFO_TAG("Renderer", "启用多重采样... 启用无缝立方体贴图");
 
 
-		GLenum err = glGetError();
-		while (err != GL_NO_ERROR) {
-			NUT_ERROR_TAG("Renderer", "OpenGL错误: {0}", err);
-			err = glGetError();
-		}
-		});
+	GLenum err = glGetError();
+	while (err != GL_NO_ERROR) {
+		NUT_ERROR_TAG("Renderer", "OpenGL错误: {0}", err);
+		err = glGetError();
+	}
 }
 
 void Nut::RendererAPI::Shutdown()

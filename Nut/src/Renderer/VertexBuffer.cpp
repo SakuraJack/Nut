@@ -8,7 +8,7 @@
 Nut::VertexBuffer::VertexBuffer(void* data, uint64_t size, VertxBufferUsage usage)
 	: m_Size(size)
 {
-	m_LocalData.Copy(data, size);
+	m_LocalData = Buffer::Copy(data, size);
 	m_Usage = usage;
 	Renderer::Submit([this]() {
 		glCreateBuffers(1, &m_BufferID);
