@@ -129,7 +129,7 @@ void Nut::Window::Init(const WindowProps& props)
 	});
 
 	glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos) {
-		//NUT_INFO_TAG("Window", "光标移动到 {0}, {1}", xPos, yPos);
+		NUT_INFO_TAG("Window", "光标移动到 {0}, {1}", xPos, yPos);
 		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		MouseMovedEvent event((float)xPos, (float)yPos);
 		data.EventCallback(event);

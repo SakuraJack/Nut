@@ -18,16 +18,6 @@ Nut::Material::Material(const std::shared_ptr<Shader>& shader, const std::string
 
 void Nut::Material::Invalidate()
 {
-	m_Textures.clear();
-	int index = 0;
-	for (auto& [name, resource] : m_Shader->GetResourceDeclarations())
-	{
-		// TODO: 从资源管理器中获取纹理
-		// m_Textures.insert({ name, AssetManager::GetAsset(name) });
-		m_Textures.insert({ name, TextureManager::GetTexture(name) });
-		m_TextureSlots.insert({ name, index });
-		index++;
-	}
 }
 
 void Nut::Material::Bind()
@@ -40,9 +30,9 @@ void Nut::Material::Unbind()
 	m_Shader->Unbind();
 }
 
-void Nut::Material::Set(const std::string& name, int value)
+std::shared_ptr<Nut::Material> Nut::Material::Create(const std::string& name /*= "Default"*/)
 {
-	m_Shader->SetUniform(name, value);
+	return std::make_shared<Material>(Shader::Create(), name);
 }
 
 std::shared_ptr<Nut::Material> Nut::Material::Create(const std::shared_ptr<Shader>& shader, const std::string& name /*= ""*/)
@@ -57,79 +47,175 @@ std::shared_ptr<Nut::Material> Nut::Material::Copy(const std::shared_ptr<Materia
 	return newMaterial;
 }
 
-std::shared_ptr<Nut::Material> Nut::Material::Create(const std::string& name /*= "Default"*/)
+void Nut::Material::Set(const std::string& name, int value)
 {
-	return std::make_shared<Material>(Shader::Create(), name);
+	Set<int>(name, value);
 }
 
 void Nut::Material::Set(const std::string& name, float value)
 {
-	m_Shader->SetUniform(name, value);
+	Set<float>(name, value);
 }
 
 void Nut::Material::Set(const std::string& name, const glm::vec2& value)
 {
-	m_Shader->SetUniform(name, value);
+	Set<glm::vec2>(name, value);
 }
 
 void Nut::Material::Set(const std::string& name, const glm::vec3& value)
 {
-	m_Shader->SetUniform(name, value);
+	Set<glm::vec3>(name, value);
 }
 
 void Nut::Material::Set(const std::string& name, const glm::vec4& value)
 {
-	m_Shader->SetUniform(name, value);
+	Set<glm::vec4>(name, value);
 }
 
 void Nut::Material::Set(const std::string& name, const glm::ivec2& value)
 {
-	m_Shader->SetUniform(name, value);
+	Set<glm::ivec2>(name, value);
 }
 
 void Nut::Material::Set(const std::string& name, const glm::ivec3& value)
 {
-	m_Shader->SetUniform(name, value);
+	Set<glm::ivec3>(name, value);
 }
 
 void Nut::Material::Set(const std::string& name, const glm::ivec4& value)
 {
-	m_Shader->SetUniform(name, value);
+	Set<glm::ivec4>(name, value);
 }
 
 void Nut::Material::Set(const std::string& name, const glm::mat3& value)
 {
-	m_Shader->SetUniform(name, value);
+	Set<glm::mat3>(name, value);
 }
 
 void Nut::Material::Set(const std::string& name, const glm::mat4& value)
 {
-	m_Shader->SetUniform(name, value);
+	Set<glm::mat4>(name, value);
+}
+
+const Nut::ShaderUniform* Nut::Material::FindUniformInUniformBuffer(const std::string& name)
+{
+	const auto& shaderBuffers = m_Shader->GetUniformBuffers();
+
+	if (shaderBuffers.size() > 0)
+	{
+		for (const auto& [bufferName, buffer] : shaderBuffers)
+		{
+			auto it = buffer.Uniforms.find(name);
+			if (it != buffer.Uniforms.end())
+			{
+				return &it->second;
+			}
+		}
+	}
+	return nullptr;
+}
+
+const Nut::ShaderUniform* Nut::Material::FindUniformInStorageBuffer(const std::string& name)
+{
+	const auto& shaderBuffers = m_Shader->GetStorageBuffers();
+
+	if (shaderBuffers.size() > 0)
+	{
+		for (const auto& [bufferName, buffer] : shaderBuffers)
+		{
+			auto it = buffer.Uniforms.find(name);
+			if (it != buffer.Uniforms.end())
+			{
+				return &it->second;
+			}
+		}
+	}
+	return nullptr;
+}
+
+const Nut::ShaderResourceDeclaration* Nut::Material::FindResourceInUniformBuffer(const std::string& name)
+{
+	const auto& shaderResources = m_Shader->GetResourceDeclarations();
+	if (shaderResources.find(name) != shaderResources.end())
+	{
+		return &shaderResources.at(name);
+	}
+	return nullptr;
 }
 
 void Nut::Material::Set(const std::string& name, const std::shared_ptr<Texture2D>& texture)
 {
-	if (m_TextureSlots.find(name) != m_TextureSlots.end())
-	{
-		m_Textures[name] = texture;
-		uint32_t slot = m_TextureSlots[name];
-		m_Textures[name]->Bind(slot);
-		m_Shader->SetUniform(name, (int)slot);
-	}
+
 }
 
 void Nut::Material::Set(const std::string& name, const std::shared_ptr<TextureCube>& texture)
 {
-	if (m_TextureSlots.find(name) != m_TextureSlots.end())
-	{
-		m_Textures[name] = texture;
-		uint32_t slot = m_TextureSlots[name];
-		m_Textures[name]->Bind(slot);
-		m_Shader->SetUniform(name, (int)slot);
-	}
+
 }
 
 void Nut::Material::Set(const std::string& name, const std::shared_ptr<Image2D>& image)
 {
 
 }
+
+float& Nut::Material::GetFloat(const std::string& name)
+{
+	return Get<float>(name);
+}
+
+int& Nut::Material::GetInt(const std::string& name)
+{
+	return Get<int>(name);
+}
+
+glm::vec2& Nut::Material::GetVec2(const std::string& name)
+{
+	return Get<glm::vec2>(name);
+}
+
+glm::vec3& Nut::Material::GetVec3(const std::string& name)
+{
+	return Get<glm::vec3>(name);
+}
+
+glm::vec4& Nut::Material::GetVec4(const std::string& name)
+{
+	return Get<glm::vec4>(name);
+}
+
+glm::ivec2& Nut::Material::GetIVec2(const std::string& name)
+{
+	return Get<glm::ivec2>(name);
+}
+
+glm::ivec3& Nut::Material::GetIVec3(const std::string& name)
+{
+	return Get<glm::ivec3>(name);
+}
+
+glm::ivec4& Nut::Material::GetIVec4(const std::string& name)
+{
+	return Get<glm::ivec4>(name);
+}
+
+glm::mat3& Nut::Material::GetMat3(const std::string& name)
+{
+	return Get<glm::mat3>(name);
+}
+
+glm::mat4& Nut::Material::GetMat4(const std::string& name)
+{
+	return Get<glm::mat4>(name);
+}
+
+uint32_t& Nut::Material::GetUInt(const std::string& name)
+{
+	return Get<uint32_t>(name);
+}
+
+bool& Nut::Material::GetBool(const std::string& name)
+{
+	return Get<bool>(name);
+}
+
+

@@ -37,6 +37,7 @@ workspace "Nut"
 
     filter "system:windows"
         buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" }
+        defines { "NT_PLATFORM_WINDOWS" }
 
 group "Dependencies"
     include "Nut/vendor/GLFW"

@@ -3,6 +3,8 @@
 #include "RendererAPI.h"
 #include "RenderCommandQueue.h"
 #include "Thread/RenderThread.h"
+#include "Pipeline.h"
+#include "Mesh.h"
 
 namespace Nut {
 	class Renderer
@@ -35,12 +37,19 @@ namespace Nut {
 		static void Shutdown();
 		static void BeginFrame();
 		static void EndFrame();
+
+		// TODO: ·â×°½øPipeline
 		static void SetViewport(int x, int y, int width, int height);
 		static void Resize(uint32_t width, uint32_t height);
 		static void SetClearColor(const glm::vec4& color);
 		static void Clear();
-
 		static void SetScissor(glm::vec4 scissor, bool enabled = false);
+
+		static void RenderStaticMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh>, uint32_t submeshIndex, std::shared_ptr<Material> material);
+		static void RenderSubmeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, uint32_t submeshIndex, std::shared_ptr<Material> material, uint32_t instanceCount);
+		static void RenderMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
+		static void RenderMeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, uint32_t instanceCount);
+
 	public:
 		static RendererAPIStatus GetStatus() { return RendererAPI::GetRendererAPIStatus(); }
 	};

@@ -16,7 +16,7 @@ namespace Nut {
 		~Entity() {}
 
 		template<typename T, typename... Args>
-		void AddComponent(Args& ...args);
+		T& AddComponent(Args&& ...args);
 
 		template<typename T>
 		T& GetComponent();
