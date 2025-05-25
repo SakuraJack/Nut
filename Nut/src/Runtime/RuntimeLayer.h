@@ -31,5 +31,6 @@ namespace Nut {
 		std::shared_ptr<MeshSource> m_MeshSource;
 		std::shared_ptr<StaticMesh> m_Mesh;
 		EditorCamera m_EditorCamera;
+		glm::vec2 GetMousePosInLocal(float x, float y);
 	};
 }

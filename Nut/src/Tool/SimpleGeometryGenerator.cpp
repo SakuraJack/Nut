@@ -17,7 +17,7 @@ std::shared_ptr<Nut::MeshSource> Nut::GeometryGenerator::CreateCube(const glm::v
 	};
 
 	std::vector<SubMesh> submeshes = {
-		SubMesh{0, 0, 8, 12, glm::mat4(1.0f), glm::mat4(1.0f)}
+		SubMesh{0, 0, 0, 8, 12, glm::mat4(1.0f), glm::mat4(1.0f)}
 	};
 
 	std::vector<Index> indices = {
@@ -93,11 +93,58 @@ std::shared_ptr<Nut::MeshSource> Nut::GeometryGenerator::CreateSphere(const glm:
 		}
 	}
 
-	submeshes.push_back(SubMesh{ 0, 0, static_cast<unsigned int>(vertices.size()), static_cast<unsigned int>(indices.size()), glm::mat4(1.0f), glm::mat4(1.0f) });
+	submeshes.push_back(SubMesh{ 0, 0, 0, static_cast<uint32_t>(vertices.size()), static_cast<uint32_t>(indices.size()), glm::mat4(1.0f), glm::mat4(1.0f) });
 
 	for (auto& vertex : vertices) {
 		vertex.Position += pos;
 	}
 
 	return std::make_shared<MeshSource>(vertices, indices, submeshes);
+}
+
+std::shared_ptr<Nut::MeshSource> Nut::GeometryGenerator::CreateCircle(const glm::vec3& pos /*= glm::vec3(0.f)*/, float radius /*= 1.0f*/, int sliceCount /*= 128*/)
+{
+	std::vector<Vertex> vertices;
+	std::vector<SubMesh> submeshes;
+	std::vector<Index> indices;
+
+	// Generate vertices
+	for (int i = 0; i < sliceCount; ++i) {
+		float theta = 2.0f * glm::pi<float>() * i / sliceCount;
+
+		glm::vec3 position(
+			radius * cosf(theta),
+			radius * sinf(theta),
+			0.0f
+		);
+
+		glm::vec3 normal(0.f, 1.f, 0.f);
+		glm::vec2 texCoord(static_cast<float>(i) / sliceCount, 0.5f);
+
+		vertices.push_back(Vertex(position, normal, texCoord, glm::vec3(1.f), glm::vec3(0.f)));
+	}
+	vertices.insert(vertices.begin(), Vertex(pos, glm::vec3(0.f, 1.f, 0.f), glm::vec2(0.f), glm::vec3(1.f), glm::vec3(0.f)));
+
+	// Generate indices
+	for (int i = 1; i <= sliceCount; ++i) {
+		int first = i;
+		int second = first + 1;
+
+		if (i == sliceCount) {
+			second = 1;
+		}
+
+		indices.push_back(Index(second, 0, first));
+	}
+
+	submeshes.push_back(SubMesh{ 0, 0, 0, static_cast<uint32_t>(vertices.size()), static_cast<uint32_t>(indices.size() * 3), glm::mat4(1.0f), glm::mat4(1.0f) });
+
+	for (auto& vertex : vertices) {
+		vertex.Position += pos;
+	}
+
+	std::shared_ptr<MeshSource> meshSource = std::make_shared<MeshSource>(vertices, indices, submeshes);
+	meshSource->m_Materials.push_back(Material::Create(Shader::Create("EdgeHighlightShader")));
+
+	return meshSource;
 }

@@ -113,6 +113,20 @@ namespace Nut {
 			case ImageFormat::DEPTH24STENCIL8: return GL_UNSIGNED_INT_24_8;
 			}
 		}
+
+		static TextureType SPVDimensionToTextureType(uint32_t dim) {
+			switch (dim)
+			{
+			case 0:
+				return TextureType::Texture1D;
+			case 1:
+				return TextureType::Texture2D;
+			case 2:
+				return TextureType::Texture3D;
+			case 3:
+				return TextureType::TextureCube;
+			}
+		}
 	}
 }
 

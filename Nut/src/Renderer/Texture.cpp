@@ -196,7 +196,7 @@ Nut::TextureCube::~TextureCube()
 Nut::TextureCube::TextureCube(const TextureSpecification& spec, std::vector<Buffer> imageData)
 	: m_Specification(spec)
 {
-	if (m_ImageDatas.size() != 6) {
+	if (imageData.size() != 6) {
 		NUT_ERROR_TAG("Texture", "立方体纹理必须有六幅图像, 但只获得了 {0}", m_ImageDatas.size());
 		return;
 	}

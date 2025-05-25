@@ -18,6 +18,8 @@ namespace Nut {
 		void AddVertexBuffers(const std::vector<std::shared_ptr<VertexBuffer>>& vertexBuffers); // 绑定多个顶点缓冲
 		void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer); // 绑定索引缓冲
 
+		RenderID GetID() const { return m_VertexArrayID; } // 获取顶点数组对象ID
+
 	public:
 		static std::shared_ptr<VertexArray> Create(); // 创建顶点数组对象
 		static std::shared_ptr<VertexArray> Create(const std::shared_ptr<VertexBuffer>& vertexBuffer, const std::shared_ptr<IndexBuffer>& indexBuffer); // 创建顶点数组对象并绑定顶点缓冲和索引缓冲

@@ -100,7 +100,6 @@ namespace Nut {
 		uint32_t GetMipLevel() const override { return m_Specification.MipLevels; }
 		TextureType GetType() const override { return m_Specification.Type; }
 		RenderID GetTextureID() const { return m_TextureID; }
-		uint32_t GetTextureSlot() const { return m_TextureSlot; }
 
 		static std::shared_ptr<TextureCube> Create(const TextureSpecification& spec);
 		static std::shared_ptr<TextureCube> Create(const TextureSpecification& spec, std::vector<Buffer> imageDatas);
@@ -111,6 +110,5 @@ namespace Nut {
 		std::vector<Buffer> m_ImageDatas;  // ÃæÊý¾Ý Ë³Ðò: +X, -X, +Y, -Y, +Z, -Z
 		std::filesystem::path m_FilePath;
 		RenderID m_TextureID;
-		uint32_t m_TextureSlot = -1;
 	};
 }

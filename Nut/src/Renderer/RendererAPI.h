@@ -1,6 +1,10 @@
 #pragma once
 #include "glm/glm.hpp"
 
+#include "Pipeline.h"
+#include "Mesh.h"
+#include "Asset/MaterialAsset.h"
+
 namespace Nut {
 	enum class PrimitiveType
 	{
@@ -142,13 +146,10 @@ namespace Nut {
 		static void SetCullFaceMode(CullFaceMode mode); // 设置剔除面模式
 
 		// 绘制图元
-		static void DrawArrays(PrimitiveType mode, int first, int count); // 绘制数组
-		static void DrawElements(PrimitiveType mode, int count, int type, const void* indices); // 绘制元素
-		static void DrawElementsInstanced(PrimitiveType mode, int count, int type, const void* indices, int instanceCount); // 绘制实例化元素
-		static void DrawArraysInstanced(PrimitiveType mode, int first, int count, int instanceCount); // 绘制实例化数组
-		static void DrawArraysIndirect(PrimitiveType mode, const void* indirect); // 绘制间接数组
-		static void DrawElementsIndirect(PrimitiveType mode, int count, int type, const void* indices, const void* indirect); // 绘制间接元素
-		static void DrawArraysInstancedBaseInstance(PrimitiveType mode, int first, int count, int instanceCount, int baseInstance); // 绘制实例化数组基础实例
+		static void RenderStaticMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable);
+		static void RenderSubmeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, uint32_t instanceCount);
+		static void RenderMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MaterialTable> materialTable);
+		static void RenderMeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MaterialTable> materialTable, uint32_t instanceCount);
 
 	protected:
 		static RendererAPIStatus s_RendererAPIStatus; // 渲染器状态

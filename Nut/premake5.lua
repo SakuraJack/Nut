@@ -27,6 +27,7 @@ project "Nut"
     optimize "Off"
     symbols "On"
     AddExternalDependencies("Debug", targetDirStr)
+    defines { "NT_DEBUG"}
     
     filter "configurations:Release"
     optimize "On"

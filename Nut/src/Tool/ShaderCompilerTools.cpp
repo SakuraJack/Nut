@@ -2,6 +2,7 @@
 #include "ShaderCompilerTools.h"
 #include "Utils/StringUtils.h"
 #include "Utils/ShaderUtils.h"
+#include "Utils/ImageUtils.h"
 #include "shaderc/shaderc.hpp"
 #include "spirv_cross/spirv_cross.hpp"
 #include "Renderer/Renderer.h"
@@ -12,11 +13,19 @@ namespace Nut {
 		{
 			return "Resources/Cache/Shaders/";	//  着色器缓存路径
 		}
+
+		static void CreateCacheDirectory()
+		{
+			std::string cacheDirectory = GetShaderCachePath();
+			if (!std::filesystem::exists(cacheDirectory)) {
+				std::filesystem::create_directories(cacheDirectory);	//  创建缓存目录
+			}
+		}
 	}
 }
 
-Nut::ShaderCompiler::ShaderCompiler(const std::string& shaderSourcePath)
-	: m_ShaderSourcePath(shaderSourcePath)
+Nut::ShaderCompiler::ShaderCompiler(const std::string& shaderSourcePath, bool useOptimization)
+	: m_ShaderSourcePath(shaderSourcePath), m_UseOptimization(useOptimization)
 {
 
 }
@@ -26,25 +35,42 @@ Nut::ShaderCompiler::~ShaderCompiler()
 
 }
 
-bool Nut::ShaderCompiler::Compile()
+bool Nut::ShaderCompiler::Reload(bool forceCompile)
 {
-	PreprocessShader();
-	bool succeed = CompileOrGetBinaries(m_ShaderBinaries, true);	//  编译或获取二进制文件
-	if (!succeed) return false;
-	for (auto& [stage, source] : m_ShaderBinaries) {
-		Reflect(source, Shader::s_UniformBuffers, ShaderUtils::GLShaderStageToString(stage));		//  反射Uniform缓冲区
+	m_ShaderSource.clear();
+	m_SPIRVData.clear();
+
+	Utils::CreateCacheDirectory();
+	const std::string source = Nut::Utils::String::ReadFileAndSkipBOM(m_ShaderSourcePath);
+	if (source.empty()) {
+		NUT_ERROR_TAG("Shader", "加载着色器文件失败: {0}", m_ShaderSourcePath);
+		return false;
 	}
+
+	NUT_TRACE_TAG("Shader", "加载着色器文件: {0}", m_ShaderSourcePath);
+	m_ShaderSource = PreprocessShader(source);	//  预处理着色器
+	bool compileSuccess = CompileOrGetBinaries(m_SPIRVData, forceCompile);	//  编译或获取二进制文件
+	if (!compileSuccess) {
+		NUT_ERROR_TAG("Shader", "编译着色器失败: {0}", m_ShaderSourcePath);
+		return false;
+	}
+
+	for (auto& [stage, source] : m_SPIRVData) {
+		const std::string stageExtension = ShaderUtils::GLShaderStageToString(stage);
+		Reflect(source, stageExtension);
+	}
+
 	return true;
 }
 
-void Nut::ShaderCompiler::PreprocessShader()
+std::unordered_map<GLenum, std::string> Nut::ShaderCompiler::PreprocessShader(const std::string& inputSource)
 {
 	std::stringstream sourceStream;
-	std::string fileString = Nut::Utils::String::ReadFileAndSkipBOM(m_ShaderSourcePath);	//  读取文件并跳过BOM
-	Nut::Utils::String::CopyWithoutComments(fileString.begin(), fileString.end(), std::ostream_iterator<char>(sourceStream));
+	Nut::Utils::String::CopyWithoutComments(inputSource.begin(), inputSource.end(), std::ostream_iterator<char>(sourceStream));
 	std::string source = sourceStream.str();
 
 	std::vector<std::pair<GLenum, size_t>> stagePositions;
+	std::unordered_map<GLenum, std::string> shaderSources;
 
 	size_t startOfStage = 0;
 	size_t pos = source.find_first_of('#');
@@ -73,7 +99,7 @@ void Nut::ShaderCompiler::PreprocessShader()
 			unsigned int firstLineEnd = subSource.find_first_of("\r\n");
 			std::string resSource = subSource.substr(firstLineEnd + 1);
 			resSource = Nut::Utils::String::TrimWhitespace(resSource);
-			m_ShaderSource[stagePositions[index].first] = resSource;
+			shaderSources[stagePositions[index].first] = resSource;
 		}
 		else if (index < stagePositions.size() - 1)
 		{
@@ -83,9 +109,10 @@ void Nut::ShaderCompiler::PreprocessShader()
 			unsigned int firstLineEnd = subSource.find_first_of("\r\n");
 			std::string resSource = subSource.substr(firstLineEnd + 1);
 			resSource = Nut::Utils::String::TrimWhitespace(resSource);
-			m_ShaderSource[stagePositions[index].first] = resSource;
+			shaderSources[stagePositions[index].first] = resSource;
 		}
 	}
+	return shaderSources;
 }
 
 void Nut::ShaderCompiler::TryGetCachedBinaries(const std::filesystem::path& cachePath, const std::string& extension, std::vector<uint32_t>& outputBinaries)
@@ -103,7 +130,7 @@ void Nut::ShaderCompiler::TryGetCachedBinaries(const std::filesystem::path& cach
 	fclose(f);
 }
 
-void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::unordered_map<std::string, ShaderUniformBuffer>& shaderUniformBuffers, std::string stage)
+void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::string stage)
 {
 	spirv_cross::Compiler compiler(data);
 	spirv_cross::ShaderResources resources = compiler.get_shader_resources();
@@ -123,8 +150,8 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::unordered_ma
 		uint32_t bufferSize = compiler.get_declared_struct_size(bufferType);	//  获取缓冲区大小
 		std::string bufferName = ubo.name;
 
-		if (shaderUniformBuffers.find(bufferName) == shaderUniformBuffers.end()) {
-			ShaderUniformBuffer& buffer = shaderUniformBuffers[bufferName];
+		if (m_ReflectionData.UniformBuffers.find(bufferName) == m_ReflectionData.UniformBuffers.end()) {
+			ShaderUniformBuffer& buffer = m_ReflectionData.UniformBuffers[bufferName];
 			buffer.Name = bufferName;
 			buffer.Binding = bindingPoint;
 			buffer.Size = bufferSize;
@@ -135,25 +162,69 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::unordered_ma
 				auto size = compiler.get_declared_struct_member_size(bufferType, i);
 				auto offset = compiler.type_struct_member_offset(bufferType, i);
 
-				ShaderUniform uniform(memberName, ShaderUtils::SPIRTypeToShaderUniformType(type), size, offset);	//  创建Uniform变量
+				ShaderUniform uniform(memberName, bufferName, ShaderUtils::SPIRTypeToShaderUniformType(type), size, offset);	//  创建Uniform变量
 				buffer.Uniforms.insert({ memberName, uniform });	//  插入Uniform变量
 			}
 
-			Renderer::Submit([&buffer, bufferSize]() {	//  提交渲染器
+			Renderer::Submit([&buffer, bufferSize]() {
 				glCreateBuffers(1, &buffer.BufferID);	//  创建Uniform缓冲区
 				glNamedBufferData(buffer.BufferID, bufferSize, nullptr, GL_DYNAMIC_DRAW);	//  分配缓冲区内存
 				glBindBufferBase(GL_UNIFORM_BUFFER, buffer.Binding, buffer.BufferID);	//  绑定Uniform缓冲区
 				});
 		}
 		else {
-			ShaderUniformBuffer& buffer = shaderUniformBuffers[bufferName];
+			ShaderUniformBuffer& buffer = m_ReflectionData.UniformBuffers[bufferName];
 			if (bufferSize > buffer.Size) {
 				buffer.Size = bufferSize;
-				Renderer::Submit([&buffer]() {	//  提交渲染器
+				Renderer::Submit([&buffer]() {
 					glDeleteBuffers(1, &buffer.BufferID);	//  删除旧的Uniform缓冲区
 					glCreateBuffers(1, &buffer.BufferID);	//  创建Uniform缓冲区
 					glNamedBufferData(buffer.BufferID, buffer.Size, nullptr, GL_DYNAMIC_DRAW);	//  分配缓冲区内存
 					glBindBufferBase(GL_UNIFORM_BUFFER, buffer.Binding, buffer.BufferID);	//  绑定Uniform缓冲区
+					});
+			}
+		}
+	}
+
+	// Storage缓冲区
+	for (const auto& ssbo : resources.storage_buffers) {
+		auto& bufferType = compiler.get_type(ssbo.base_type_id);
+		int memberCount = bufferType.member_types.size();
+		uint32_t bindingPoint = compiler.get_decoration(ssbo.id, spv::DecorationBinding);
+		uint32_t bufferSize = compiler.get_declared_struct_size(bufferType);
+		std::string bufferName = ssbo.name;
+
+		if (m_ReflectionData.StorageBuffers.find(bufferName) == m_ReflectionData.StorageBuffers.end()) {
+			ShaderStorageBuffer& buffer = m_ReflectionData.StorageBuffers[bufferName];
+			buffer.Name = bufferName;
+			buffer.Binding = bindingPoint;
+			buffer.Size = bufferSize;
+			buffer.Uniforms.reserve(memberCount);
+			for (int i = 0; i < memberCount; ++i) {
+				auto type = compiler.get_type(bufferType.member_types[i]);
+				const auto& memberName = compiler.get_member_name(bufferType.self, i);
+				auto size = compiler.get_declared_struct_member_size(bufferType, i);
+				auto offset = compiler.type_struct_member_offset(bufferType, i);
+
+				ShaderUniform uniform(memberName, bufferName, ShaderUtils::SPIRTypeToShaderUniformType(type), size, offset);
+				buffer.Uniforms.insert({ memberName, uniform });
+			}
+
+			Renderer::Submit([&buffer, bufferSize]() {	
+				glCreateBuffers(1, &buffer.BufferID);	
+				glNamedBufferData(buffer.BufferID, bufferSize, nullptr, GL_DYNAMIC_DRAW);
+				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, buffer.Binding, buffer.BufferID);
+				});
+		}
+		else {
+			ShaderStorageBuffer& buffer = m_ReflectionData.StorageBuffers[bufferName];
+			if (bufferSize > buffer.Size) {
+				buffer.Size = bufferSize;
+				Renderer::Submit([&buffer]() {
+					glDeleteBuffers(1, &buffer.BufferID);
+					glCreateBuffers(1, &buffer.BufferID);
+					glNamedBufferData(buffer.BufferID, buffer.Size, nullptr, GL_DYNAMIC_DRAW);
+					glBindBufferBase(GL_SHADER_STORAGE_BUFFER, buffer.Binding, buffer.BufferID);
 					});
 			}
 		}
@@ -165,16 +236,15 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::unordered_ma
 		auto& type = compiler.get_type(resource.base_type_id);
 		auto bindingPoint = compiler.get_decoration(resource.id, spv::DecorationBinding);
 		const auto& name = compiler.get_name(resource.id);
-		uint32_t dimension = type.image.dim;
-		m_Resources[name] = { name, bindingPoint, dimension };
-
+		TextureType dimension = Nut::ImageUtils::SPVDimensionToTextureType(type.image.dim);
+		m_ReflectionData.Resources[name] = { name, bindingPoint, dimension };
 	}
 
-	// 裸露Uniform
+	// 裸露Uniform TODO: 之后可能会移除
 	for (const auto& uniform : resources.gl_plain_uniforms) {
 		std::string name = compiler.get_name(uniform.id);
 		uint32_t location = compiler.get_decoration(uniform.id, spv::DecorationLocation);
-		m_Uniforms[name] = location;
+		m_ReflectionData.m_UniformsLocations[name] = location;
 	}
 }
 
@@ -194,14 +264,15 @@ bool Nut::ShaderCompiler::CompileOrGetBinaries(std::unordered_map<GLenum, std::v
 			shaderc::CompileOptions ops;
 			ops.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
 			ops.AddMacroDefinition("OPENGL");
-			const bool optimize = m_UseOptimization;
+			// 编译计算着色器禁用优化(shaderc内部问题)
+			const bool optimize = m_UseOptimization && stage != GL_COMPUTE_SHADER;
 			if (optimize) {
 				ops.SetOptimizationLevel(shaderc_optimization_level_performance);
 			}
 
 			shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(shaderSource, ShaderUtils::GLShaderStageToShaderc(stage), m_ShaderSourcePath.string().c_str(), ops);
 			if (module.GetCompilationStatus() != shaderc_compilation_status_success) {
-				NUT_ERROR_TAG("Shader", "Shader compilation failed: {0}", module.GetErrorMessage());
+				NUT_ERROR_TAG("Shader", "着色器编译失败: {0}", module.GetErrorMessage());
 				return false;
 			}
 			shaderBinaries[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());

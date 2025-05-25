@@ -416,3 +416,34 @@ void Nut::RendererAPI::SetCullFaceMode(CullFaceMode mode)
 		NUT_INFO_TAG("Renderer", "设置剔除面模式: {0}", (int)mode);
 		});
 }
+
+void Nut::RendererAPI::RenderStaticMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable)
+{
+	Renderer::Submit([pipeline, mesh, submeshIndex, materialTable]() {
+		std::shared_ptr<MeshSource> meshSource = mesh->GetMeshSource();
+		glBindVertexArray(meshSource->GetVertexArray()->GetID());
+
+		const auto& submeshes = meshSource->GetSubmeshes();
+		const SubMesh& submesh = submeshes[submeshIndex];
+		std::shared_ptr<MaterialTable> meshMaterialTable = mesh->GetMaterials();
+		uint32_t materialCount = meshMaterialTable->GetMaterialCount();
+		AssetHandle materialHandle = materialTable->HasMaterial(submesh.MaterialIndex ? materialTable->GetMaterial(submesh.MaterialIndex) : meshMaterialTable->GetMaterial(submesh.MaterialIndex));
+		// TODO: 交给每个Project的AssetManager来处理
+		//std::shared_ptr<MaterialAsset> materialAsset = AssetManager::GetAsset<MaterialAsset>(materialHandle);
+		// TODO: Fix this
+		/*std::shared_ptr<MaterialAsset> materialAsset = mesh->m_MaterialAssets[submeshIndex];
+		std::shared_ptr<Material> material = materialAsset->GetMaterial();*/
+		std::shared_ptr<Material> material = mesh->GetMeshSource()->GetMaterials()[submeshIndex];
+		glUseProgram(material->GetShader()->GetShaderID());
+
+		for (auto& [name, buffer] : material->GetUniformBuffers()) {
+			RenderID id = material->GetShader()->GetUniformBuffers()[name].BufferID;
+			glNamedBufferSubData(id, 0, (uint32_t)buffer.Size, buffer.Data);
+		}
+		for (auto& [name, buffer] : material->GetStorageBuffers()) {
+			RenderID id = material->GetShader()->GetStorageBuffers()[name].BufferID;
+			glNamedBufferSubData(id, 0, (uint32_t)buffer.Size, buffer.Data);
+		}
+		glDrawElements(GL_TRIANGLES, submesh.IndexCount, GL_UNSIGNED_INT, 0);
+		});
+}
