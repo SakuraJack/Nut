@@ -2,6 +2,7 @@
 #include "ShaderCompilerTools.h"
 #include "Utils/StringUtils.h"
 #include "Utils/ShaderUtils.h"
+#include "Utils/ImageUtils.h"
 #include "shaderc/shaderc.hpp"
 #include "spirv_cross/spirv_cross.hpp"
 #include "Renderer/Renderer.h"
@@ -161,7 +162,7 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::string stage
 				auto size = compiler.get_declared_struct_member_size(bufferType, i);
 				auto offset = compiler.type_struct_member_offset(bufferType, i);
 
-				ShaderUniform uniform(memberName, ShaderUtils::SPIRTypeToShaderUniformType(type), size, offset);	//  创建Uniform变量
+				ShaderUniform uniform(memberName, bufferName, ShaderUtils::SPIRTypeToShaderUniformType(type), size, offset);	//  创建Uniform变量
 				buffer.Uniforms.insert({ memberName, uniform });	//  插入Uniform变量
 			}
 
@@ -205,7 +206,7 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::string stage
 				auto size = compiler.get_declared_struct_member_size(bufferType, i);
 				auto offset = compiler.type_struct_member_offset(bufferType, i);
 
-				ShaderUniform uniform(memberName, ShaderUtils::SPIRTypeToShaderUniformType(type), size, offset);
+				ShaderUniform uniform(memberName, bufferName, ShaderUtils::SPIRTypeToShaderUniformType(type), size, offset);
 				buffer.Uniforms.insert({ memberName, uniform });
 			}
 
@@ -235,9 +236,8 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::string stage
 		auto& type = compiler.get_type(resource.base_type_id);
 		auto bindingPoint = compiler.get_decoration(resource.id, spv::DecorationBinding);
 		const auto& name = compiler.get_name(resource.id);
-		uint32_t dimension = type.image.dim;
+		TextureType dimension = Nut::ImageUtils::SPVDimensionToTextureType(type.image.dim);
 		m_ReflectionData.Resources[name] = { name, bindingPoint, dimension };
-
 	}
 
 	// 裸露Uniform TODO: 之后可能会移除

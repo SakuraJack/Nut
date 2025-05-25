@@ -7,6 +7,7 @@
 #include "VertexArray.h"
 #include "Shader.h"
 #include "Material.h"
+#include "Asset/MaterialAsset.h"
 
 namespace Nut {
 	struct Vertex
@@ -34,10 +35,11 @@ namespace Nut {
 	class SubMesh
 	{
 	public:
-		unsigned int m_BaseVertex;
-		unsigned int m_BaseIndex;
-		unsigned int m_VertexCount;
-		unsigned int m_IndexCount;
+		uint32_t BaseVertex;
+		uint32_t BaseIndex;
+		uint32_t MaterialIndex;
+		uint32_t VertexCount;
+		uint32_t IndexCount;
 
 		glm::mat4 m_LocalTransform = glm::mat4(1.f); // 局部变换矩阵
 		glm::mat4 m_GlobalTransform = glm::mat4(1.f); // 全局变换矩阵
@@ -59,6 +61,7 @@ namespace Nut {
 		const std::vector<Vertex>& GetVertices() const { return m_Vertices; }
 		const std::vector<Index>& GetIndices() const { return m_Indices; }
 		std::vector<std::shared_ptr<Material>> GetMaterials() { return m_Materials; }
+		const std::vector<std::shared_ptr<Material>>& GetMaterials() const { return m_Materials; }
 		const std::string& GetFilePath() const { return m_FilePath; }
 
 		std::shared_ptr<VertexBuffer> GetVertexBuffer() const { return m_VertexBuffer; }
@@ -101,15 +104,22 @@ namespace Nut {
 		const std::shared_ptr<MeshSource> GetMeshSource() const { return m_MeshSource; }
 		void SetMeshSource(std::shared_ptr<MeshSource> meshSource) { m_MeshSource = meshSource; }
 
-		std::vector<std::shared_ptr<Material>> GetMaterials() const { return meshMaterials; }
+		std::shared_ptr<MaterialTable> GetMaterials() const { return m_Materials; }
 
 		static AssetType GetStaticType() { return AssetType::Mesh; }
 		AssetType GetType() const override { return GetStaticType(); }
 
+		// TODO: 放入AssetManager由每个项目管理
+		std::vector<std::shared_ptr<MaterialAsset>> m_MaterialAssets; 
+
 	private:
 		std::vector<uint32_t> m_Submeshes;
 		std::shared_ptr<MeshSource> m_MeshSource;
-		std::vector<std::shared_ptr<Material>> meshMaterials;
+		std::shared_ptr<MaterialTable> m_Materials;
+
+		friend class Material;
+		friend class Renderer;
+		friend class RendererAPI;
 	};
 
 	class StaticMesh : public Asset // 静态网格
@@ -128,14 +138,21 @@ namespace Nut {
 		const std::shared_ptr<MeshSource> GetMeshSource() const { return m_MeshSource; }
 		void SetMeshSource(std::shared_ptr<MeshSource> meshSource) { m_MeshSource = meshSource; }
 
-		std::vector<std::shared_ptr<Material>> GetMaterials() const { return meshMaterials; }
+		std::shared_ptr<MaterialTable> GetMaterials() const { return m_Materials; }
 
 		static AssetType GetStaticType() { return AssetType::StaticMesh; }
 		AssetType GetType() const override { return GetStaticType(); }
 
+		// TODO: 放入AssetManager由每个项目管理
+		std::vector<std::shared_ptr<MaterialAsset>> m_MaterialAssets;
+
 	private:
 		std::vector<uint32_t> m_Submeshes;
 		std::shared_ptr<MeshSource> m_MeshSource;
-		std::vector<std::shared_ptr<Material>> meshMaterials;
+		std::shared_ptr<MaterialTable> m_Materials;
+
+		friend class Material;
+		friend class Renderer;
+		friend class RendererAPI;
 	};
 }

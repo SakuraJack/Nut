@@ -70,7 +70,7 @@ namespace Nut {
 		~MaterialTable() = default;
 
 		bool HasMaterial(uint32_t materialIndex) const { return m_Materials.find(materialIndex) != m_Materials.end(); }
-		void SetMaterial(uint32_t materialIndex, std::shared_ptr<Material> material);
+		void SetMaterial(uint32_t materialIndex, AssetHandle material);
 		void ClearMaterial(uint32_t materialIndex);
 
 		AssetHandle GetMaterial(uint32_t materialIndex) const;

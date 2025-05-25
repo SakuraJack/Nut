@@ -45,10 +45,14 @@ namespace Nut {
 		static void Clear();
 		static void SetScissor(glm::vec4 scissor, bool enabled = false);
 
-		static void RenderStaticMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh>, uint32_t submeshIndex, std::shared_ptr<Material> material);
-		static void RenderSubmeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, uint32_t submeshIndex, std::shared_ptr<Material> material, uint32_t instanceCount);
-		static void RenderMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
-		static void RenderMeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, uint32_t instanceCount);
+		static void RenderStaticMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable);
+		static void RenderSubmeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, uint32_t instanceCount);
+		static void RenderMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MaterialTable> matematerialTablerial);
+		static void RenderMeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MaterialTable> materialTable, uint32_t instanceCount);
+
+		static std::shared_ptr<Texture2D> GetWhiteTexture();
+		static std::shared_ptr<Texture2D> GetBlackTexture();
+		static std::shared_ptr<TextureCube> GetWhiteCubeTexture();
 
 	public:
 		static RendererAPIStatus GetStatus() { return RendererAPI::GetRendererAPIStatus(); }

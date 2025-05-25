@@ -137,6 +137,6 @@ void Nut::Application::ProcessEvents()
 Nut::Application* Nut::CreateApplication()
 {
 	ApplicationSpecification specification;
-	specification.RenderThreadingPolicy = ThreadingPolicy::MultiThreaded;
+	specification.RenderThreadingPolicy = ThreadingPolicy::SingleThreaded;
 	return new Application(specification);
 }

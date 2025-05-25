@@ -4,6 +4,8 @@
 #include "Core.h"
 #include "Log.h"
 
+#include "glm/glm.hpp"
+
 namespace Nut
 {
 	struct Buffer

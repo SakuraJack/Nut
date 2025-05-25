@@ -10,11 +10,9 @@ namespace Nut {
 	class Material
 	{
 	public:
-		Material();
-		Material(const std::shared_ptr<Shader>& shader, const std::string& name = "Default");
+		Material(const std::shared_ptr<Shader>& shader, const std::string& name = "");
+		Material(std::shared_ptr<Material> material, const std::string& name = "");
 		virtual ~Material() = default;
-
-		void Invalidate();
 
 		void Bind();
 		void Unbind();
@@ -40,12 +38,12 @@ namespace Nut {
 		{
 			auto decl = FindUniformInUniformBuffer(name);
 			if (decl) {
-				auto& buffer = m_UniformBuffer;
+				auto& buffer = m_UniformBuffers[decl->GetBufferName()];
 				buffer.Write((byte*)&value, decl->GetSize(), decl->GetOffset());
 			}
 			decl = FindUniformInStorageBuffer(name);
 			if (decl) {
-				auto& buffer = m_StorageBuffer;
+				auto& buffer = m_StorageBuffers[decl->GetBufferName()];
 				buffer.Write((byte*)&value, decl->GetSize(), decl->GetOffset());
 			}
 		}
@@ -55,12 +53,12 @@ namespace Nut {
 		{
 			auto decl = FindUniformInUniformBuffer(name);
 			if (decl) {
-				auto& buffer = m_UniformBuffer;
+				auto& buffer = m_UniformBuffers[decl->GetBufferName()];
 				return buffer.Read<T>(decl->GetOffset());
 			}
 			decl = FindUniformInStorageBuffer(name);
 			if (decl) {
-				auto& buffer = m_StorageBuffer;
+				auto& buffer = m_StorageBuffers[decl->GetBufferName()];
 				return buffer.Read<T>(decl->GetOffset());
 			}
 		}
@@ -89,6 +87,9 @@ namespace Nut {
 		static std::shared_ptr<Material> Copy(const std::shared_ptr<Material>& material, const std::string& name = "");
 
 		std::shared_ptr<Shader> GetShader() const { return m_Shader; }	//  获取着色器
+		const std::string& GetName() const { return m_Name; }
+		std::unordered_map<std::string, Buffer> GetUniformBuffers() { return m_UniformBuffers; }
+		std::unordered_map<std::string, Buffer> GetStorageBuffers() { return m_StorageBuffers; }
 
 	private:
 		void Init();
@@ -103,8 +104,8 @@ namespace Nut {
 		std::string m_Name;
 		
 		ResourceManager m_ResourceManager;	//  资源管理器
-		Buffer m_UniformBuffer;
-		Buffer m_StorageBuffer;
+		std::unordered_map<std::string, Buffer> m_UniformBuffers;
+		std::unordered_map<std::string, Buffer> m_StorageBuffers;
 	};
 
 }

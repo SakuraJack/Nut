@@ -33,15 +33,15 @@ void Nut::RuntimeLayer::OnAttach()
 	m_MeshSource = Nut::GeometryGenerator::CreateCircle(glm::vec3(0.f), 3.0f);
 	//m_MeshSource = Nut::GeometryGenerator::CreateCube(glm::vec3(0.f), 3.0f);
 	m_Mesh = std::make_shared<StaticMesh>(m_MeshSource);
-	/*Shader::SetUniformBufferUniform("u_MatrixBuffer", "model", &m_Mesh->GetMeshSource()->GetSubmeshes()[0].m_GlobalTransform);
-	Shader::SetUniformBufferUniform("u_MatrixBuffer", "view", &m_EditorCamera.GetViewMatrix());
-	Shader::SetUniformBufferUniform("u_MatrixBuffer", "projection", &m_EditorCamera.GetProjectionMatrix());
-	Shader::SetUniformBufferUniform("u_DetectParameter", "radius", &r);
-	Shader::SetUniformBufferUniform("u_DetectParameter", "edgeWidth", &e);
-	Shader::SetUniformBufferUniform("u_DetectParameter", "edgeColor", &edgeColor);
-	Shader::SetUniformBufferUniform("u_DetectParameter", "fillColor", &fillColor);
-	Shader::SetUniformBufferUniform("u_DetectParameter", "fillAlpha", &fillAlpha);
-	Shader::SetUniformBufferUniform("u_DetectParameter", "highlightDist", &highlightDist);*/
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("model", m_Mesh->GetMeshSource()->GetSubmeshes()[0].m_GlobalTransform);
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("view", m_EditorCamera.GetViewMatrix());
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("projection", m_EditorCamera.GetProjectionMatrix());
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("radius", r);
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("edgeWidth", e);
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("edgeColor", edgeColor);
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("fillColor", fillColor);
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("fillAlpha", fillAlpha);
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("highlightDist", highlightDist);
 }
 
 void Nut::RuntimeLayer::OnDetach()
@@ -55,15 +55,19 @@ void Nut::RuntimeLayer::OnUpdate(Timestep ts)
 	Renderer::Submit([=]() {
 		glDisable(GL_CULL_FACE);
 		});
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("model", m_Mesh->GetMeshSource()->GetSubmeshes()[0].m_GlobalTransform);
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("view", m_EditorCamera.GetViewMatrix());
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("projection", m_EditorCamera.GetProjectionMatrix());
+	mousePos = GetMousePosInLocal(Input::GetMouseX(), Input::GetMouseY());
+	m_Mesh->GetMeshSource()->GetMaterials()[0]->Set("mousePos", mousePos);
+	Renderer::RenderStaticMesh(nullptr, m_Mesh, 0, m_Mesh->GetMaterials());
 	/*m_Mesh->GetMeshSource()->GetVertexArray()->Bind();
 	m_Mesh->GetMaterials()[0]->Bind();
 	Shader::SetUniformBufferUniform("u_MatrixBuffer", "view", &m_EditorCamera.GetViewMatrix());
 	Shader::SetUniformBufferUniform("u_MatrixBuffer", "projection", &m_EditorCamera.GetProjectionMatrix());
 	mousePos = GetMousePosInLocal(Input::GetMouseX(), Input::GetMouseY());
 	Shader::SetUniformBufferUniform("u_DetectParameter", "mousePos", &mousePos);*/
-	Renderer::Submit([=]() {
-		glDrawElements(GL_TRIANGLES, m_Mesh->GetMeshSource()->GetIndices().size() * 3, GL_UNSIGNED_INT, 0);
-		});
+	
 }
 
 void Nut::RuntimeLayer::OnEvent(Event& e)

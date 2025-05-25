@@ -4,7 +4,7 @@
 #include "Tool/ShaderCompilerTools.h"
 #include "Renderer.h"
 
-Nut::Shader::Shader(const std::string name /*= "DefaultShader"*/)
+Nut::Shader::Shader(const std::string name /*= ""*/)
 	: m_Name(name), m_AssetPath("Resources/Shaders/" + name + ".glsl")
 {
 	ShaderCompiler compiler(m_AssetPath);
@@ -38,6 +38,25 @@ Nut::Shader::~Shader()
 	Renderer::Submit([shaderID]() {
 		glDeleteProgram(shaderID);
 		});
+
+	// ÊÍ·Å×ÊÔ´
+	for (auto& [name, buffer] : m_ReflectionData.UniformBuffers) {
+		if (buffer.BufferID) {
+			RenderID bufferID = buffer.BufferID;
+			Renderer::Submit([bufferID]() {
+				glDeleteBuffers(1, &bufferID);
+				});
+		}
+	}
+
+	for (auto& [name, buffer] : m_ReflectionData.StorageBuffers) {
+		if (buffer.BufferID) {
+			RenderID bufferID = buffer.BufferID;
+			Renderer::Submit([bufferID]() {
+				glDeleteBuffers(1, &bufferID);
+				});
+		}
+	}
 }
 
 

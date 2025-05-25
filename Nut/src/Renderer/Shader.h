@@ -4,6 +4,7 @@
 #include "glad/glad.h"
 #include "Utils/ShaderUtils.h"
 #include "Core/Core.h"
+#include "Image.h"
 
 namespace Nut {
 
@@ -11,19 +12,21 @@ namespace Nut {
 	{
 	public:
 		ShaderUniform() = default;
-		ShaderUniform(const std::string& name, ShaderUniformType type, uint64_t size, uint64_t offset)
-			: Name(name), Type(type), Size(size), Offset(offset) {}
+		ShaderUniform(const std::string& name, const std::string& buffername, ShaderUniformType type, uint64_t size, uint64_t offset)
+			: Name(name), BufferName(buffername), Type(type), Size(size), Offset(offset) {}
 
-		const std::string& GetName() const { return Name; }	//  获取名称
-		ShaderUniformType GetType() const { return Type; }	//  获取类型
-		uint64_t GetSize() const { return Size; }	//  获取大小
-		uint64_t GetOffset() const { return Offset; }	//  获取偏移量
+		const std::string& GetName() const { return Name; }
+		const std::string& GetBufferName() const { return BufferName; }
+		ShaderUniformType GetType() const { return Type; }
+		uint64_t GetSize() const { return Size; }
+		uint64_t GetOffset() const { return Offset; }
 
 	private:
-		std::string Name;	//  名称
+		std::string Name; //  名称
+		std::string BufferName; //  缓冲区名称
 		ShaderUniformType Type;	//  类型
-		uint64_t Size;	//  大小
-		uint64_t Offset;	//  偏移量
+		uint64_t Size; //  大小
+		uint64_t Offset; //  偏移量
 	};
 
 	struct ShaderUniformBuffer {
@@ -45,8 +48,7 @@ namespace Nut {
 	struct ShaderResourceDeclaration {
 		std::string Name;	//  名称
 		uint64_t Location;	//  位置
-		// TODO: Dimension改枚举
-		uint64_t Dimensions;	//  维度
+		TextureType Dimensions;	//  维度
 	};
 
 	class Shader : public std::enable_shared_from_this<Shader>	//  允许共享指针
@@ -63,7 +65,7 @@ namespace Nut {
 		};
 
 	public:
-		Shader(const std::string name = "DefaultShader");
+		Shader(const std::string name = "");
 		Shader(const std::string& name, const std::string& shaderSourcePath);	//  构造函数
 		~Shader();	//  析构函数
 
@@ -82,7 +84,9 @@ namespace Nut {
 
 		std::string GetName() const { return m_Name; }	//  获取着色器名称
 		RenderID GetShaderID() const { return m_ShaderID; }	//  获取着色器ID
+		std::unordered_map<std::string, ShaderUniformBuffer>& GetUniformBuffers() { return m_ReflectionData.UniformBuffers; }
 		const std::unordered_map<std::string, ShaderUniformBuffer>& GetUniformBuffers() const { return m_ReflectionData.UniformBuffers; }
+		std::unordered_map<std::string, ShaderStorageBuffer>& GetStorageBuffers() { return m_ReflectionData.StorageBuffers; }
 		const std::unordered_map<std::string, ShaderStorageBuffer>& GetStorageBuffers() const { return m_ReflectionData.StorageBuffers; }
 		const std::unordered_map<std::string, ShaderResourceDeclaration>& GetResourceDeclarations() const { return m_ReflectionData.Resources; }
 		const std::unordered_map<std::string, uint32_t>& GetUniformLocations() const { return m_ReflectionData.m_UniformsLocations; }

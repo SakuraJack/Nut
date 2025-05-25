@@ -17,7 +17,7 @@ std::shared_ptr<Nut::MeshSource> Nut::GeometryGenerator::CreateCube(const glm::v
 	};
 
 	std::vector<SubMesh> submeshes = {
-		SubMesh{0, 0, 8, 12, glm::mat4(1.0f), glm::mat4(1.0f)}
+		SubMesh{0, 0, 0, 8, 12, glm::mat4(1.0f), glm::mat4(1.0f)}
 	};
 
 	std::vector<Index> indices = {
@@ -93,7 +93,7 @@ std::shared_ptr<Nut::MeshSource> Nut::GeometryGenerator::CreateSphere(const glm:
 		}
 	}
 
-	submeshes.push_back(SubMesh{ 0, 0, static_cast<unsigned int>(vertices.size()), static_cast<unsigned int>(indices.size()), glm::mat4(1.0f), glm::mat4(1.0f) });
+	submeshes.push_back(SubMesh{ 0, 0, 0, static_cast<uint32_t>(vertices.size()), static_cast<uint32_t>(indices.size()), glm::mat4(1.0f), glm::mat4(1.0f) });
 
 	for (auto& vertex : vertices) {
 		vertex.Position += pos;
@@ -137,7 +137,7 @@ std::shared_ptr<Nut::MeshSource> Nut::GeometryGenerator::CreateCircle(const glm:
 		indices.push_back(Index(second, 0, first));
 	}
 
-	submeshes.push_back(SubMesh{ 0, 0, static_cast<unsigned int>(vertices.size()), static_cast<unsigned int>(indices.size()), glm::mat4(1.0f), glm::mat4(1.0f) });
+	submeshes.push_back(SubMesh{ 0, 0, 0, static_cast<uint32_t>(vertices.size()), static_cast<uint32_t>(indices.size() * 3), glm::mat4(1.0f), glm::mat4(1.0f) });
 
 	for (auto& vertex : vertices) {
 		vertex.Position += pos;
