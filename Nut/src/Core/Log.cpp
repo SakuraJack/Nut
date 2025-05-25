@@ -28,9 +28,15 @@ void Nut::Log::Init()
 	s_Logger = std::make_shared<spdlog::logger>("Nut Log", sinks.begin(), sinks.end());
 	s_Logger->set_level(spdlog::level::trace); // 设置日志级别
 
+	// TODO: 读取配置文件设置日志级别
 	s_EnabledTags["Window"] = { true, Level::Trace };
 	s_EnabledTags["Renderer"] = { true, Level::Trace };
 	s_EnabledTags["OpenGL"] = { true, Level::Warn };
+	s_EnabledTags["Shader"] = { true, Level::Trace };
+	s_EnabledTags["Texture"] = { true, Level::Trace };
+	s_EnabledTags["VertexArray"] = { true, Level::Trace };
+	s_EnabledTags["Memory"] = { true, Level::Trace };
+	s_EnabledTags["Timer"] = { true, Level::Trace };
 }
 
 void Nut::Log::ShutDown()

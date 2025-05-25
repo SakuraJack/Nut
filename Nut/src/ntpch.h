@@ -7,5 +7,7 @@
 #include <regex>
 #include <fstream>
 #include <sstream>
+#include <string_view>
+#include <iostream>
 
 #include "Core/Log.h"

@@ -3,39 +3,58 @@
 #include "Core/Log.h"
 #include "glad/glad.h"
 
-Nut::VertexBuffer::VertexBuffer(void* data, unsigned int size, unsigned int count, VertxBufferUsage usage)
-	: m_Size(size), m_Count(count)
+#include "Renderer/Renderer.h"
+
+Nut::VertexBuffer::VertexBuffer(void* data, uint64_t size, VertxBufferUsage usage)
+	: m_Size(size)
 {
+	m_LocalData = Buffer::Copy(data, size);
 	m_Usage = usage;
-	glCreateBuffers(1, &m_BufferID);
-	glNamedBufferData(m_BufferID, size, data, GL_STATIC_DRAW);
+	Renderer::Submit([this]() {
+		glCreateBuffers(1, &m_BufferID);
+		glNamedBufferData(m_BufferID, m_Size, m_LocalData.Data, GL_STATIC_DRAW);
+		});
 }
 
-Nut::VertexBuffer::VertexBuffer(unsigned int size, unsigned int count, VertxBufferUsage usage)
-	: m_Size(size), m_Usage(usage), m_Count(count)
+Nut::VertexBuffer::VertexBuffer(uint64_t size, VertxBufferUsage usage)
+	: m_Size(size), m_Usage(usage)
 {
-	glCreateBuffers(1, &m_BufferID);
-	glNamedBufferData(m_BufferID, size, nullptr, GL_DYNAMIC_DRAW);
+	m_LocalData.Allocate(size);
+	m_Usage = usage;
+	Renderer::Submit([this]() {
+		glCreateBuffers(1, &m_BufferID);
+		glNamedBufferData(m_BufferID, m_Size, nullptr, GL_DYNAMIC_DRAW);
+		});
 }
 
 Nut::VertexBuffer::~VertexBuffer()
 {
-	glDeleteBuffers(1, &m_BufferID);
+	RenderID bufferID = m_BufferID;
+	Renderer::Submit([bufferID]() {
+		glDeleteBuffers(1, &bufferID);
+		});
 }
 
-void Nut::VertexBuffer::SetData(void* data, unsigned int size, unsigned int offset)
+void Nut::VertexBuffer::SetData(void* data, uint64_t size, uint64_t offset)
 {
-	glNamedBufferSubData(m_BufferID, offset, size, data);
+	m_LocalData.Write(data, size, offset);
+	Renderer::Submit([this, size, offset]() {
+		glNamedBufferSubData(m_BufferID, offset, size, (byte*)m_LocalData.Data + offset);
+		});
 }
 
 void Nut::VertexBuffer::Bind() const
 {
-	glBindBuffer(GL_ARRAY_BUFFER, m_BufferID);
+	Renderer::Submit([this]() {
+		glBindBuffer(GL_ARRAY_BUFFER, m_BufferID);
+		});
 }
 
 void Nut::VertexBuffer::Unbind() const
 {
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	Renderer::Submit([this]() {
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		});
 }
 
 void Nut::VertexBuffer::SetLayout(const VertexBufferLayout& layout)
@@ -43,12 +62,12 @@ void Nut::VertexBuffer::SetLayout(const VertexBufferLayout& layout)
 	m_Layout = layout;
 }
 
-std::shared_ptr<Nut::VertexBuffer> Nut::VertexBuffer::Create(void* data, unsigned int size, unsigned int count, VertxBufferUsage usage /*= VertxBufferUsage::StaticDraw*/)
+std::shared_ptr<Nut::VertexBuffer> Nut::VertexBuffer::Create(void* data, uint64_t size, VertxBufferUsage usage /*= VertxBufferUsage::StaticDraw*/)
 {
-	return std::make_shared<VertexBuffer>(data, size, count, usage);
+	return std::make_shared<VertexBuffer>(data, size, usage);
 }
 
-std::shared_ptr<Nut::VertexBuffer> Nut::VertexBuffer::Create(unsigned int size, unsigned int count, VertxBufferUsage usage /*= VertxBufferUsage::DynamicDraw*/)
+std::shared_ptr<Nut::VertexBuffer> Nut::VertexBuffer::Create(uint64_t size, VertxBufferUsage usage /*= VertxBufferUsage::DynamicDraw*/)
 {
-		return std::make_shared<VertexBuffer>(size, count, usage);
+	return std::make_shared<VertexBuffer>(size, usage);
 }

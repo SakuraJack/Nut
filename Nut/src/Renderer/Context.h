@@ -10,6 +10,8 @@ namespace Nut {
 
 		void Init();
 		void SwapBuffers();
+		void SwitchContext();
+		void ReleaseContext();
 	private:
 		GLFWwindow* m_WindowHandle;
 	};

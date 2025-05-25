@@ -1,8 +1,10 @@
 project "Nut"
     kind "ConsoleApp"
 
-    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
+    local targetDirStr = "../bin/" .. outputdir .. "/%{prj.name}"
+    local objDirStr = "../bin-int/" .. outputdir .. "/%{prj.name}"
+    targetdir (targetDirStr)
+    objdir (objDirStr)
 
     pchheader "ntpch.h"
     pchsource "src/ntpch.cpp"
@@ -24,15 +26,10 @@ project "Nut"
     filter "configurations:Debug"
     optimize "Off"
     symbols "On"
-    IncludeDependencies("Debug")
-    postbuildcommands {
-        '{COPY} "../Nut/vendor/Assimp/bin/Debug/assimp-vc143-mtd.dll" "%{cfg.targetdir}"',
-    }
+    AddExternalDependencies("Debug", targetDirStr)
+    defines { "NT_DEBUG"}
     
     filter "configurations:Release"
     optimize "On"
     symbols "Off"
-    IncludeDependencies("Release")
-    postbuildcommands {
-        '{COPY} "../Nut/vendor/Assimp/bin/Release/assimp-vc143-mt.dll" "%{cfg.targetdir}"',
-    }
+    AddExternalDependencies("Release", targetDirStr)

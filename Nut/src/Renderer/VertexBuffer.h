@@ -1,5 +1,6 @@
 #pragma once
 #include <glad/glad.h>
+#include "Core/Buffer.h"
 
 namespace Nut {
 	enum class VertxBufferUsage
@@ -14,7 +15,7 @@ namespace Nut {
 		None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
 	};
 
-	static unsigned int DataTypeSize(DataType type)
+	static uint32_t DataTypeSize(DataType type)
 	{
 		switch (type)
 		{
@@ -36,9 +37,9 @@ namespace Nut {
 	{
 		std::string Name;
 		DataType Type;
-		unsigned int Size;
-		unsigned int Offset;
-		unsigned int Count; //  分量个数
+		uint32_t Size;
+		uint32_t Offset;
+		uint32_t Count; //  分量个数
 		bool Normalized;
 
 		VertexBufferElements() {}
@@ -92,8 +93,8 @@ namespace Nut {
 			CalculateOffsetsAndStride();
 		}
 
-		inline unsigned int GetStride() const { return m_Stride; }  //  获取步长
-		inline unsigned int GetCount() const { return m_Elements.size(); }	 //  获取元素个数
+		inline uint32_t GetStride() const { return m_Stride; }  //  获取步长
+		inline uint32_t GetCount() const { return m_Elements.size(); }	 //  获取元素个数
 		inline const std::vector<VertexBufferElements>& GetElements() const { return m_Elements; } //  获取元素列表
 
 		~VertexBufferLayout(){}
@@ -101,7 +102,7 @@ namespace Nut {
 	private:
 		void CalculateOffsetsAndStride()
 		{
-			unsigned int offset = 0;
+			uint32_t offset = 0;
 			m_Stride = 0;
 			for (auto& element : m_Elements)
 			{
@@ -113,36 +114,35 @@ namespace Nut {
 
 	private:
 		std::vector<VertexBufferElements> m_Elements;
-		unsigned int m_Stride = 0;
+		uint32_t m_Stride = 0;
 	};
 
 	class VertexBuffer
 	{
 	public:
-		VertexBuffer(void* data, unsigned int size, unsigned int count, VertxBufferUsage usage = VertxBufferUsage::StaticDraw);
-		VertexBuffer(unsigned int size, unsigned int count, VertxBufferUsage usage = VertxBufferUsage::DynamicDraw);
+		VertexBuffer(void* data, uint64_t size, VertxBufferUsage usage = VertxBufferUsage::StaticDraw);
+		VertexBuffer(uint64_t size, VertxBufferUsage usage = VertxBufferUsage::DynamicDraw);
 		~VertexBuffer();
 
-		void SetData(void* data, unsigned int size, unsigned int offset = 0);
+		void SetData(void* data, uint64_t size, uint64_t offset = 0);
 		void Bind() const;
 		void Unbind() const;
 
 		const VertexBufferLayout& GetLayout() const { return m_Layout; }
 		void SetLayout(const VertexBufferLayout& layout);
 
-		unsigned int GetSize() const { return m_Size; } //  获取缓冲区大小
-		unsigned int GetBufferID() const { return m_BufferID; } //  获取缓冲区ID
-		unsigned int GetCount() const { return m_Count; } //  获取缓冲区元素个数
+		RenderID GetBufferID() const { return m_BufferID; } //  获取缓冲区ID
+		uint64_t GetSize() const { return m_Size; } //  获取缓冲区大小
 
 	public:
-		static std::shared_ptr<VertexBuffer> Create(void* data, unsigned int size, unsigned int count, VertxBufferUsage usage = VertxBufferUsage::StaticDraw); //  创建顶点缓冲
-		static std::shared_ptr<VertexBuffer> Create(unsigned int size, unsigned int count, VertxBufferUsage usage = VertxBufferUsage::DynamicDraw); //  创建顶点缓冲
+		static std::shared_ptr<VertexBuffer> Create(void* data, uint64_t size, VertxBufferUsage usage = VertxBufferUsage::StaticDraw); //  创建顶点缓冲
+		static std::shared_ptr<VertexBuffer> Create(uint64_t size, VertxBufferUsage usage = VertxBufferUsage::DynamicDraw); //  创建顶点缓冲
 
 	private:
-		unsigned int m_BufferID; //  缓冲区ID
-		unsigned int m_Size;	//  缓冲区大小
-		unsigned int m_Count;	//  缓冲区元素个数
+		RenderID m_BufferID = 0; //  缓冲区ID
+		uint64_t m_Size = 0;	//  缓冲区大小 字节数
 		VertxBufferUsage m_Usage; //  缓冲区使用方式
 		VertexBufferLayout m_Layout; //  缓冲区布局
+		Buffer m_LocalData;
 	};
 }

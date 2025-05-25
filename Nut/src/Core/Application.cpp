@@ -2,86 +2,86 @@
 #include "Application.h"
 #include "Core.h"
 #include "Log.h"
+#include "Input.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Mesh.h"
 #include "iostream"
+#include "Runtime/RuntimeLayer.h"
 
-float GetTimeInSeconds() {
-	using namespace std::chrono;
-	static auto startTime = high_resolution_clock::now(); // 程序启动时间
-	auto currentTime = high_resolution_clock::now();
-	duration<float> elapsedTime = currentTime - startTime; // 计算经过的时间
-	return elapsedTime.count(); // 返回秒数
+float GetTime() {
+	return (float)glfwGetTime();
 }
-float dissolveCoefficient = 1.0f;
-float noiseCoefficient = 5.0f;
 
 namespace Nut {
 	Application* Application::s_Instance = nullptr;
 }
 
-void Nut::Application::TestFunction()
-{
-	Nut::Vertex v1 = { {0.5f, 0.5f, 0.0f}, {1.0f, 0.0f, 0.0f} };
-	Nut::Vertex v2 = { {-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f, 1.0f} };
-	Nut::Vertex v3 = { {0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f} };
-	Nut::Vertex v4 = { {-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f} };
-	std::vector<Nut::Vertex> vertices = { v1, v2, v3, v4 };
-	std::vector<Nut::Index> indices = { {0, 1, 2}, {0, 3, 1} };
-	Nut::SubMesh subMesh;
-	subMesh.m_BaseVertex = 0;
-	subMesh.m_BaseIndex = 0;
-	subMesh.m_VertexCount = 4;
-	subMesh.m_IndexCount = 2;
-	subMesh.m_LocalTransform = glm::mat4(1.0f);
-	subMesh.m_GlobalTransform = glm::mat4(1.0f);
-	Nut::Mesh mesh(vertices, indices, { subMesh });
-	m_VertexBuffer = Nut::VertexBuffer::Create(vertices.data(), vertices.size() * sizeof(Nut::Vertex), vertices.size());
-	m_VertexBuffer->SetLayout({ {"a_Position", Nut::DataType::Float3},
-								{"a_Color", Nut::DataType::Float3},
-								{"a_TexCoord", Nut::DataType::Float2},
-								{"a_Tangent", Nut::DataType::Float3},
-								{"a_Bitangent", Nut::DataType::Float3} });
-	m_IndexBuffer = Nut::IndexBuffer::Create(indices.data(), indices.size() * sizeof(Nut::Index), indices.size() * 3);
-	m_VertexArray = Nut::VertexArray::Create(m_VertexBuffer, m_IndexBuffer);
-	m_Shader = Nut::Shader::Create("testShader", "D:\\dev\\Nut\\Nut\\resources\\testshader.glsl");
-}
-
-Nut::Application::Application()
+Nut::Application::Application(const ApplicationSpecification& specification)
+	: m_Specification(specification), m_RenderThread(specification.RenderThreadingPolicy)
 {
 	s_Instance = this;
-	m_Window = std::unique_ptr<Window>(Window::Create());
+	WindowProps props;
+	props.m_Title = m_Specification.Name;
+	props.m_Width = m_Specification.WindowWidth;
+	props.m_Height = m_Specification.WindowHeight;
+	m_Window = std::unique_ptr<Window>(Window::Create(props));
 	m_Window->SetEventCallback(NUT_BIND_EVENT_FN(Application::OnEvent));
 	Renderer::Init();
+	if (m_Specification.RenderThreadingPolicy == ThreadingPolicy::MultiThreaded) {
+		m_Window->GetRenderContext()->ReleaseContext();
+		m_RenderThread.Run();
+	}
 	Renderer::Resize(m_Window->GetWidth(), m_Window->GetHeight());
-	TestFunction();
-	m_Shader->Bind();
-	glUniform1f(m_Shader->GetUniformsLocation("aDissolveCoefficient"), dissolveCoefficient);
-	glUniform1f(m_Shader->GetUniformsLocation("aNoiseCoefficient"), noiseCoefficient);
+	m_LayerStack.PushLayer(new RuntimeLayer());
 }
 
 Nut::Application::~Application()
 {
+	if (m_RenderThread.GetThreadingPolicy() == ThreadingPolicy::MultiThreaded) {
+		m_RenderThread.Terminate();
+	}
+
+	for(Layer* layer : m_LayerStack) {
+		layer->OnDetach();
+		delete layer;
+	}
+	Renderer::Shutdown();
 }
 
 void Nut::Application::Run()
 {
 	while (m_Running)
 	{
-		if (!m_Minimized) {
-			Renderer::BeginFrame();
-			for (Layer* layer : m_LayerStack) {
-				layer->OnUpdate();
-			}
-			m_VertexArray->Bind();
-			m_Shader->SetUniform("aTime", GetTimeInSeconds());
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
-			Renderer::EndFrame();
-			m_Window->OnUpdate();
+		m_RenderThread.BlockUntilRenderComplete();
+
+		ProcessEvents();
+
+		if (m_RenderThread.GetThreadingPolicy() == ThreadingPolicy::MultiThreaded) {
+			m_RenderThread.NextFrame();
+			m_RenderThread.Kick();
 		}
 		else {
-			m_Window->OnUpdate();
+			Renderer::WaitAndRender();
 		}
+
+		if (!m_Minimized) {
+
+			Renderer::BeginFrame();
+			for (Layer* layer : m_LayerStack) {
+				layer->OnUpdate(m_Timestep);
+			}
+			Renderer::EndFrame();
+			Renderer::Submit([&]() {
+				m_Window->SwapBuffers();
+				});
+		}
+
+		Input::ClearReleasedKeys();
+
+		float time = GetTime();
+		m_Frametime = time - m_LastFrameTime;
+		m_Timestep = glm::min<float>(m_Frametime, 0.0333f);
+		m_LastFrameTime = time;
 	}
 }
 
@@ -123,25 +123,20 @@ bool Nut::Application::OnWindowResized(WindowResizeEvent& e)
 
 bool Nut::Application::OnKeyPressed(KeyPressedEvent& e)
 {
-	if (e.GetKeyCode() == NUT_KEY_UP) {
-		dissolveCoefficient += 0.1f;
-	}
-	else if (e.GetKeyCode() == NUT_KEY_DOWN) {
-		dissolveCoefficient -= 0.1f;
-	}
-	else if (e.GetKeyCode() == NUT_KEY_LEFT) {
-		noiseCoefficient -= 1.0f;
-	}
-	else if (e.GetKeyCode() == NUT_KEY_RIGHT) {
-		noiseCoefficient += 1.0f;
-	}
-	else if (e.GetKeyCode() == NUT_KEY_ESCAPE) {
-		m_Running = false;
-	}
 	return true;
+}
+
+void Nut::Application::ProcessEvents()
+{
+	Input::TransitionPressedKeys();
+	Input::TransitionPressedButtons();
+
+	m_Window->ProcessEvents();
 }
 
 Nut::Application* Nut::CreateApplication()
 {
-	return new Application();
+	ApplicationSpecification specification;
+	specification.RenderThreadingPolicy = ThreadingPolicy::SingleThreaded;
+	return new Application(specification);
 }

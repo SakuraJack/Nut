@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "Window.h"
 #include "Log.h"
+#include "Input.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
@@ -26,9 +27,13 @@ Nut::Window::~Window()
 	Shutdown();
 }
 
-void Nut::Window::OnUpdate()
+void Nut::Window::ProcessEvents()
 {
 	glfwPollEvents();
+}
+
+void Nut::Window::SwapBuffers()
+{
 	m_Context->SwapBuffers();
 }
 
@@ -60,7 +65,7 @@ void Nut::Window::Init(const WindowProps& props)
 	}
 
 	m_Window = glfwCreateWindow(props.m_Width, props.m_Height, props.m_Title.c_str(), nullptr, nullptr);
-	m_Context = std::make_unique<GraphicsContext>(m_Window);
+	m_Context = std::make_shared<GraphicsContext>(m_Window);
 	m_Context->Init();
 
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
@@ -104,24 +109,13 @@ void Nut::Window::Init(const WindowProps& props)
 	});
 
 	glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
-		std::string mouseButton = "Unknown";
-		switch (button) {
-			case GLFW_MOUSE_BUTTON_LEFT: mouseButton = "左键"; break;
-			case GLFW_MOUSE_BUTTON_RIGHT: mouseButton = "右键"; break;
-			case GLFW_MOUSE_BUTTON_MIDDLE: mouseButton = "中键"; break;
-		}
-		std::string actionStr = "Unknown";
-		switch (action) {
-			case GLFW_PRESS: actionStr = "按下"; break;
-			case GLFW_RELEASE: actionStr = "释放"; break;
-		}
-
-		NUT_INFO_TAG("Window", "鼠标 {0} {1}", mouseButton, actionStr);
 		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		if (action == GLFW_PRESS) {
+			Input::UpdateButtonState((MouseButton)button, KeyState::Pressed);
 			MousePressedEvent event(button);
 			data.EventCallback(event);
 		} else if (action == GLFW_RELEASE) {
+			Input::UpdateButtonState((MouseButton)button, KeyState::Released);
 			MouseReleasedEvent event(button);
 			data.EventCallback(event);
 		}
@@ -135,40 +129,25 @@ void Nut::Window::Init(const WindowProps& props)
 	});
 
 	glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos) {
-		//NUT_INFO_TAG("Window", "光标移动到 {0}, {1}", xPos, yPos);
+		NUT_INFO_TAG("Window", "光标移动到 {0}, {1}", xPos, yPos);
 		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		MouseMovedEvent event((float)xPos, (float)yPos);
 		data.EventCallback(event);
 	});
 
 	glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-		std::string keyStr = "Unknown";
-		switch (key) {
-			case GLFW_KEY_SPACE: keyStr = "空格"; break;
-			case GLFW_KEY_ENTER: keyStr = "回车"; break;
-			case GLFW_KEY_ESCAPE: keyStr = "ESC"; break;
-			case GLFW_KEY_TAB: keyStr = "Tab"; break;
-			case GLFW_KEY_BACKSPACE: keyStr = "Backspace"; break;
-			case GLFW_KEY_CAPS_LOCK: keyStr = "Caps Lock"; break;
-			default: keyStr = (char)key; break;
-		}
-		std::string actionStr = "Unknown";
-		switch (action) {
-			case GLFW_PRESS: actionStr = "按下"; break;
-			case GLFW_RELEASE: actionStr = "释放"; break;
-			case GLFW_REPEAT: actionStr = "重复"; break;
-		}
-
-		NUT_INFO_TAG("Window", "键盘 {0} {1}", keyStr, actionStr);
 		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		if (action == GLFW_PRESS) {
+			Input::UpdateKeyState((KeyCode)key, KeyState::Pressed);
 			KeyPressedEvent event(key, 0);
 			data.EventCallback(event);
 		} else if (action == GLFW_RELEASE) {
+			Input::UpdateKeyState((KeyCode)key, KeyState::Released);
 			KeyReleasedEvent event(key);
 			data.EventCallback(event);
 		}
 		else if (action == GLFW_REPEAT) {
+			Input::UpdateKeyState((KeyCode)key, KeyState::Held);
 			KeyPressedEvent event(key, 1);
 			data.EventCallback(event);
 		}

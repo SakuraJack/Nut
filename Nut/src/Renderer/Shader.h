@@ -3,6 +3,8 @@
 #include "glm/glm.hpp"
 #include "glad/glad.h"
 #include "Utils/ShaderUtils.h"
+#include "Core/Core.h"
+#include "Image.h"
 
 namespace Nut {
 
@@ -10,99 +12,92 @@ namespace Nut {
 	{
 	public:
 		ShaderUniform() = default;
-		ShaderUniform(const std::string& name, ShaderUniformType type, unsigned int size, unsigned int offset)
-			: Name(name), Type(type), Size(size), Offset(offset) {}
+		ShaderUniform(const std::string& name, const std::string& buffername, ShaderUniformType type, uint64_t size, uint64_t offset)
+			: Name(name), BufferName(buffername), Type(type), Size(size), Offset(offset) {}
 
-		const std::string& GetName() const { return Name; }	//  获取名称
-		ShaderUniformType GetType() const { return Type; }	//  获取类型
-		unsigned int GetSize() const { return Size; }	//  获取大小
-		unsigned int GetOffset() const { return Offset; }	//  获取偏移量
+		const std::string& GetName() const { return Name; }
+		const std::string& GetBufferName() const { return BufferName; }
+		ShaderUniformType GetType() const { return Type; }
+		uint64_t GetSize() const { return Size; }
+		uint64_t GetOffset() const { return Offset; }
 
 	private:
-		std::string Name;	//  名称
+		std::string Name; //  名称
+		std::string BufferName; //  缓冲区名称
 		ShaderUniformType Type;	//  类型
-		unsigned int Size;	//  大小
-		unsigned int Offset;	//  偏移量
+		uint64_t Size; //  大小
+		uint64_t Offset; //  偏移量
 	};
 
 	struct ShaderUniformBuffer {
 		std::string Name;	//  名称
-		unsigned int Size;	//  大小
-		unsigned int Binding;	//  绑定点
-		unsigned int BufferID;	//  缓冲区ID
+		uint64_t Size;	//  大小
+		uint64_t Binding;	//  绑定点
+		RenderID BufferID;	//  缓冲区ID
 		std::unordered_map<std::string, ShaderUniform> Uniforms;	//  Uniform变量列表
 	};
 
 	struct ShaderStorageBuffer {
-
+		std::string Name;
+		uint64_t Size;
+		uint64_t Binding;
+		RenderID BufferID;
+		std::unordered_map<std::string, ShaderUniform> Uniforms;	//  Uniform变量列表
 	};
 
 	struct ShaderResourceDeclaration {
 		std::string Name;	//  名称
-		unsigned int Binding;	//  绑定点
-		unsigned int Size;	//  大小
-		unsigned int Offset;	//  偏移量
+		uint64_t Location;	//  位置
+		TextureType Dimensions;	//  维度
 	};
 
 	class Shader : public std::enable_shared_from_this<Shader>	//  允许共享指针
 	{
 	public:
-		Shader(const std::string name = "DefaultShader");
-		Shader(const std::string& name, const std::string& shaderSourcePath);	//  构造函数
+		struct ReflectionData
+		{
+			std::unordered_map<std::string, ShaderResourceDeclaration> Resources;
+			// TODO: 考虑之后将UniformBuffer和StorageBuffer合并
+			std::unordered_map<std::string, ShaderUniformBuffer> UniformBuffers;
+			std::unordered_map<std::string, ShaderStorageBuffer> StorageBuffers;
+			//  PlainUniform变量列表 TODO:之后可能会移除 兼容Vulkan的着色器规则
+			std::unordered_map<std::string, uint32_t> m_UniformsLocations; 
+		};
 
-		void Reload(const std::string& shaderSourcePath);	//  加载着色器
-		void ForceReload(const std::string& shaderSourcePath);	//  强制重新加载着色器
+	public:
+		Shader(const std::string name = "");
+		Shader(const std::string& name, const std::string& shaderSourcePath);	//  构造函数
+		~Shader();	//  析构函数
+
+		void HotOverload();
+		void Reload(const std::string& shaderSourcePath, bool forceCompile = false);
+		void Rename(const std::string& name);	//  重命名着色器
 
 		void Bind();		//  绑定着色器
 		void Unbind();		//  解绑着色器
 
-		void SetUniform(const std::string& name, int value);
-		void SetUniform(const std::string& name, float value);
-		void SetUniform(const std::string& name, const glm::ivec2 value);
-		void SetUniform(const std::string& name, const glm::vec2 value);
-		void SetUniform(const std::string& name, const glm::ivec3 value);
-		void SetUniform(const std::string& name, const glm::vec3 value);
-		void SetUniform(const std::string& name, const glm::ivec4 value);
-		void SetUniform(const std::string& name, const glm::vec4 value);
-		void SetUniform(const std::string& name, const glm::mat3 value);
-		void SetUniform(const std::string& name, const glm::mat4 value);
-
-		static ShaderUniformBuffer& GetUniformBuffer(const std::string& uniformBufferName);	//  获取Uniform缓冲区
-		static void SetUniformBuffer(const std::string& uniformBufferName, const void* data, unsigned int size, unsigned int offset = 0);	//  设置Uniform缓冲区
-		static void ClearUniformBuffers();	//  清除Uniform缓冲区
-
-		// TODO: 支持StorageBuffer
-		//static void SetStorageBuffer(const std::string& storageBufferName, const ShaderStorageBuffer& buffer);	//  设置Storage缓冲区
-		//static void ResizeStorageBuffer(const std::string& storageBufferName, unsigned int size);	//  调整Storage缓冲区大小
+		static void PushUniformBuffer(RenderID bufferID, uint32_t offset, uint32_t size, void* data);
+		static void PushStorageBuffer(RenderID bufferID, uint32_t offset, uint32_t size, void* data);
 
 		static std::shared_ptr<Shader> Create(const std::string name = "DefaultShader");
 		static std::shared_ptr<Shader> Create(const std::string& name, const std::string& shaderSourcePath);
 
-		uint32_t GetUniformsLocation(const std::string name);	//  获取Uniform变量位置
 		std::string GetName() const { return m_Name; }	//  获取着色器名称
-		unsigned int GetShaderID() const { return m_ShaderID; }	//  获取着色器ID
-	private:
-		void UploadUniformInt(const std::string& name, int value);
-		void UploadUniformFloat(const std::string& name, float value);
-		void UploadUniformInt2(const std::string& name, const glm::ivec2& value);
-		void UploadUniformFloat2(const std::string& name, const glm::vec2& value);
-		void UploadUniformInt3(const std::string& name, const glm::ivec3& value);
-		void UploadUniformFloat3(const std::string& name, const glm::vec3& value);
-		void UploadUniformInt4(const std::string& name, const glm::ivec4& value);
-		void UploadUniformFloat4(const std::string& name, const glm::vec4& value);
-		void UploadUniformMat3(const std::string& name, const glm::mat3& value);
-		void UploadUniformMat4(const std::string& name, const glm::mat4& value);
+		RenderID GetShaderID() const { return m_ShaderID; }	//  获取着色器ID
+		std::unordered_map<std::string, ShaderUniformBuffer>& GetUniformBuffers() { return m_ReflectionData.UniformBuffers; }
+		const std::unordered_map<std::string, ShaderUniformBuffer>& GetUniformBuffers() const { return m_ReflectionData.UniformBuffers; }
+		std::unordered_map<std::string, ShaderStorageBuffer>& GetStorageBuffers() { return m_ReflectionData.StorageBuffers; }
+		const std::unordered_map<std::string, ShaderStorageBuffer>& GetStorageBuffers() const { return m_ReflectionData.StorageBuffers; }
+		const std::unordered_map<std::string, ShaderResourceDeclaration>& GetResourceDeclarations() const { return m_ReflectionData.Resources; }
+		const std::unordered_map<std::string, uint32_t>& GetUniformLocations() const { return m_ReflectionData.m_UniformsLocations; }
 
+	private:
 		std::string m_Name;	//  着色器名称
-		unsigned int m_ShaderID;	//  着色器ID
+		RenderID m_ShaderID = 0;	//  着色器ID
 		std::string m_AssetPath;	//  资源路径
 
-		static std::unordered_map<std::string, ShaderUniformBuffer> s_UniformBuffers;	//  Uniform缓冲区列表
-		static std::unordered_map<std::string, ShaderStorageBuffer> s_StorageBuffers;	//  Storage缓冲区列表
-		std::unordered_map<std::string, uint32_t> m_UniformsLocations; //  Uniform变量列表
-		// TODO: 之后从这里移除
-		std::unordered_map<GLenum, std::string> m_ShaderSource;	//  着色器源代码
-		std::unordered_map<GLenum, std::vector<uint32_t>> m_SPIRVData; // 着色器的SPIRV数据
+		ReflectionData m_ReflectionData;	//  反射数据
+		std::unordered_map<GLenum, std::vector<uint32_t>> m_SPIRVData;	//  着色器二进制数据
 
 		friend class ShaderCompiler;	//  友元类
 	};
