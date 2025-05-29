@@ -184,10 +184,7 @@ Nut::TextureCube::~TextureCube()
 	}
 	if (m_TextureID) {
 		RenderID textureID = m_TextureID;
-		uint32_t textureSlot = m_TextureSlot;
-		Renderer::Submit([textureID, textureSlot]() {
-			if (textureSlot != -1)
-				glBindTextureUnit(textureSlot, 0);
+		Renderer::Submit([textureID]() {
 			glDeleteTextures(1, &textureID);
 			});
 	}
@@ -274,21 +271,10 @@ void Nut::TextureCube::Invalidate()
 
 void Nut::TextureCube::Bind(uint32_t slot)
 {
-	m_TextureSlot = slot;
-	Renderer::Submit([this]() {
-		glBindTextureUnit(m_TextureSlot, m_TextureID);
-		});
 }
 
 void Nut::TextureCube::Unbind()
 {
-	if (m_TextureSlot != -1) {
-		uint32_t textureSlot = m_TextureSlot;
-		Renderer::Submit([this]() {
-			glBindTextureUnit(m_TextureSlot, 0);
-			m_TextureSlot = -1;
-			});
-	}
 }
 
 void Nut::TextureCube::SetData(const void* data, uint32_t size, uint32_t faceindex)
