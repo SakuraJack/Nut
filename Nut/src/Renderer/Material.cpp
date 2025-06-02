@@ -1,7 +1,6 @@
 #include "ntpch.h"
 #include "Material.h"
 #include "Renderer.h"
-#include "Asset/TextureManager.h"
 
 Nut::Material::Material(const std::shared_ptr<Shader>& shader, const std::string& name /*= ""*/)
 	: m_Shader(shader), m_Name(name)

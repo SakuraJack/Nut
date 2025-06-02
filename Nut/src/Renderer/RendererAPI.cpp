@@ -7,8 +7,6 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include "Asset/TextureManager.h"
-
 namespace Nut {
 	RendererAPIStatus RendererAPI::s_RendererAPIStatus;
 }

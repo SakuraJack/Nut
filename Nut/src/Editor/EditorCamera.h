@@ -2,6 +2,7 @@
 #include "Renderer/Camera.h"
 #include "Events/Event.h"
 #include "Events/MouseEvent.h"
+#include "Events/ApplicationEvent.h"
 #include "Core/Timestep.h"
 #include <glm/detail/type_quat.hpp>
 
@@ -39,6 +40,10 @@ namespace Nut {
 		float GetCameraSpeed() const;
 
 		static std::shared_ptr<EditorCamera> Create(const float degreeFOV, const float width, const float height, const float nearP, const float farP);
+
+	public:
+		bool OnWindowResized(WindowResizeEvent& e);
+
 	private:
 		glm::vec3 CalculatePosition() const; // º∆À„Œª÷√
 		void UpdateViewMatrix();

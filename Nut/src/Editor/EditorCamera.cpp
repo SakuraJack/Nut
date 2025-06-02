@@ -2,6 +2,7 @@
 #include "EditorCamera.h"
 #include "Core/Core.h"
 #include "Core/Input.h"
+#include "Core/Log.h"
 
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/quaternion.hpp"
@@ -105,7 +106,8 @@ void Nut::EditorCamera::OnUpdate(Timestep ts)
 void Nut::EditorCamera::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<MouseScrolledEvent>(NUT_BIND_EVENT_FN(EditorCamera::OnMouseScroll)); // 处理鼠标滚轮事件
+	dispatcher.Dispatch<MouseScrolledEvent>(NUT_BIND_EVENT_FN(EditorCamera::OnMouseScroll));
+	dispatcher.Dispatch<WindowResizeEvent>(NUT_BIND_EVENT_FN(EditorCamera::OnWindowResized));
 }
 
 glm::vec3 Nut::EditorCamera::GetUpDirection() const
@@ -143,6 +145,20 @@ float Nut::EditorCamera::GetCameraSpeed() const
 std::shared_ptr<Nut::EditorCamera> Nut::EditorCamera::Create(const float degreeFOV, const float width, const float height, const float nearP, const float farP)
 {
 	return std::make_shared<EditorCamera>(degreeFOV, width, height, nearP, farP);
+}
+
+bool Nut::EditorCamera::OnWindowResized(WindowResizeEvent& e)
+{
+	if (e.GetHeight() == 0 || e.GetWidth() == 0) {
+		m_ViewportWidth = 1;
+		m_ViewportHeight = 1;
+		return false; // 窗口最小化
+	}
+	UpdateViewMatrix();
+	m_AspectRatio = static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight());
+	SetPerspectiveProjectionMatrix(m_FOV, e.GetWidth(), e.GetHeight(), m_NearPlane, m_FarPlane);
+	NUT_TRACE("EditorCamera resized to {0}x{1}", e.GetWidth(), e.GetHeight());
+	return true;
 }
 
 glm::vec3 Nut::EditorCamera::CalculatePosition() const

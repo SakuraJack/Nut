@@ -30,3 +30,24 @@ namespace Nut {
 		uint32_t m_UUID;
 	};
 }
+
+namespace std {
+
+	template <>
+	struct hash<Nut::UUID>
+	{
+		std::size_t operator()(const Nut::UUID& uuid) const
+		{
+			return uuid;
+		}
+	};
+
+	template <>
+	struct hash<Nut::UUID32>
+	{
+		std::size_t operator()(const Nut::UUID32& uuid) const
+		{
+			return hash<uint32_t>()((uint32_t)uuid);
+		}
+	};
+}

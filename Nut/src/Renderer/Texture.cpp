@@ -6,7 +6,6 @@
 #include "glad/glad.h"
 #include "Utils/ImageUtils.h"
 #include "Utils/FileUtils.h"
-#include "Asset/TextureManager.h"
 #include "Renderer.h"
 
 Nut::Texture2D::Texture2D(const TextureSpecification& spec)
