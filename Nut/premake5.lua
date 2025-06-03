@@ -1,5 +1,5 @@
 project "Nut"
-    kind "ConsoleApp"
+    kind "StaticLib"
 
     local targetDirStr = "../bin/" .. outputdir .. "/%{prj.name}"
     local objDirStr = "../bin-int/" .. outputdir .. "/%{prj.name}"
@@ -21,15 +21,23 @@ project "Nut"
     defines { "GLM_FORCE_DEPTH_ZERO_TO_ONE" }
     
     filter "system:windows"
-    systemversion "latest"
+        systemversion "latest"
+        defines { "NT_PLATFORM_WINDOWS" }
     
     filter "configurations:Debug"
-    optimize "Off"
-    symbols "On"
-    AddExternalDependencies("Debug", targetDirStr)
-    defines { "NT_DEBUG"}
+        optimize "Off"
+        symbols "On"
+        AddExternalDependencies("Debug")
+        defines { "NT_DEBUG" }
     
     filter "configurations:Release"
-    optimize "On"
-    symbols "Off"
-    AddExternalDependencies("Release", targetDirStr)
+        optimize "On"
+        symbols "Off"
+        AddExternalDependencies("Release")
+        defines { "NT_RELEASE" }
+
+    filter "configurations:Dist"
+        optimize "On"
+        symbols "Off"
+        AddExternalDependencies("Release")
+        defines { "NT_DIST" }

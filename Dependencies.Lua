@@ -39,9 +39,6 @@ Dependencies = {
         LibName = "assimp-vc143-mt",
         DebugLibName = "assimp-vc143-mtd",
         LibDir = "%{wks.location}/Nut/vendor/Assimp/bin/%{cfg.buildcfg}/",
-        DllName = "assimp-vc143-mt.dll",
-        DebugDllName = "assimp-vc143-mtd.dll",
-        DllDir = "%{wks.location}/Nut/vendor/Assimp/bin/%{cfg.buildcfg}/",
         Configurations = "Debug,Release"
     },
 
@@ -95,34 +92,18 @@ function LibDependency(table, isDebug)
     end
 end
 
-function DllDependency(table, isDebug, copyTargetPath)
-    local dllName = nil
-    if isDebug and table.DebugDllName ~= nil then
-        dllName = table.DebugDllName
-    elseif (not isDebug) and table.DllName ~= nil then
-        dllName = table.DllName
-    end
-
-    if table.DllDir ~= nil then
-        postbuildcommands {
-            "{COPYFILE} " .. table.DllDir .. dllName .. " " .. copyTargetPath .. dllName,
-        }
-    end
-end
-
 function IncludeDependency(table)
     if table.IncludeDir ~= nil then
         externalincludedirs { table.IncludeDir }
     end
 end
 
-function AddExternalDependencies(config_name, targetPath)
+function AddExternalDependencies(config_name)
     local isDebug = config_name == "Debug"
     for key, value in pairs(Dependencies) do
         if value.Configurations == nil or value.Configurations:find(config_name) then
             LibDependency(value, isDebug)
             IncludeDependency(value)
-            DllDependency(value, isDebug, targetPath)
         end
     end
 end

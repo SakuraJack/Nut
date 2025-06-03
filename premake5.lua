@@ -1,14 +1,15 @@
 include "Dependencies.lua"
 
 workspace "Nut"
-    configurations { "Debug", "Release" }
+    configurations { "Debug", "Release", "Release" }
     targetdir "build"
-    startproject "Nut"
+    startproject "NutEditor"
 
     language "C++"
     cppdialect "C++20"
+    staticruntime "Off"
 
-    configurations { "Debug", "Release" }
+    configurations { "Debug", "Release", "Dist" }
 
     flags { "MultiProcessorCompile" }
 
@@ -33,11 +34,14 @@ workspace "Nut"
         optimize "On"
         symbols "Default"
 
+    filter "configurations:Dist"
+        optimize "Full"
+        symbols "Off"
+
     architecture "x86_64"
 
     filter "system:windows"
         buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" }
-        defines { "NT_PLATFORM_WINDOWS" }
 
 group "Dependencies"
     include "Nut/vendor/GLFW"
@@ -47,4 +51,8 @@ group ""
 
 group "Core"
     include "Nut"
+group ""
+
+group "Tools"
+include "NutEditor"
 group ""
