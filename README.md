@@ -9,7 +9,7 @@ The goal of Nut is to try building a game engine from scratch.
 > **Note:**  
 > It currently supports **Windows** only, and utilizes **OpenGL** as its graphics API.  
 > The engine may have performance issues, bugs, or memory leaks.  
-> I will continue to improve it as part of my learning process.  
+> I will continue to improve it.  
 > Future plans include adding support for **Linux** and **macOS**, as well as integrating the **Vulkan** graphics API.
 
 ## Features
