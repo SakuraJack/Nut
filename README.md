@@ -4,10 +4,9 @@ Nut is a **render engine** written in modern C++, designed with cross-platform s
 
 ## Purpose
 
-The goal of Nut is to learn modern game engine development and to try building a game engine from scratch.
+The goal of Nut is to try building a game engine from scratch.
 
 > **Note:**  
-> Nut is a study project aimed at learning game engine development.  
 > It currently supports **Windows** only, and utilizes **OpenGL** as its graphics API.  
 > The engine may have performance issues, bugs, or memory leaks.  
 > I will continue to improve it as part of my learning process.  
