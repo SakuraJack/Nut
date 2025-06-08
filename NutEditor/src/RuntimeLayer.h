@@ -9,7 +9,8 @@
 #include "Nut/Renderer/Material.h"
 #include "Nut/Renderer/Texture.h"
 #include "Nut/Renderer/Image.h"
-#include "Nut/Tool/SimpleGeometryGenerator.h"
+#include "Nut/Project/Project.h"
+#include "Nut/Renderer/Pipeline.h"
 
 
 namespace Nut {
@@ -18,18 +19,29 @@ namespace Nut {
 	{
 	public:
 		RuntimeLayer();
-		~RuntimeLayer() override;
+		virtual ~RuntimeLayer();
 
 		void OnAttach() override;
 		void OnDetach() override;
 		void OnUpdate(Timestep ts) override;
 		void OnEvent(Event& e) override;
 
+
+
 	private:
 		// ≤‚ ‘
-		std::shared_ptr<MeshSource> m_MeshSource;
-		std::shared_ptr<StaticMesh> m_Mesh;
 		EditorCamera m_EditorCamera;
-		glm::vec2 GetMousePosInLocal(float x, float y);
+		AssetHandle m_Floor;
+		AssetHandle m_Skybox;
+		std::shared_ptr<Material> m_SkyBoxMaterial;
+		std::shared_ptr<Material> m_FloorMaterial;
+		std::shared_ptr<TextureCube> m_SkyBoxTexture;
+		std::shared_ptr<Pipeline> m_Pipeline;
+		std::shared_ptr<VertexBuffer> m_TransformBuffer;
+
+		struct TransformVertexData
+		{
+			glm::vec4 MRow[3];
+		};
 	};
 }

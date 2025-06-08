@@ -38,28 +38,12 @@ void Nut::ResourceManager::SetInput(std::string_view name, std::shared_ptr<Textu
 	}
 }
 
-void Nut::ResourceManager::SetInput(std::string_view name, std::shared_ptr<Texture2D> texture, uint32_t index)
+void Nut::ResourceManager::SetInput(std::string_view name, std::shared_ptr<Texture2D> texture, uint32_t location) 
 {
-	if (m_TextureMap.find(name.data()) == m_TextureMap.end())
-	{
-		NUT_CORE_ERROR_TAG("ResourceManager", "未找到着色器中的纹理名称: {0}", name);
-		return;
-	}
-	else
-	{
-		m_TextureMap[name.data()] = { index, texture };
-	}
+	m_TextureMap[name.data()] = { location, texture };
 }
 
-void Nut::ResourceManager::SetInput(std::string_view name, std::shared_ptr<TextureCube> texture, uint32_t index)
+void Nut::ResourceManager::SetInput(std::string_view name, std::shared_ptr<TextureCube> texture, uint32_t location)
 {
-	if (m_TextureMap.find(name.data()) == m_TextureMap.end())
-	{
-		NUT_CORE_ERROR_TAG("ResourceManager", "未找到着色器中的纹理名称: {0}", name);
-		return;
-	}
-	else
-	{
-		m_TextureMap[name.data()] = { index, texture };
-	}
+	m_TextureMap[name.data()] = { location, texture };
 }

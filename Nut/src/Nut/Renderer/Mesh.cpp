@@ -1,6 +1,7 @@
 #include "ntpch.h"
 #include "Mesh.h"
 #include <Nut/Asset/MaterialAsset.h>
+#include "Nut/Asset/AssetManager.h"
 
 Nut::MeshSource::MeshSource(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform)
 	: m_Vertices(vertices), m_Indices(indices)
@@ -52,44 +53,40 @@ void Nut::MeshSource::DumpVertex()
 
 }
 
-Nut::Mesh::Mesh(std::shared_ptr<MeshSource> meshSource)
+Nut::Mesh::Mesh(AssetHandle meshSource)
 	: m_MeshSource(meshSource)
 {
 	Handle = {};
 
-	SetSubmeshes({});
+	m_Materials = std::make_shared<Nut::MaterialTable>();
 
-	const auto& meshMaterials = meshSource->GetMaterials();
-	m_Materials = std::make_shared<Nut::MaterialTable>((uint32_t)meshMaterials.size());
-	for (size_t i = 0; i < meshMaterials.size(); ++i) {
-		std::shared_ptr<MaterialAsset> m = std::make_shared<MaterialAsset>(meshMaterials[i]);
-		m->Handle = AssetHandle();
-		m_MaterialAssets.push_back(m);
-		m_Materials->SetMaterial((uint32_t)i, m->Handle);
+	if (auto meshSourceAsset = AssetManager::GetAsset<MeshSource>(meshSource); meshSourceAsset)
+	{
+		SetSubmeshes({}, meshSourceAsset);
+
+		const std::vector<AssetHandle>& meshMaterials = meshSourceAsset->GetMaterials();
+		for (size_t i = 0; i < meshMaterials.size(); ++i) {
+			m_Materials->SetMaterial((uint32_t)i, meshMaterials[i]);
+		}
 	}
 }
 
-Nut::Mesh::Mesh(std::shared_ptr<MeshSource> meshSource, const std::vector<uint32_t>& submeshes)
+Nut::Mesh::Mesh(AssetHandle meshSource, const std::vector<uint32_t>& submeshes)
 	: m_MeshSource(meshSource)
 {
 	Handle = {};
 
-	SetSubmeshes(submeshes);
+	m_Materials = std::make_shared<MaterialTable>();
 
-	const auto& meshMaterials = meshSource->GetMaterials();
-	m_Materials = std::make_shared<Nut::MaterialTable>((uint32_t)meshMaterials.size());
-	for (size_t i = 0; i < meshMaterials.size(); ++i) {
-		std::shared_ptr<MaterialAsset> m = std::make_shared<MaterialAsset>(meshMaterials[i]);
-		m->Handle = AssetHandle();
-		m_MaterialAssets.push_back(m);
-		m_Materials->SetMaterial((uint32_t)i, m->Handle);
+	if (auto meshSourceAsset = AssetManager::GetAsset<MeshSource>(meshSource); meshSourceAsset)
+	{
+		SetSubmeshes(submeshes, meshSourceAsset);
+
+		const std::vector<AssetHandle>& meshMaterials = meshSourceAsset->GetMaterials();
+		for (size_t i = 0; i < meshMaterials.size(); ++i) {
+			m_Materials->SetMaterial((uint32_t)i, meshMaterials[i]);
+		}
 	}
-}
-
-Nut::Mesh::Mesh(const std::shared_ptr<Mesh>& other)
-	: m_MeshSource(other->m_MeshSource)
-{
-	SetSubmeshes(other->m_Submeshes);
 }
 
 Nut::Mesh::~Mesh()
@@ -97,13 +94,13 @@ Nut::Mesh::~Mesh()
 
 }
 
-void Nut::Mesh::SetSubmeshes(const std::vector<uint32_t>& submeshes)
+void Nut::Mesh::SetSubmeshes(const std::vector<uint32_t>& submeshes, std::shared_ptr<MeshSource> meshSource)
 {
 	if (!submeshes.empty()) {
 		m_Submeshes = submeshes;
 	}
 	else {
-		const auto& submeshes = m_MeshSource->GetSubmeshes();
+		const auto& submeshes = meshSource->GetSubmeshes();
 		m_Submeshes.resize(submeshes.size());
 		for (uint32_t i = 0; i < submeshes.size(); i++) {
 			m_Submeshes[i] = i;
@@ -111,44 +108,40 @@ void Nut::Mesh::SetSubmeshes(const std::vector<uint32_t>& submeshes)
 	}
 }
 
-Nut::StaticMesh::StaticMesh(std::shared_ptr<MeshSource> meshSource)
+Nut::StaticMesh::StaticMesh(AssetHandle meshSource)
 	: m_MeshSource(meshSource)
 {
 	Handle = {};
 
-	SetSubmeshes({});
+	m_Materials = std::make_shared<MaterialTable>();
 
-	const auto& meshMaterials = meshSource->GetMaterials();
-	m_Materials = std::make_shared<Nut::MaterialTable>((uint32_t)meshMaterials.size());
-	for (size_t i = 0; i < meshMaterials.size(); ++i) {
-		std::shared_ptr<MaterialAsset> m = std::make_shared<MaterialAsset>(meshMaterials[i]);
-		m->Handle = AssetHandle();
-		m_MaterialAssets.push_back(m);
-		m_Materials->SetMaterial((uint32_t)i, m->Handle);
+	if (auto meshSourceAsset = AssetManager::GetAsset<MeshSource>(meshSource); meshSourceAsset)
+	{
+		SetSubmeshes({}, meshSourceAsset);
+
+		const std::vector<AssetHandle>& meshMaterials = meshSourceAsset->GetMaterials();
+		for (size_t i = 0; i < meshMaterials.size(); ++i) {
+			m_Materials->SetMaterial((uint32_t)i, meshMaterials[i]);
+		}
 	}
 }
 
-Nut::StaticMesh::StaticMesh(std::shared_ptr<MeshSource> meshSource, const std::vector<uint32_t>& submeshes)
+Nut::StaticMesh::StaticMesh(AssetHandle meshSource, const std::vector<uint32_t>& submeshes)
 	: m_MeshSource(meshSource)
 {
 	Handle = {};
 
-	SetSubmeshes(submeshes);
+	m_Materials = std::make_shared<MaterialTable>();
 
-	const auto& meshMaterials = meshSource->GetMaterials();
-	m_Materials = std::make_shared<Nut::MaterialTable>((uint32_t)meshMaterials.size());
-	for (size_t i = 0; i < meshMaterials.size(); ++i) {
-		std::shared_ptr<MaterialAsset> m = std::make_shared<MaterialAsset>(meshMaterials[i]);
-		m->Handle = AssetHandle();
-		m_MaterialAssets.push_back(m);
-		m_Materials->SetMaterial((uint32_t)i, m->Handle);
+	if (auto meshSourceAsset = AssetManager::GetAsset<MeshSource>(meshSource); meshSourceAsset)
+	{
+		SetSubmeshes(submeshes, meshSourceAsset);
+
+		const std::vector<AssetHandle>& meshMaterials = meshSourceAsset->GetMaterials();
+		for (size_t i = 0; i < meshMaterials.size(); ++i) {
+			m_Materials->SetMaterial((uint32_t)i, meshMaterials[i]);
+		}
 	}
-}
-
-Nut::StaticMesh::StaticMesh(const std::shared_ptr<StaticMesh>& other)
-	: m_MeshSource(other->m_MeshSource)
-{
-	SetSubmeshes(other->m_Submeshes);
 }
 
 Nut::StaticMesh::~StaticMesh()
@@ -156,13 +149,13 @@ Nut::StaticMesh::~StaticMesh()
 
 }
 
-void Nut::StaticMesh::SetSubmeshes(const std::vector<uint32_t>& submeshes)
+void Nut::StaticMesh::SetSubmeshes(const std::vector<uint32_t>& submeshes, std::shared_ptr<MeshSource> meshSource)
 {
 	if (!submeshes.empty()) {
 		m_Submeshes = submeshes;
 	}
 	else {
-		const auto& submeshes = m_MeshSource->GetSubmeshes();
+		const auto& submeshes = meshSource->GetSubmeshes();
 		m_Submeshes.resize(submeshes.size());
 		for (uint32_t i = 0; i < submeshes.size(); i++) {
 			m_Submeshes[i] = i;

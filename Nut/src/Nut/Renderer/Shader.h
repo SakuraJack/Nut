@@ -100,4 +100,24 @@ namespace Nut {
 
 		friend class ShaderCompiler;	//  ÓÑÔªÀà
 	};
+
+	class ShaderLibrary
+	{
+	public:
+		ShaderLibrary();
+		~ShaderLibrary();
+
+		void Add(const std::shared_ptr<Shader>& shader);
+		void Load(std::string_view name, bool forceCompile = false, bool disableOptimization = false);
+		void Load(std::string_view name, const std::string& path);
+
+		const std::shared_ptr<Shader>& Get(const std::string& name) const;
+		size_t GetSize() const { return m_Shaders.size(); }
+
+		std::unordered_map<std::string, std::shared_ptr<Shader>>& GetShaders() { return m_Shaders; }
+		const std::unordered_map<std::string, std::shared_ptr<Shader>>& GetShaders() const { return m_Shaders; }
+
+	private:
+		std::unordered_map<std::string, std::shared_ptr<Shader>> m_Shaders;
+	};
 }

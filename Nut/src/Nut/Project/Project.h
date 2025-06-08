@@ -34,7 +34,8 @@ namespace Nut {
 		const ProjectConfig& GetConfig() const { return m_Config; }
 
 		static std::shared_ptr<Project> GetActive() { return s_ActiveProject; }
-		static void SetActive(const std::shared_ptr<Project>& project);
+		static void SetActive(std::shared_ptr<Project> project);
+		//TODO: static void SetActiveRuntime(std::shared_ptr<Project> project, std::shared_ptr<AssetPack> assetPack);
 
 		inline static std::shared_ptr<AssetManagerBase> GetAssetManager() { return s_AssetManager;  }
 		inline static std::shared_ptr<EditorAssetManager> GetEditorAssetManager() { return std::dynamic_pointer_cast<EditorAssetManager>(s_AssetManager); }

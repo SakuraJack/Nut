@@ -19,7 +19,9 @@ namespace Nut {
 		void OnEvent(Event& e);
 
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
+		const glm::mat4& GetInverseViewMatrix() const { return glm::inverse(m_ViewMatrix); }
 		const glm::mat4& GetViewProjectionMatrix() const { return GetProjectionMatrix() * m_ViewMatrix; }
+		const glm::mat4& GetInverseViewProjectionMatrix() const { return glm::inverse(GetViewProjectionMatrix()); }
 
 		glm::vec3 GetUpDirection() const; // 获取上方向
 		glm::vec3 GetRightDirection() const; // 获取右方向

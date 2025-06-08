@@ -28,6 +28,12 @@ Nut::MaterialAsset::MaterialAsset(bool transparent)
 		m_Material = Material::Create("NutPBR");
 }
 
+Nut::MaterialAsset::MaterialAsset(const std::string& name)
+{
+	Handle = {};
+	m_Material = Material::Create(name);
+}
+
 Nut::MaterialAsset::MaterialAsset(std::shared_ptr<Material> material)
 {
 	Handle = {};

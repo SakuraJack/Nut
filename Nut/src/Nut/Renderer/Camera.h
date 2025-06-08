@@ -18,6 +18,7 @@ namespace Nut {
 		virtual ~Camera() = default;
 
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }	//  获取投影矩阵
+		const glm::mat4& GetInverseProjectionMatrix() const { return glm::inverse(m_ProjectionMatrix); }	//  获取投影矩阵的逆矩阵
 
 		void SetProjectionMatrix(const glm::mat4& projection);	//  设置投影矩阵
 		void SetPerspectiveProjectionMatrix(const float fov, const float width, const float height, const float nearP, const float farP);	//  设置透视投影矩阵

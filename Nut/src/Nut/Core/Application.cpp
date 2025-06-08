@@ -4,7 +4,6 @@
 #include "Nut/Renderer/Renderer.h"
 #include "Nut/Renderer/Mesh.h"
 #include "iostream"
-#include "Nut/Runtime/RuntimeLayer.h"
 
 extern bool g_ApplicationRunning;
 
@@ -32,7 +31,6 @@ Nut::Application::Application(const ApplicationSpecification& specification)
 		m_RenderThread.Run();
 	}
 	Renderer::Resize(m_Window->GetWidth(), m_Window->GetHeight());
-	m_LayerStack.PushLayer(new RuntimeLayer());
 }
 
 Nut::Application::~Application()
@@ -50,6 +48,7 @@ Nut::Application::~Application()
 
 void Nut::Application::Run()
 {
+	OnInit();
 	while (m_Running)
 	{
 		m_RenderThread.BlockUntilRenderComplete();
@@ -99,6 +98,32 @@ void Nut::Application::OnEvent(Event& e)
 			break;
 		}
 	}
+}
+
+void Nut::Application::PushLayer(Layer* layer)
+{
+	m_LayerStack.PushLayer(layer);
+	layer->OnAttach();
+}
+
+void Nut::Application::PushOverlay(Layer* layer)
+{
+	m_LayerStack.PushOverlay(layer);
+	layer->OnAttach();
+}
+
+void Nut::Application::PopLayer(Layer* layer)
+{
+	m_LayerStack.PopLayer(layer);
+	layer->OnDetach();
+	delete layer;
+}
+
+void Nut::Application::PopOverlay(Layer* layer)
+{
+	m_LayerStack.PopOverlay(layer);
+	layer->OnDetach();
+	delete layer;
 }
 
 void Nut::Application::OnShutdown()

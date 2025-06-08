@@ -8,7 +8,8 @@ namespace Nut {
 	class MaterialAsset : public Asset
 	{
 	public:
-		MaterialAsset(bool transparent = false);
+		explicit MaterialAsset(bool transparent = false);
+		explicit MaterialAsset(const std::string& name);
 		MaterialAsset(std::shared_ptr<Material> material);
 		~MaterialAsset();
 

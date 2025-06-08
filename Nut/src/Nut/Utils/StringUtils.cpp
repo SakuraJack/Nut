@@ -99,6 +99,11 @@ int Nut::Utils::String::skipBOM(std::istream& in)
 
 std::string Nut::Utils::String::ReadFileAndSkipBOM(const std::filesystem::path& path)
 {
+
+#if 1
+	auto absPath = std::filesystem::absolute(path);
+
+#endif
 	std::string res;
 	std::ifstream in(path, std::ios::binary | std::ios::in);
 	if (in) {

@@ -47,10 +47,7 @@ Nut::Texture2D::~Texture2D()
 	m_ImageData.Release();
 	if (m_TextureID) {
 		RenderID textureID = m_TextureID;
-		uint32_t textureSlot = m_TextureSlot;;
-		Renderer::Submit([textureID, textureSlot] {
-			if (textureSlot != -1)
-				glBindTextureUnit(textureSlot, 0);
+		Renderer::Submit([textureID] {
 			glDeleteTextures(1, &textureID);
 			});
 	}
@@ -58,20 +55,10 @@ Nut::Texture2D::~Texture2D()
 
 void Nut::Texture2D::Bind(uint32_t slot)
 {
-	m_TextureSlot = slot;
-	Renderer::Submit([this, slot]() {
-		glBindTextureUnit(slot, m_TextureID);
-		});
 }
 
 void Nut::Texture2D::Unbind()
 {
-	if (m_TextureSlot != -1) {
-		Renderer::Submit([this]() {
-			glBindTextureUnit(m_TextureSlot, 0);
-			m_TextureSlot = -1;
-			});
-	}
 }
 
 void Nut::Texture2D::Invalidate()
@@ -144,21 +131,18 @@ void Nut::Texture2D::Resize(const uint32_t width, const uint32_t height)
 std::shared_ptr<Nut::Texture2D> Nut::Texture2D::Create(const TextureSpecification& spec)
 {
 	std::shared_ptr<Texture2D> texture = std::make_shared<Texture2D>(spec);
-	s_Textures.push_back(texture);
 	return texture;
 }
 
 std::shared_ptr<Nut::Texture2D> Nut::Texture2D::Create(const TextureSpecification& spec, const std::filesystem::path& filepath)
 {
 	std::shared_ptr<Texture2D> texture = std::make_shared<Texture2D>(spec, filepath);
-	s_Textures.push_back(texture);
 	return texture;
 }
 
 std::shared_ptr<Nut::Texture2D> Nut::Texture2D::Create(const TextureSpecification& spec, Buffer imageData)
 {
 	std::shared_ptr<Texture2D> texture = std::make_shared<Texture2D>(spec, imageData);
-	s_Textures.push_back(texture);
 	return texture;
 }
 
@@ -301,21 +285,18 @@ void Nut::TextureCube::SetData(const void* data, uint32_t size, uint32_t faceind
 std::shared_ptr<Nut::TextureCube> Nut::TextureCube::Create(const TextureSpecification& spec)
 {
 	std::shared_ptr<TextureCube> texture = std::make_shared<TextureCube>(spec);
-	s_Textures.push_back(texture);
 	return texture;
 }
 
 std::shared_ptr<Nut::TextureCube> Nut::TextureCube::Create(const TextureSpecification& spec, std::vector<Buffer> imageDatas)
 {
 	std::shared_ptr<TextureCube> texture = std::make_shared<TextureCube>(spec, imageDatas);
-	s_Textures.push_back(texture);
 	return texture;
 }
 
 std::shared_ptr<Nut::TextureCube> Nut::TextureCube::Create(const TextureSpecification& spec, const std::filesystem::path& filepath)
 {
 	std::shared_ptr<TextureCube> texture = std::make_shared<TextureCube>(spec, filepath);
-	s_Textures.push_back(texture);
 	return texture;
 }
 

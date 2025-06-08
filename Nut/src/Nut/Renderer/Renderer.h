@@ -38,6 +38,8 @@ namespace Nut {
 		static void BeginFrame();
 		static void EndFrame();
 
+		static std::shared_ptr<ShaderLibrary> GetShaderLibrary();
+
 		// TODO: ·â×°½øPipeline
 		static void SetViewport(int x, int y, int width, int height);
 		static void Resize(uint32_t width, uint32_t height);
@@ -45,10 +47,16 @@ namespace Nut {
 		static void Clear();
 		static void SetScissor(glm::vec4 scissor, bool enabled = false);
 
-		static void RenderStaticMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable);
-		static void RenderSubmeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, uint32_t instanceCount);
-		static void RenderMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MaterialTable> matematerialTablerial);
-		static void RenderMeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MaterialTable> materialTable, uint32_t instanceCount);
+		static void RenderStaticMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount);
+		static void RenderSubmeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t boneTransformsOffset, uint32_t instanceCount);
+		static void RenderMeshWithMaterial(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount, std::shared_ptr<Material> material, Buffer additionalUniforms = Buffer());
+		static void RenderStaticMeshWithMaterial(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount, std::shared_ptr<Material> material, Buffer additionalUniforms = Buffer());
+		static void RenderQuad(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, const glm::mat4& transform);
+		static void SubmitFullscreenQuad(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material);
+		static void SubmitFullscreenQuadWithOverrides(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, Buffer vertexShaderOverrides, Buffer fragmentShaderOverrides);
+		//static void LightCulling(std::shared_ptr<ComputePass> computePass, std::shared_ptr<Material> material, const glm::uvec3& workGroups);
+		static void RenderGeometry(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<IndexBuffer> indexBuffer, const glm::mat4& transform, uint32_t indexCount = 0);
+		static void SubmitQuad(std::shared_ptr<Material> material, const glm::mat4& transform = glm::mat4(1.0f));
 
 		static std::shared_ptr<Texture2D> GetWhiteTexture();
 		static std::shared_ptr<Texture2D> GetBlackTexture();

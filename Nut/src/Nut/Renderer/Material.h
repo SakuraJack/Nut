@@ -90,6 +90,7 @@ namespace Nut {
 		const std::string& GetName() const { return m_Name; }
 		std::unordered_map<std::string, Buffer> GetUniformBuffers() { return m_UniformBuffers; }
 		std::unordered_map<std::string, Buffer> GetStorageBuffers() { return m_StorageBuffers; }
+		ResourceManager& GetResourceManager() { return m_ResourceManager; }
 
 	private:
 		void Init();

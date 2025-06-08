@@ -73,6 +73,19 @@ namespace Nut {
 		uint32_t Mips = 1;
 	};
 
+	namespace Utils
+	{
+		inline bool IsDepthFormat(ImageFormat format)
+		{
+			if (format == ImageFormat::DEPTH32FSTENCIL8UINT ||
+				format == ImageFormat::DEPTH32F ||
+				format == ImageFormat::DEPTH24STENCIL8)
+			{
+				return true;
+			}
+		}
+	}
+
 	class Image
 	{
 	public:
@@ -118,10 +131,12 @@ namespace Nut {
 
 		Buffer GetBuffer() const { return m_ImageData; }
 		Buffer& GetBuffer() { return m_ImageData; }
+		RenderID& GetImageID() { return m_ImageID; }
 
-	private:
 	private:
 		Buffer m_ImageData;
 		ImageSpecification m_Specification;
+
+		RenderID m_ImageID = 0; // OpenGL texture ID or Vulkan image handle, etc.
 	};
 }

@@ -11,7 +11,7 @@ namespace Nut {
 	namespace Utils {
 		static const char* GetShaderCachePath()
 		{
-			return "Resources/Cache/Shaders/";	//  着色器缓存路径
+			return "resources/Cache/Shaders/";	//  着色器缓存路径
 		}
 
 		static void CreateCacheDirectory()
@@ -169,7 +169,7 @@ void Nut::ShaderCompiler::Reflect(std::vector<uint32_t>& data, std::string stage
 			Renderer::Submit([&buffer, bufferSize]() {
 				glCreateBuffers(1, &buffer.BufferID);	//  创建Uniform缓冲区
 				glNamedBufferData(buffer.BufferID, bufferSize, nullptr, GL_DYNAMIC_DRAW);	//  分配缓冲区内存
-				glBindBufferBase(GL_UNIFORM_BUFFER, buffer.Binding, buffer.BufferID);	//  绑定Uniform缓冲区
+				//glBindBufferBase(GL_UNIFORM_BUFFER, buffer.Binding, buffer.BufferID);	//  绑定Uniform缓冲区
 				});
 		}
 		else {

@@ -4,7 +4,7 @@
 #include "Renderer.h"
 
 Nut::Shader::Shader(const std::string name /*= ""*/)
-	: m_Name(name), m_AssetPath("Resources/Shaders/" + name + ".glsl")
+	: m_Name(name), m_AssetPath("resources/Shaders/" + name + ".glsl")
 {
 	ShaderCompiler compiler(m_AssetPath);
 	if (!compiler.Reload(true)) {
@@ -152,3 +152,39 @@ std::shared_ptr<Nut::Shader> Nut::Shader::Create(const std::string& name, const 
 {
 	return std::make_shared<Nut::Shader>(name, shaderSourcePath);
 }
+
+Nut::ShaderLibrary::ShaderLibrary()
+{
+}
+
+Nut::ShaderLibrary::~ShaderLibrary()
+{
+}
+
+void Nut::ShaderLibrary::Add(const std::shared_ptr<Shader>& shader)
+{
+	auto name = shader->GetName();
+	m_Shaders[name] = shader;
+}
+
+void Nut::ShaderLibrary::Load(std::string_view name, bool forceCompile, bool disableOptimization)
+{
+	auto shader = Shader::Create(name.data());
+	Add(shader);
+}
+
+void Nut::ShaderLibrary::Load(std::string_view name, const std::string& path)
+{
+	auto shader = Shader::Create(name.data(), path);
+	Add(shader);
+}
+
+const std::shared_ptr<Nut::Shader>& Nut::ShaderLibrary::Get(const std::string& name) const
+{
+	auto it = m_Shaders.find(name);
+	if (it != m_Shaders.end())
+		return it->second;
+	return nullptr;
+}
+
+

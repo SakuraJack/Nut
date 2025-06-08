@@ -37,7 +37,7 @@ void Nut::Material::Unbind()
 
 std::shared_ptr<Nut::Material> Nut::Material::Create(const std::string& name /*= "Default"*/)
 {
-	return std::make_shared<Material>(Shader::Create(), name);
+	return std::make_shared<Material>(Shader::Create(name), name);
 }
 
 std::shared_ptr<Nut::Material> Nut::Material::Create(const std::shared_ptr<Shader>& shader, const std::string& name /*= ""*/)

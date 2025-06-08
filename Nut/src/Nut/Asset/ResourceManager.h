@@ -14,8 +14,8 @@ namespace Nut {
 
 		void SetInput(std::string_view name, std::shared_ptr<Texture2D> texture);
 		void SetInput(std::string_view name, std::shared_ptr<TextureCube> texture);
-		void SetInput(std::string_view name, std::shared_ptr<Texture2D> texture, uint32_t index);
-		void SetInput(std::string_view name, std::shared_ptr<TextureCube> texture, uint32_t index);
+		void SetInput(std::string_view name, std::shared_ptr<Texture2D> texture, uint32_t location); // location = textureunit 方便直接传递(嘻嘻)
+		void SetInput(std::string_view name, std::shared_ptr<TextureCube> texture, uint32_t location);
 
 		template<typename T>
 		std::shared_ptr<T> GetInput(std::string_view name)
@@ -26,6 +26,12 @@ namespace Nut {
 			else
 				return nullptr;
 		}
+
+		std::map<std::string, std::pair<uint32_t, std::shared_ptr<Texture>>> GetTextureMap() const
+		{
+			return m_TextureMap;
+		}
+
 	private:
 		std::map<std::string, std::pair<uint32_t, std::shared_ptr<Texture>>> m_TextureMap;
 	};

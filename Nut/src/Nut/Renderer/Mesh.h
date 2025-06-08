@@ -10,6 +10,7 @@
 #include "Nut/Asset/MaterialAsset.h"
 
 namespace Nut {
+
 	struct Vertex
 	{
 		glm::vec3 Position;
@@ -23,6 +24,8 @@ namespace Nut {
 	{
 		uint32_t V1, V2, V3;
 	};
+
+	static_assert(sizeof(Index) == 3 * sizeof(uint32_t));
 
 	struct Triangle
 	{
@@ -60,8 +63,9 @@ namespace Nut {
 
 		const std::vector<Vertex>& GetVertices() const { return m_Vertices; }
 		const std::vector<Index>& GetIndices() const { return m_Indices; }
-		std::vector<std::shared_ptr<Material>> GetMaterials() { return m_Materials; }
-		const std::vector<std::shared_ptr<Material>>& GetMaterials() const { return m_Materials; }
+		std::vector<AssetHandle> GetMaterials() { return m_Materials; }
+		void AddMaterial(const AssetHandle& material) { m_Materials.push_back(material); }
+		const std::vector<AssetHandle>& GetMaterials() const { return m_Materials; }
 		const std::string& GetFilePath() const { return m_FilePath; }
 
 		std::shared_ptr<VertexBuffer> GetVertexBuffer() const { return m_VertexBuffer; }
@@ -81,40 +85,35 @@ namespace Nut {
 		std::vector<Vertex> m_Vertices;
 		std::vector<Index> m_Indices;
 
-		std::vector<std::shared_ptr<Material>> m_Materials;
+		std::vector<AssetHandle> m_Materials;
+
+		std::unordered_map<uint32_t, std::vector<Triangle>> m_TriangleCache;
 
 		std::string m_FilePath;
-
-		friend class GeometryGenerator;
 	};
 
 	class Mesh : public Asset // 动态网格
 	{
 	public:
-		explicit Mesh(std::shared_ptr<MeshSource> meshSource);
-		Mesh(std::shared_ptr<MeshSource> meshSource, const std::vector<uint32_t>& submeshes);
-		Mesh(const std::shared_ptr<Mesh>& other);
+		explicit Mesh(AssetHandle meshSource);
+		Mesh(AssetHandle, const std::vector<uint32_t>& submeshes);
 		virtual ~Mesh();
 
-		void SetSubmeshes(const std::vector<uint32_t>& submeshes);
+		void SetSubmeshes(const std::vector<uint32_t>& submeshes, std::shared_ptr<MeshSource> meshSource);
 		std::vector<uint32_t>& GetSubmeshes() { return m_Submeshes; }
 		const std::vector<uint32_t>& GetSubmeshes() const { return m_Submeshes; }
 		
-		std::shared_ptr<MeshSource> GetMeshSource() { return m_MeshSource; }
-		const std::shared_ptr<MeshSource> GetMeshSource() const { return m_MeshSource; }
-		void SetMeshSource(std::shared_ptr<MeshSource> meshSource) { m_MeshSource = meshSource; }
+		AssetHandle GetMeshSource() { return m_MeshSource; }
+		void SetMeshAsset(AssetHandle meshSource) { m_MeshSource = meshSource; }
 
 		std::shared_ptr<MaterialTable> GetMaterials() const { return m_Materials; }
 
 		static AssetType GetStaticType() { return AssetType::Mesh; }
 		AssetType GetType() const override { return GetStaticType(); }
 
-		// TODO: 放入AssetManager由每个项目管理
-		std::vector<std::shared_ptr<MaterialAsset>> m_MaterialAssets; 
-
 	private:
+		AssetHandle m_MeshSource;
 		std::vector<uint32_t> m_Submeshes;
-		std::shared_ptr<MeshSource> m_MeshSource;
 		std::shared_ptr<MaterialTable> m_Materials;
 
 		friend class Material;
@@ -125,30 +124,25 @@ namespace Nut {
 	class StaticMesh : public Asset // 静态网格
 	{
 	public:
-		explicit StaticMesh(std::shared_ptr<MeshSource> meshSource);
-		StaticMesh(std::shared_ptr<MeshSource> meshSource, const std::vector<uint32_t>& submeshes);
-		StaticMesh(const std::shared_ptr<StaticMesh>& other);
+		explicit StaticMesh(AssetHandle meshSource);
+		StaticMesh(AssetHandle meshSource, const std::vector<uint32_t>& submeshes);
 		virtual ~StaticMesh();
 
-		void SetSubmeshes(const std::vector<uint32_t>& submeshes);
+		void SetSubmeshes(const std::vector<uint32_t>& submeshes, std::shared_ptr<MeshSource> meshSource);
 		std::vector<uint32_t>& GetSubmeshes() { return m_Submeshes; }
 		const std::vector<uint32_t>& GetSubmeshes() const { return m_Submeshes; }
 
-		std::shared_ptr<MeshSource> GetMeshSource() { return m_MeshSource; }
-		const std::shared_ptr<MeshSource> GetMeshSource() const { return m_MeshSource; }
-		void SetMeshSource(std::shared_ptr<MeshSource> meshSource) { m_MeshSource = meshSource; }
+		AssetHandle GetMeshSource() { return m_MeshSource; }
+		void SetMeshAsset(AssetHandle meshSource) { m_MeshSource = meshSource; }
 
 		std::shared_ptr<MaterialTable> GetMaterials() const { return m_Materials; }
 
 		static AssetType GetStaticType() { return AssetType::StaticMesh; }
 		AssetType GetType() const override { return GetStaticType(); }
 
-		// TODO: 放入AssetManager由每个项目管理
-		std::vector<std::shared_ptr<MaterialAsset>> m_MaterialAssets;
-
 	private:
+		AssetHandle m_MeshSource;
 		std::vector<uint32_t> m_Submeshes;
-		std::shared_ptr<MeshSource> m_MeshSource;
 		std::shared_ptr<MaterialTable> m_Materials;
 
 		friend class Material;

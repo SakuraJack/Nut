@@ -1,4 +1,5 @@
 #include "Nut/EntryPoint.h"
+#include "RuntimeLayer.h"
 
 class NutEditorApplication : public Nut::Application
 {
@@ -16,6 +17,7 @@ public:
 	{
 		// TODO: Load project from m_ProjectPath
 		// PushLayer(new Nut::EditorLayer());
+		PushLayer(new Nut::RuntimeLayer());
 	}
 
 private:

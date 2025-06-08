@@ -51,6 +51,8 @@ namespace Nut {
 		bool OnWindowResized(WindowResizeEvent& e);
 		bool OnKeyPressed(KeyPressedEvent& e);
 
+		RenderThread& GetRenderThread() { return m_RenderThread; }
+
 	private:
 		void ProcessEvents();
 

@@ -34,9 +34,8 @@ namespace Nut {
 		virtual uint32_t GetMipLevel() const = 0;
 		virtual TextureType GetType() const = 0;
 
-	public:
-		// TODO: 移入AssetManager 统一管理所有资源类
-		inline static std::vector<std::shared_ptr<Texture>> s_Textures;
+		RenderID GetTextureID() const { return m_TextureID; }
+		RenderID m_TextureID = 0;
 	};
 
 	class Texture2D : public Texture, public std::enable_shared_from_this<Texture2D>
@@ -62,8 +61,6 @@ namespace Nut {
 		glm::uvec2 GetSize() const override { return { m_Specification.Width, m_Specification.Height }; }
 		uint32_t GetMipLevel() const override { return m_Specification.MipLevels; }
 		TextureType GetType() const override { return m_Specification.Type; }
-		RenderID GetTextureID() const { return m_TextureID; }
-		uint32_t GetTextureSlot() const { return m_TextureSlot; }
 
 		static std::shared_ptr<Texture2D> Create(const TextureSpecification& spec);
 		static std::shared_ptr<Texture2D> Create(const TextureSpecification& spec, Buffer imageData);
@@ -73,8 +70,6 @@ namespace Nut {
 		TextureSpecification m_Specification;
 		Buffer m_ImageData;
 		std::filesystem::path m_FilePath;
-		RenderID m_TextureID;
-		uint32_t m_TextureSlot = -1;
 	};
 
 	class TextureCube : public Texture, public std::enable_shared_from_this<TextureCube>
@@ -99,7 +94,6 @@ namespace Nut {
 		glm::uvec2 GetSize() const override { return { m_Specification.Width, m_Specification.Height }; }
 		uint32_t GetMipLevel() const override { return m_Specification.MipLevels; }
 		TextureType GetType() const override { return m_Specification.Type; }
-		RenderID GetTextureID() const { return m_TextureID; }
 
 		static std::shared_ptr<TextureCube> Create(const TextureSpecification& spec);
 		static std::shared_ptr<TextureCube> Create(const TextureSpecification& spec, std::vector<Buffer> imageDatas);
@@ -109,6 +103,5 @@ namespace Nut {
 		TextureSpecification m_Specification;
 		std::vector<Buffer> m_ImageDatas;  // 面数据 顺序: +X, -X, +Y, -Y, +Z, -Z
 		std::filesystem::path m_FilePath;
-		RenderID m_TextureID;
 	};
 }
