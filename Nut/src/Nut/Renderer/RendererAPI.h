@@ -112,50 +112,49 @@ namespace Nut {
 		int s_ClearStencil = 0; // 清除模板
 	};
 
-
 	class RendererAPI
 	{
 	public:
-		static void Init();
-		static void Shutdown();
-		static void BeginFrame();
-		static void EndFrame();
-		static void Clear();
-		static void Clear(float r, float g, float b, float a);
-		static void Resize(uint32_t width, uint32_t height);
+		void Init();
+		void Shutdown();
+		void BeginFrame();
+		void EndFrame();
+		void Clear();
+		void Clear(float r, float g, float b, float a);
+		void Resize(uint32_t width, uint32_t height);
 
 		// 改变渲染器状态
-		static void SetViewport(int x, int y, int width, int height); // 设置视口
-		static void SetClearColor(const glm::vec4& color); // 设置清除颜色
-		static void SetClearDepth(float depth); // 设置清除深度
-		static void SetClearStencil(int stencil); // 设置清除模板
-		static void SetPolygonMode(PolygonMode mode); // 设置多边形模式
-		static void SetLineWidth(float width); // 设置线宽
-		static void SetPointSize(float size); // 设置点大小
-		static void SetScissorEnabled(bool enable); // 是否启用剪裁器
-		static void SetScissor(int x, int y, int width, int height); // 设置剪裁器
-		static void SetBlendEnabled(bool enable); // 是否启用混合
-		static void SetBlendFunc(int srcFactor, int dstFactor); // 设置混合函数
-		static void SetDepthTestEnabled(bool enable); // 是否启用深度测试
-		static void SetDepthFunc(DepthFunc func); // 设置深度函数
-		static void SetStencilTestEnabled(bool enable); // 是否启用模板测试
-		static void SetStencilFunc(StencilFunc func, int ref, int mask); // 设置模板函数
-		static void SetStencilOp(int fail, int zfail, int zpass); // 设置模板操作
-		static void SetFrontFace(FrontFace face); // 设置面朝向
-		static void SetCullFace(bool enable); // 设置剔除面
-		static void SetCullFaceMode(CullFaceMode mode); // 设置剔除面模式
+		void SetViewport(int x, int y, int width, int height); // 设置视口
+		void SetClearColor(const glm::vec4& color); // 设置清除颜色
+		void SetClearDepth(float depth); // 设置清除深度
+		void SetClearStencil(int stencil); // 设置清除模板
+		void SetPolygonMode(PolygonMode mode); // 设置多边形模式
+		void SetLineWidth(float width); // 设置线宽
+		void SetPointSize(float size); // 设置点大小
+		void SetScissorEnabled(bool enable); // 是否启用剪裁器
+		void SetScissor(int x, int y, int width, int height); // 设置剪裁器
+		void SetBlendEnabled(bool enable); // 是否启用混合
+		void SetBlendFunc(int srcFactor, int dstFactor); // 设置混合函数
+		void SetDepthTestEnabled(bool enable); // 是否启用深度测试
+		void SetDepthFunc(DepthFunc func); // 设置深度函数
+		void SetStencilTestEnabled(bool enable); // 是否启用模板测试
+		void SetStencilFunc(StencilFunc func, int ref, int mask); // 设置模板函数
+		void SetStencilOp(int fail, int zfail, int zpass); // 设置模板操作
+		void SetFrontFace(FrontFace face); // 设置面朝向
+		void SetCullFace(bool enable); // 设置剔除面
+		void SetCullFaceMode(CullFaceMode mode); // 设置剔除面模式
 
 		// 绘制图元
-		static void RenderStaticMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount);
-		static void RenderSubmeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t boneTransformsOffset, uint32_t instanceCount);
-		static void RenderMeshWithMaterial(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount, std::shared_ptr<Material> material, Buffer additionalUniforms = Buffer());
-		static void RenderStaticMeshWithMaterial(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount, std::shared_ptr<Material> material, Buffer additionalUniforms = Buffer());
-		static void RenderQuad(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, const glm::mat4& transform);
-		static void SubmitFullscreenQuad(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material);
-		static void SubmitFullscreenQuadWithOverrides(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, Buffer vertexShaderOverrides, Buffer fragmentShaderOverrides);
-		//static void LightCulling(std::shared_ptr<ComputePass> computePass, std::shared_ptr<Material> material, const glm::uvec3& workGroups);
-		static void RenderGeometry(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<IndexBuffer> indexBuffer, const glm::mat4& transform, uint32_t indexCount = 0);
-		static void SubmitQuad(std::shared_ptr<Material> material, const glm::mat4& transform = glm::mat4(1.0f));
+		void RenderStaticMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount);
+		void RenderSubmeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t boneTransformsOffset, uint32_t instanceCount);
+		void RenderMeshWithMaterial(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount, std::shared_ptr<Material> material, Buffer additionalUniforms = Buffer());
+		void RenderStaticMeshWithMaterial(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount, std::shared_ptr<Material> material, Buffer additionalUniforms = Buffer());
+		void RenderQuad(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, const glm::mat4& transform);
+		void SubmitFullscreenQuad(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material);
+		void SubmitFullscreenQuadWithOverrides(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, Buffer vertexShaderOverrides, Buffer fragmentShaderOverrides);
+		// void LightCulling(std::shared_ptr<ComputePass> computePass, std::shared_ptr<Material> material, const glm::uvec3& workGroups);
+		void RenderGeometry(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<IndexBuffer> indexBuffer, const glm::mat4& transform, uint32_t indexCount = 0);
+		void SubmitQuad(std::shared_ptr<Material> material, const glm::mat4& transform = glm::mat4(1.0f));
 
 	protected:
 		static RendererAPIStatus s_RendererAPIStatus; // 渲染器状态

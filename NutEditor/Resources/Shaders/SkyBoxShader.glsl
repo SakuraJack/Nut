@@ -21,10 +21,10 @@ layout(location = 0) out vec3 v_Position;
 
 void main()
 {
-	mat3 rotation = mat3(u_Camera.ViewMatrix);
-	v_Position = a_Position;
-	mat4 rotView = mat4(rotation); // 构造无平移的view矩阵
-	gl_Position = u_Camera.ProjectionMatrix * rotView * vec4(a_Position, 1.0);
+	vec4 position = vec4(a_Position.xy, 0.0, 1.0);
+	gl_Position = position;
+	
+	v_Position = (u_Camera.InverseViewProjectionMatrix * position).xyz;
 }
 
 # type Fragment

@@ -4,7 +4,6 @@
 #include "Nut/Core/Application.h"
 
 namespace Nut {
-
 	static std::shared_ptr<GraphicsContext> GetContext() {
 		return Application::Get().GetWindow()->GetRenderContext();
 	}
@@ -16,12 +15,16 @@ namespace Nut {
 		std::shared_ptr<Texture2D> WhiteTexture;
 		std::shared_ptr<Texture2D> BlackTexture;
 		std::shared_ptr<TextureCube> WhiteCubeTexture;
+
+		std::shared_ptr<VertexBuffer> QuadVertexBuffer;
+		std::shared_ptr<IndexBuffer> QuadIndexBuffer;
 	};
 
 	constexpr static uint32_t s_RenderCommandQueueCount = 2;
 	static RenderCommandQueue* s_CommandQueue[s_RenderCommandQueueCount];
 	static std::atomic<uint32_t> s_RenderCommandQueueSubmissionIndex = 0;
 	static RendererData* s_Data = nullptr;
+	static RendererAPI* s_RendererAPI = nullptr;
 
 	void Renderer::WaitAndRender(RenderThread* renderThread)
 	{
@@ -63,12 +66,22 @@ namespace Nut {
 		return *s_CommandQueue[s_RenderCommandQueueSubmissionIndex];
 	}
 
+	static RendererAPI* InitRendererAPI()
+	{
+		// TODO: 根据平台选择渲染API
+		// 暂时只支持OpenGL
+		return new RendererAPI();
+	}
+
 	void Renderer::Init()
 	{
 		s_CommandQueue[0] = nnew RenderCommandQueue();
 		s_CommandQueue[1] = nnew RenderCommandQueue();
 		s_Data = nnew RendererData();
-		RendererAPI::Init();
+
+		s_RendererAPI = InitRendererAPI();
+
+		s_RendererAPI->Init();
 
 		s_Data->ShaderLibrary = std::make_shared<ShaderLibrary>();
 
@@ -97,17 +110,17 @@ namespace Nut {
 
 	void Renderer::Shutdown()
 	{
-		RendererAPI::Shutdown();
+		s_RendererAPI->Shutdown();
 	}
 
 	void Renderer::BeginFrame()
 	{
-		RendererAPI::BeginFrame();
+		s_RendererAPI->BeginFrame();
 	}
 
 	void Renderer::EndFrame()
 	{
-		RendererAPI::EndFrame();
+		s_RendererAPI->EndFrame();
 	}
 
 	std::shared_ptr<ShaderLibrary> Renderer::GetShaderLibrary()
@@ -117,73 +130,73 @@ namespace Nut {
 
 	void Renderer::SetViewport(int x, int y, int width, int height)
 	{
-		RendererAPI::SetViewport(x, y, width, height);
+		s_RendererAPI->SetViewport(x, y, width, height);
 	}
 
 	void Renderer::Resize(uint32_t width, uint32_t height)
 	{
-		RendererAPI::Resize(width, height);
+		s_RendererAPI->Resize(width, height);
 	}
 
 	void Renderer::SetClearColor(const glm::vec4& color)
 	{
-		RendererAPI::SetClearColor(color);
+		s_RendererAPI->SetClearColor(color);
 	}
 
 	void Renderer::Clear()
 	{
-		RendererAPI::Clear();
+		s_RendererAPI->Clear();
 	}
 
 	void Renderer::SetScissor(glm::vec4 scissor, bool enabled)
 	{
-		RendererAPI::SetScissorEnabled(enabled);
-		RendererAPI::SetScissor(scissor.x, scissor.y, scissor.z, scissor.w);
+		s_RendererAPI->SetScissorEnabled(enabled);
+		s_RendererAPI->SetScissor(scissor.x, scissor.y, scissor.z, scissor.w);
 	}
 
 	void Renderer::RenderStaticMesh(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount)
 	{
-		RendererAPI::RenderStaticMesh(pipeline, mesh, meshSource, submeshIndex, materialTable, transformBuffer, transformOffset, instanceCount);
+		s_RendererAPI->RenderStaticMesh(pipeline, mesh, meshSource, submeshIndex, materialTable, transformBuffer, transformOffset, instanceCount);
 	}
 
 	void Renderer::RenderSubmeshInstanced(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<MaterialTable> materialTable, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t boneTransformsOffset, uint32_t instanceCount)
 	{
-		RendererAPI::RenderSubmeshInstanced(pipeline, mesh, meshSource, submeshIndex, materialTable, transformBuffer, transformOffset, boneTransformsOffset, instanceCount);
+		s_RendererAPI->RenderSubmeshInstanced(pipeline, mesh, meshSource, submeshIndex, materialTable, transformBuffer, transformOffset, boneTransformsOffset, instanceCount);
 	}
 
 	void Renderer::RenderMeshWithMaterial(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Mesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount, std::shared_ptr<Material> material, Buffer additionalUniforms)
 	{
-		RendererAPI::RenderMeshWithMaterial(pipeline, mesh, meshSource, submeshIndex, transformBuffer, transformOffset, instanceCount, material, additionalUniforms);
+		s_RendererAPI->RenderMeshWithMaterial(pipeline, mesh, meshSource, submeshIndex, transformBuffer, transformOffset, instanceCount, material, additionalUniforms);
 	}
 
 	void Renderer::RenderStaticMeshWithMaterial(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<StaticMesh> mesh, std::shared_ptr<MeshSource> meshSource, uint32_t submeshIndex, std::shared_ptr<VertexBuffer> transformBuffer, uint32_t transformOffset, uint32_t instanceCount, std::shared_ptr<Material> material, Buffer additionalUniforms)
 	{
-		RendererAPI::RenderStaticMeshWithMaterial(pipeline, mesh, meshSource, submeshIndex, transformBuffer, transformOffset, instanceCount, material, additionalUniforms);
+		s_RendererAPI->RenderStaticMeshWithMaterial(pipeline, mesh, meshSource, submeshIndex, transformBuffer, transformOffset, instanceCount, material, additionalUniforms);
 	}
 
 	void Renderer::RenderQuad(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, const glm::mat4& transform)
 	{
-		RendererAPI::RenderQuad(pipeline, material, transform);
+		s_RendererAPI->RenderQuad(pipeline, material, transform);
 	}
 
 	void Renderer::SubmitFullscreenQuad(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material)
 	{
-		RendererAPI::SubmitFullscreenQuad(pipeline, material);
+		s_RendererAPI->SubmitFullscreenQuad(pipeline, material);
 	}
 
 	void Renderer::SubmitFullscreenQuadWithOverrides(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, Buffer vertexShaderOverrides, Buffer fragmentShaderOverrides)
 	{
-		RendererAPI::SubmitFullscreenQuadWithOverrides(pipeline, material, vertexShaderOverrides, fragmentShaderOverrides);
+		s_RendererAPI->SubmitFullscreenQuadWithOverrides(pipeline, material, vertexShaderOverrides, fragmentShaderOverrides);
 	}
 
 	void Renderer::RenderGeometry(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<Material> material, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<IndexBuffer> indexBuffer, const glm::mat4& transform, uint32_t indexCount)
 	{
-		RendererAPI::RenderGeometry(pipeline, material, vertexBuffer, indexBuffer, transform, indexCount);
+		s_RendererAPI->RenderGeometry(pipeline, material, vertexBuffer, indexBuffer, transform, indexCount);
 	}
 
 	void Renderer::SubmitQuad(std::shared_ptr<Material> material, const glm::mat4& transform)
 	{
-		RendererAPI::SubmitQuad(material, transform);
+		s_RendererAPI->SubmitQuad(material, transform);
 	}
 
 	std::shared_ptr<Texture2D> Renderer::GetWhiteTexture()
