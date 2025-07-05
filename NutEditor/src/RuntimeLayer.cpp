@@ -34,7 +34,7 @@ void Nut::RuntimeLayer::OnAttach()
 	spec.Width = 1;
 	spec.Height = 1;
 	m_SkyBoxMaterial = Material::Create(Renderer::GetShaderLibrary()->Get("Skybox"));
-	m_SkyBoxTexture = Renderer::GetWhiteCubeTexture();
+	m_SkyBoxTexture = Renderer::GetWhiteCubeTexture();/*TextureCube::Create(spec, "Resources/Images/skybox");*/
 	m_SkyBoxMaterial->Set("u_Texture", m_SkyBoxTexture);
 
 	m_FloorMaterial = Material::Create("FloorShader");

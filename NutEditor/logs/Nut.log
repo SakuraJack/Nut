@@ -1,40 +1,44 @@
-[09:34:01] [trace] Nut: [Core]Nut Engine
-[09:34:01] [trace] Nut: [Core]Initializing...
-[09:34:02] [info] Nut: [Renderer]初始化渲染器
-[09:34:02] [info] Nut: [Renderer]设备名称: NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2
-[09:34:02] [info] Nut: [Renderer]渲染接口: OpenGL
-[09:34:02] [info] Nut: [Renderer]版本: 4.6.0 NVIDIA 572.61
-[09:34:02] [info] Nut: [Renderer]厂商: NVIDIA Corporation
-[09:34:02] [info] Nut: [Renderer]最大采样数: 32
-[09:34:02] [info] Nut: [Renderer]最大纹理单元: 32
-[09:34:02] [info] Nut: [Renderer]启用OpenGL调试... 调试模式:同步
-[09:34:02] [info] Nut: [Renderer]启用混合... 混合函数:源Alpha, 1-源Alpha
-[09:34:02] [info] Nut: [Renderer]启用深度测试... 深度函数:小于等于
-[09:34:02] [info] Nut: [Renderer]启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换
-[09:34:02] [info] Nut: [Renderer]启用剔除面... 剔除面:背面, 正面朝向:逆时针
-[09:34:02] [info] Nut: [Renderer]启用多重采样... 启用无缝立方体贴图
-[09:34:02] [trace] Nut: [Shader]加载着色器文件: "Resources/Shaders/SkyBoxShader.glsl"
-[09:34:03] [trace] Nut: [Shader]Shader Name - "SkyBoxShader.glsl", Shader Stage - Vertex
-[09:34:03] [trace] Nut: [Shader]Uniform Buffers: 1
-[09:34:03] [trace] Nut: [Shader]Storage Buffers: 0
-[09:34:03] [trace] Nut: [Shader]Sampled Images: 0
-[09:34:03] [trace] Nut: [Shader]Plain Uniforms: 0
-[09:34:03] [trace] Nut: [Shader]Shader Name - "SkyBoxShader.glsl", Shader Stage - Fragment
-[09:34:03] [trace] Nut: [Shader]Uniform Buffers: 0
-[09:34:03] [trace] Nut: [Shader]Storage Buffers: 0
-[09:34:03] [trace] Nut: [Shader]Sampled Images: 1
-[09:34:03] [trace] Nut: [Shader]Plain Uniforms: 0
-[09:34:03] [trace] Nut: [Shader]加载着色器文件: "resources/Shaders/FloorShader.glsl"
-[09:34:04] [trace] Nut: [Shader]Shader Name - "FloorShader.glsl", Shader Stage - Vertex
-[09:34:04] [trace] Nut: [Shader]Uniform Buffers: 1
-[09:34:04] [trace] Nut: [Shader]Storage Buffers: 0
-[09:34:04] [trace] Nut: [Shader]Sampled Images: 0
-[09:34:04] [trace] Nut: [Shader]Plain Uniforms: 0
-[09:34:04] [trace] Nut: [Shader]Shader Name - "FloorShader.glsl", Shader Stage - Fragment
-[09:34:04] [trace] Nut: [Shader]Uniform Buffers: 0
-[09:34:04] [trace] Nut: [Shader]Storage Buffers: 0
-[09:34:04] [trace] Nut: [Shader]Sampled Images: 0
-[09:34:04] [trace] Nut: [Shader]Plain Uniforms: 0
-[09:34:04] [info] Nut: [Renderer]调整视口大小: 1600, 900
-[09:34:06] [info] Nut: [Window]窗口关闭
-[09:34:06] [trace] Nut: [Core]Shutting down...
+[10:12:31] [trace] Nut: [Core]Nut Engine
+[10:12:31] [trace] Nut: [Core]Initializing...
+[10:12:32] [info] Nut: [Renderer]初始化渲染器
+[10:12:32] [info] Nut: [Renderer]设备名称: NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2
+[10:12:32] [info] Nut: [Renderer]渲染接口: OpenGL
+[10:12:32] [info] Nut: [Renderer]版本: 4.6.0 NVIDIA 572.61
+[10:12:32] [info] Nut: [Renderer]厂商: NVIDIA Corporation
+[10:12:32] [info] Nut: [Renderer]最大采样数: 32
+[10:12:32] [info] Nut: [Renderer]最大纹理单元: 32
+[10:12:32] [info] Nut: [Renderer]启用OpenGL调试... 调试模式:同步
+[10:12:32] [info] Nut: [Renderer]启用混合... 混合函数:源Alpha, 1-源Alpha
+[10:12:32] [info] Nut: [Renderer]启用深度测试... 深度函数:小于等于
+[10:12:32] [info] Nut: [Renderer]启用模板测试... 模板函数:总是通过, 模板操作:保持, 保持, 替换
+[10:12:32] [info] Nut: [Renderer]启用剔除面... 剔除面:背面, 正面朝向:逆时针
+[10:12:32] [info] Nut: [Renderer]启用多重采样... 启用无缝立方体贴图
+[10:12:32] [trace] Nut: [Shader]加载着色器文件: "Resources/Shaders/SkyBoxShader.glsl"
+[10:12:33] [trace] Nut: [Shader]Shader Name - "SkyBoxShader.glsl", Shader Stage - Vertex
+[10:12:33] [trace] Nut: [Shader]Uniform Buffers: 1
+[10:12:33] [trace] Nut: [Shader]Storage Buffers: 0
+[10:12:33] [trace] Nut: [Shader]Sampled Images: 0
+[10:12:33] [trace] Nut: [Shader]Plain Uniforms: 0
+[10:12:33] [trace] Nut: [Shader]Shader Name - "SkyBoxShader.glsl", Shader Stage - Fragment
+[10:12:33] [trace] Nut: [Shader]Uniform Buffers: 0
+[10:12:33] [trace] Nut: [Shader]Storage Buffers: 0
+[10:12:33] [trace] Nut: [Shader]Sampled Images: 1
+[10:12:33] [trace] Nut: [Shader]Plain Uniforms: 0
+[10:12:34] [trace] Nut: [Shader]加载着色器文件: "resources/Shaders/FloorShader.glsl"
+[10:12:35] [trace] Nut: [Shader]Shader Name - "FloorShader.glsl", Shader Stage - Vertex
+[10:12:35] [trace] Nut: [Shader]Uniform Buffers: 1
+[10:12:35] [trace] Nut: [Shader]Storage Buffers: 0
+[10:12:35] [trace] Nut: [Shader]Sampled Images: 0
+[10:12:35] [trace] Nut: [Shader]Plain Uniforms: 0
+[10:12:35] [trace] Nut: [Shader]Shader Name - "FloorShader.glsl", Shader Stage - Fragment
+[10:12:35] [trace] Nut: [Shader]Uniform Buffers: 0
+[10:12:35] [trace] Nut: [Shader]Storage Buffers: 0
+[10:12:35] [trace] Nut: [Shader]Sampled Images: 0
+[10:12:35] [trace] Nut: [Shader]Plain Uniforms: 0
+[10:12:35] [info] Nut: [Renderer]调整视口大小: 1600, 900
+[10:13:07] [info] Nut: [Window]窗口移动到 0, 45
+[10:13:07] [info] Nut: [Window]窗口大小改变 2880 x 1659
+[10:13:07] [trace] Nut: EditorCamera resized to 2880x1659
+[10:13:07] [info] Nut: [Renderer]调整视口大小: 2880, 1659
+[10:13:26] [info] Nut: [Window]窗口关闭
+[10:13:26] [trace] Nut: [Core]Shutting down...

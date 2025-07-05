@@ -21,10 +21,15 @@ layout(location = 0) out vec3 v_Position;
 
 void main()
 {
-	vec4 position = vec4(a_Position.xy, 0.0, 1.0);
+	/*vec4 position = vec4(a_Position.xy, 0.0, 1.0);
 	gl_Position = position;
 	
-	v_Position = (u_Camera.InverseViewProjectionMatrix * position).xyz;
+	v_Position = (u_Camera.InverseViewProjectionMatrix * position).xyz;*/
+	mat3 rotation = mat3(u_Camera.ViewMatrix);
+	v_Position = a_Position;
+	mat4 rotView = mat4(rotation);
+	vec4 pos = u_Camera.ProjectionMatrix * rotView * vec4(a_Position, 1.0);
+	gl_Position = pos.xyww;
 }
 
 # type Fragment

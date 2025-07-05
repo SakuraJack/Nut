@@ -37,7 +37,7 @@ namespace Nut {
 		NUT_CORE_INFO_TAG("Renderer", "启用混合... 混合函数:源Alpha, 1-源Alpha");
 
 		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
+		glDepthFunc(GL_LEQUAL);
 		NUT_CORE_INFO_TAG("Renderer", "启用深度测试... 深度函数:小于等于");
 
 		glEnable(GL_STENCIL_TEST);
